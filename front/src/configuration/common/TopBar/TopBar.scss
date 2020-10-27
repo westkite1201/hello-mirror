@@ -1,0 +1,50 @@
+.top-row-handler {
+  z-index: 102;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  width: 100%;
+}
+.top-row {
+  z-index: 101;
+  display: flex;
+  justify-content: space-between;
+  //align-items: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  box-shadow: 0px 7px 54px -18px rgba(0, 0, 0, 0.75);
+}
+
+.top-row-hide {
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  //align-items: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.tob-row-tab-button {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-size: 2rem;
+  // div {
+  //   font-size: 2rem;
+  //   text-align: center;
+  //   //background-color: gainsboro;
+  //   width: 33.3%;
+  //   height: 100%;
+  // }
+  // div:hover {
+  //   background-color: gainsboro;
+  // }
+}
