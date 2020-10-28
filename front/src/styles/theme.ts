@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components';
-export const theme: defaulTheme = {
+import styled, { css, DefaultTheme } from 'styled-components';
+export const theme: DefaultTheme = {
   dark: {
-    mainBackground: `#333`,
+    mainBackground: `black`,
     // neutral color
     title: `rgba(255,255,255,0.85)`,
     primaryText: `rgba(255,255,255,0.65)`,
@@ -26,5 +26,5 @@ export const theme: defaulTheme = {
     tableHeader: `rgba(0, 0, 0, 0.02)`,
     // point-color
   },
-  response: {},
+  //response: {},
 };

@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import quotes_ from './quotes_ts'; //ts 용
-import { quotesSaga_ } from './quotes_ts';
+import weather from './weather'; //ts 용
+import { weatherSaga } from './weather';
 
 import { all } from 'redux-saga/effects';
 const rootReducer = combineReducers({
-  quotes_,
+  weather,
   //note
 });
 
@@ -18,5 +18,5 @@ export default rootReducer;
 //사용 할 때 필요로 합니다.
 // 루트 사가를 만들어서 내보내주세요.
 export function* rootSaga() {
-  yield all([quotesSaga_()]);
+  yield all([weatherSaga()]);
 }

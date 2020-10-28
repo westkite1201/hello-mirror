@@ -1,25 +1,30 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './../src/styles/theme';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Routes from './Routes';
 function App() {
   return (
-    <ThemeProvider theme={theme.dark}>
+    <ThemeProvider theme={theme}>
       <Component />
     </ThemeProvider>
   );
 }
 // 스타일드-컴포넌트 정의
 const Container = styled.div`
-  background-color: ${props => props.theme.mainBackground};
-  color: ${props => props.theme.primaryText};
+  height: 100vh;
+  background-color: ${props => props.theme.dark.mainBackground};
+  color: ${props => props.theme.dark.primaryText};
 `;
 
 // 컴포넌트 정의
 const Component = () => {
   return (
     <Container>
-      <h1>테마적용하기🎨</h1>
+      <Router>
+        <Routes />
+      </Router>
     </Container>
   );
 };

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
 import SubRoutes from './SubRoutes';
-//import SideBar from './component/common/SideBar';
 import { ToastContainer } from 'react-toastify';
-const Routes = ({ history }) => {
+const Routes = () => {
   return (
     <div>
       <ToastContainer
@@ -20,7 +19,7 @@ const Routes = ({ history }) => {
       {/*<SideBar pageWrapId={'page-wrap'} outerContainerId={'App'} />*/}
       <div id="page-wrap" style={{ overflow: 'hidden' }}>
         <Switch>
-          <SubRoutes history={history} />
+          <SubRoutes />
         </Switch>
       </div>
     </div>

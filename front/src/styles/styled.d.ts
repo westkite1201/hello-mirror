@@ -42,6 +42,6 @@ declare module 'styled-components' {
       // point-color
       // point-color
     };
-    response: {};
+    //response: {};
   }
 }
