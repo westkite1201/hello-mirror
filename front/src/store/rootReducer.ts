@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { all } from 'redux-saga/effects';
 import clicksReducer from './weather/reducer';
-import { weatherSaga } from './weather/sagas';
+import { weatherSaga } from './weather'; //test
 const clicks = { count: clicksReducer };
 
 export let rootReducer = combineReducers({
@@ -20,5 +20,6 @@ export default function createReducer(injectedReducers = {}) {
 export type RootState = ReturnType<typeof rootReducer>;
 
 export function* rootSaga() {
+  //test
   yield all([weatherSaga()]);
 }
