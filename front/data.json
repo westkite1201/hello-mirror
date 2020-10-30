@@ -1,0 +1,16 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "boardId": 1,
+        "boardTitle": "Title 1",
+        "boardContent": "Content 1"
+      },
+      {
+        "id": 2,
+        "boardId": 2,
+        "boardTitle": "Title 2",
+        "boardContent": "Content 2"
+      }
+    ]
+  }

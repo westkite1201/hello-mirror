@@ -10,7 +10,7 @@ module.exports = function (callee) {
       method: 'GET',
       timeout: 10000,
       followRedirect: true,
-      maxRedirects: 10,
+      maxRedirects: 10
     };
     const PORT = '3500';
 
@@ -63,7 +63,7 @@ module.exports = function (callee) {
 
         let propertiesObject = querystring.stringify({
           q: query,
-          image_type: imageType,
+          image_type: imageType
         });
 
         OPTIONS.url += 'key=' + serviceKey;
@@ -101,47 +101,6 @@ module.exports = function (callee) {
         //console.log("response " , res)
         return res;
       },
-      //?base_date=20190619&base_time=0630&nx=60&ny=125&_type=json
-      weather: function (
-        base_date,
-        base_time,
-        nx,
-        ny,
-        type,
-        shortTermYn,
-        callback,
-      ) {
-        console.log('weather! 사용중 ');
-        const request = require('request');
-        const querystring = require('querystring');
-        if (shortTermYn) {
-          OPTIONS.url = HOST + BASE_PATH_SHORT_TERM;
-        } else {
-          OPTIONS.url = HOST + BASE_PATH;
-        }
-
-        //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
-        //공개 위험
-        //let serviceKey = apiConfig.apiKey.datagoApiKey + '&';
-        let serviceKey = process.env.DATA_GO_API_KEY + '&';
-
-        let propertiesObject = querystring.stringify({
-          base_date: base_date,
-          base_time: base_time,
-          nx: nx,
-          ny: ny,
-          numOfRows: 175,
-          dataType: type,
-        });
-        OPTIONS.url += 'ServiceKey=' + serviceKey;
-        OPTIONS.url += propertiesObject;
-        //console.log(OPTIONS)
-
-        request(OPTIONS, function (err, res, result) {
-          statusCodeErrorHandler(res.statusCode, callback, result);
-        });
-      },
-      //http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst
       weatherAsync: async (
         base_date,
         base_time,
@@ -150,7 +109,7 @@ module.exports = function (callee) {
         type,
         shortTermYn,
         shortTermLiveYn,
-        callback,
+        callback
       ) => {
         const request = require('request');
         const querystring = require('querystring');
@@ -168,7 +127,6 @@ module.exports = function (callee) {
         //console.log('#################!!!!!!!!!!!! nx,ny', nx, ny);
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
         //공개 위험
-        //let serviceKey = apiConfig.apiKey.datagoApiKey + '&';
         let serviceKey = process.env.DATA_GO_API_KEY + '&';
 
         let propertiesObject = querystring.stringify({
@@ -177,7 +135,7 @@ module.exports = function (callee) {
           nx: nx,
           ny: ny,
           numOfRows: 175,
-          dataType: type,
+          dataType: type
         });
         console.log('base_date ', base_date, ' base_time', base_time);
         OPTIONS.url += 'ServiceKey=' + serviceKey;
@@ -236,7 +194,7 @@ module.exports = function (callee) {
         let propertiesObject = querystring.stringify({
           tmX: tmX,
           tmY: tmY,
-          _returnType: 'json',
+          _returnType: 'json'
         });
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
@@ -307,7 +265,7 @@ module.exports = function (callee) {
           pageNo: 1,
           numOfRows: 1,
           ver: 1.3,
-          _returnType: 'json',
+          _returnType: 'json'
         });
 
         propertiesObject = querystring.unescape(propertiesObject);
@@ -348,7 +306,7 @@ module.exports = function (callee) {
         let propertiesObject = querystring.stringify({
           location: location,
           locdate: locDate,
-          _type: 'json',
+          _type: 'json'
         });
 
         propertiesObject = querystring.unescape(propertiesObject);
@@ -381,7 +339,7 @@ module.exports = function (callee) {
 
         let res = await doRequest();
         return res;
-      },
+      }
     };
   }
   function statusCodeErrorHandler(statusCode, callback, data) {
