@@ -140,7 +140,7 @@ module.exports = function (callee) {
         console.log('base_date ', base_date, ' base_time', base_time);
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
-        //console.log('options ', OPTIONS);
+        console.log('options ', OPTIONS);
 
         //async를 위해 request 함수 선언
         function doRequest() {
