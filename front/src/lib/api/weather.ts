@@ -32,6 +32,36 @@ export interface IError {
   message: string;
 }
 
+export interface WeatherRes {
+  dataType: string;
+  items: WeatherItem[];
+  pageNo: number;
+  numOfRows: number;
+  totalCount: number;
+}
+
+export interface WeatherItem {
+  baseDate: string;
+  baseTime: string;
+  category: string;
+  nx: number;
+  ny: number;
+  obsrValue: string;
+}
+interface shortTermType {
+  nx: string;
+  ny: string;
+  shortTermYn: boolean;
+}
+
+/* api 이용 */
+export async function getWeatherDataPrivateMode(payload: shortTermType) {
+  return axios.post<WeatherRes>(
+    clientConfig.endpoint.api + '/weather/getWeatherDataPrivateMode',
+    payload,
+  );
+}
+
 // export async function updateQuote(quote: Quote) {
 //   //   const data = {
 //   const response = await axios.post<QuotseRes>(
@@ -87,19 +117,6 @@ export const getLocation = (locationA, locationB, locationC) => {
     data,
   );
   //return (axios.post("http://localhost:3031/api/member/test",data));
-};
-
-/* api 이용 */
-export const getWeatherDataPrivateMode = (nx, ny, shortTermYn) => {
-  const data = {
-    nx: nx,
-    ny: ny,
-    shortTermYn: shortTermYn,
-  };
-  return axios.post(
-    clientConfig.endpoint.api + '/weather/getWeatherDataPrivateMode',
-    data,
-  );
 };
 
 /* db 조회용 */

@@ -173,9 +173,9 @@ router.post('/getWeatherDataPrivateMode', async (req, res) => {
       shortTermYn
     );
     //console.log('resposne ', response);
-    if (response.message !== 'error') {
+    if (response.message !== 'error' && response.message !== 'success') {
       //온경우
-      return res.json(response);
+      return res.json(response.data.response.body);
     } else {
       console.log('error');
     }
@@ -209,9 +209,9 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
       shortTermYn,
       shortTermLiveYn
     );
-    if (response.message !== 'error') {
+    if (result.message !== 'error') {
       //온경우
-      return res.json(response);
+      return res.json(result.data.data.response.body);
     } else {
       console.log('error');
     }

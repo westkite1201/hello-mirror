@@ -5,8 +5,9 @@ import { RootState } from '../../store/rootReducer';
 import Counter from './Counter';
 import { addCount, minusCount } from '../../store/weather/reducer';
 
-export const incrementAsync = () => ({
+export const incrementAsync = (str: string) => ({
   type: 'INCREMENT_ASYNC',
+  payload: str,
 });
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
           value={clicks}
           onIncrement={() => increment(1)}
           onDecrement={() => decrement(1)}
-          onIncrementAsync={() => dispatch(incrementAsync())}
+          onIncrementAsync={() => dispatch(incrementAsync('hello'))}
         />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.

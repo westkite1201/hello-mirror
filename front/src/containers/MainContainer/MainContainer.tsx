@@ -33,7 +33,7 @@ function MainContainer() {
           console.log('coords ', coords);
           const notLng = coords.longitude;
           const notLat = coords.latitude;
-          dispatch({});
+          //dispatch({});
         } catch (e) {
           console.log('error ', e);
         }
@@ -53,6 +53,7 @@ function MainContainer() {
       <Info infoString={'오늘 정말 멋지십니다'} />
       <WeatherInfoContainer />
       */}
+      <WeatherInfoContainer />
     </div>
   );
 }
