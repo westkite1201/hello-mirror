@@ -56,19 +56,21 @@ interface shortTermType {
 
 /* api 이용 */
 export async function getWeatherDataPrivateMode(payload: shortTermType) {
-  return axios.post<WeatherRes>(
+  const res = await axios.post<WeatherRes>(
     clientConfig.endpoint.api + '/weather/getWeatherDataPrivateMode',
     payload,
   );
+  return res.data;
 }
 export async function getWeatherDataShortTermLivePrivateMode(
   payload: shortTermType,
 ) {
-  return axios.post<WeatherRes>(
+  const res = await axios.post<WeatherRes>(
     clientConfig.endpoint.api +
       '/weather/getWeatherDataShortTermLivePrivateMode',
     payload,
   );
+  return res.data;
 }
 
 // export async function updateQuote(quote: Quote) {
