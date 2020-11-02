@@ -61,6 +61,15 @@ export async function getWeatherDataPrivateMode(payload: shortTermType) {
     payload,
   );
 }
+export async function getWeatherDataShortTermLivePrivateMode(
+  payload: shortTermType,
+) {
+  return axios.post<WeatherRes>(
+    clientConfig.endpoint.api +
+      '/weather/getWeatherDataShortTermLivePrivateMode',
+    payload,
+  );
+}
 
 // export async function updateQuote(quote: Quote) {
 //   //   const data = {

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
-import { getWeatherShortTermLiveRequest } from '../../store/weather/reducer';
-import { getWeatherDataShortTermLive } from '../../store/weather/sagas';
+import { getWeatherDataShortTermLive } from '../../store/weather/reducer';
 import 'weather-icons/css/weather-icons.css';
 const WeatherInfoContainer = () => {
   const dispatch = useDispatch();

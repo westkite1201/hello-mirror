@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
 import { WeatherItem } from '../../lib/api/weather';
 
 type CurrentDisplayState = {
@@ -12,6 +12,16 @@ const initialState: CurrentDisplayState = {
   weatherInfo: [],
   loading: false,
 };
+
+// createAction으로 액션 생성 함수를 만들 수 있다.
+const GET_WEATHER_DATA_SHORT_TERM_LIVE =
+  'WEATHER/GET_WEATEHR_DATA_SHORT_TERM_LIVE';
+export const getWeatherDataShortTermLive = createAction(
+  GET_WEATHER_DATA_SHORT_TERM_LIVE,
+  param => {
+    return { payload: param };
+  },
+);
 
 const countSlice = createSlice({
   name: 'count',
