@@ -4,12 +4,14 @@ import { WeatherItem } from '../../lib/api/weather';
 type CurrentDisplayState = {
   clicks: number;
   weatherInfo: WeatherItem[];
+  shortWeatherInfo: WeatherItem[];
   loading: boolean;
 };
 
 const initialState: CurrentDisplayState = {
   clicks: 0,
   weatherInfo: [],
+  shortWeatherInfo: [],
   loading: false,
 };
 
@@ -39,6 +41,16 @@ const countSlice = createSlice({
     getWeatherShortTermLive(state, { payload }: PayloadAction<number>) {
       state.loading = true;
     },
+
+    getWeatherRequest(state) {
+      state.loading = true;
+    },
+
+    getWeatherSuccess(state, { payload }: PayloadAction<WeatherItem[]>) {
+      state.weatherInfo = payload;
+      state.loading = false;
+    },
+
     getWeatherShortTermLiveRequest(state) {
       state.loading = true;
     },
@@ -46,7 +58,8 @@ const countSlice = createSlice({
       state,
       { payload }: PayloadAction<WeatherItem[]>,
     ) {
-      state.weatherInfo = payload;
+      state.shortWeatherInfo = payload;
+      state.loading = false;
     },
   },
 });

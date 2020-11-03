@@ -1,16 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { all } from 'redux-saga/effects';
-import clicksReducer from './weather/reducer';
+import weatherReducer from './weather/reducer';
+import editReducer from './edit/reducer';
 import { weatherSaga } from './weather'; //test
-const clicks = { count: clicksReducer };
+const reducers = { count: weatherReducer, edit: editReducer };
 
 export let rootReducer = combineReducers({
-  ...clicks,
+  ...reducers,
 });
 
 export default function createReducer(injectedReducers = {}) {
   rootReducer = combineReducers({
-    ...clicks,
+    ...reducers,
     ...injectedReducers,
   });
 

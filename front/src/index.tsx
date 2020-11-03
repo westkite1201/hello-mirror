@@ -11,6 +11,8 @@ import { Provider } from 'react-redux';
 // import { composeWithDevTools } from 'redux-devtools-extension'; // 리덕스 개발자 도구
 import 'antd/dist/antd.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import configureStore from './store/store';
 
 // Saga Middleware 생성

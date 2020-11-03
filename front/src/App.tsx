@@ -4,6 +4,7 @@ import { theme } from './../src/styles/theme';
 import styled from 'styled-components';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './Routes';
+import Sidebar from './containers/Sidebar/Sidebar';
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -22,6 +23,7 @@ const Container = styled.div`
 const Component = () => {
   return (
     <Container>
+      <Sidebar />
       <Router>
         <Routes />
       </Router>
