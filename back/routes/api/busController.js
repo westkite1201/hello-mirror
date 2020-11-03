@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const userRedis = require('../../model/redis/redisDao');
-const userDao = require('../../model/mysql/UserDao');
+
 statusCodeErrorHandlerAsync = (statusCode, data, noNeedParse) => {
   try {
     if (noNeedParse) {
@@ -23,52 +23,6 @@ statusCodeErrorHandlerAsync = (statusCode, data, noNeedParse) => {
     console.log(e);
   }
 };
-
-router.post('/getBookmarkBackground', async (req, res) => {
-  try {
-    const data = {
-      memIdx: req.body.memIdx
-    };
-
-    const response = await userDao.getBookmarkBackground(data);
-    //console.log("getBookmarkBackground response ", response);
-    return res.json(response);
-  } catch (error) {
-    console.log('error', error);
-    return statusCodeErrorHandlerAsync(400, error, false);
-  }
-});
-
-router.post('/saveBookmarkBackground', async (req, res) => {
-  try {
-    const backgroundBookMarkList = req.body.backgroundBookMarkList;
-    console.log('backgroundBookMarkList ', backgroundBookMarkList);
-    let bookmarkItemList = backgroundBookMarkList.map((item) => {
-      //console.log("item ", item);
-      return [
-        1,
-        item.id,
-        item.pageURL,
-        item.previewURL,
-        item.largeImageURL,
-        item.tags,
-        item.likes,
-        item.favorites,
-        item.views
-      ];
-    });
-    const data = {
-      bookmarkItemList: bookmarkItemList
-    };
-
-    console.log(bookmarkItemList);
-    const response = await userDao.saveBookmarkBackgroud(data);
-    return res.json(response);
-  } catch (error) {
-    console.log('error', error);
-    return statusCodeErrorHandlerAsync(400, error, false);
-  }
-});
 
 router.post('/setUserBackground', async (req, res) => {
   try {

@@ -1,22 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var cors = require('cors')();
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let bodyParser = require('body-parser');
+let cors = require('cors')();
 let busRouter = require('./routes/api/busController');
-let fileRouter = require('./routes/api/fileController');
 let weatherApi = require('./routes/api/weatherController');
 let quotesRotuer = require('./routes/api/quotesController');
 
-var session = require('express-session');
-
-var config = require('./src/lib/serverConfig');
-const authMiddleware = require('./middlewares/auth');
-
-var socketLib = require('./lib/socket');
-var app = express();
+let socketLib = require('./lib/socket');
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,24 +27,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '100mb' }));
 
-// login routine
-app.use(
-  session({
-    secret: '@#@$MYSIGN#@$#$',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: true
-    }
-  })
-);
-//app에 jwt-secret 생성
-
-app.set('jwt-secret', config.auth.jwt.secret);
-
 app.use('/api/weather', weatherApi);
 app.use('/api/bus', busRouter);
-app.use('/api/file', fileRouter);
 app.use('/api/quotes', quotesRotuer);
 require('dotenv').config();
 
@@ -71,13 +49,13 @@ app.use(function (err, req, res, next) {
 });
 
 //listen server
-var server = app.listen(3031, function () {
+let server = app.listen(3031, function () {
   console.log('Example app listening on port 3031');
   //console.log(process.cwd())
 });
 
-var listen = require('socket.io');
-var io = listen(server);
+let listen = require('socket.io');
+let io = listen(server);
 socketLib.connection(io);
 
 // Make io accessible to our router

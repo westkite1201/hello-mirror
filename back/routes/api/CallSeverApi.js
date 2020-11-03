@@ -1,4 +1,3 @@
-const apiConfig = require('../../config/auth/apiKeys');
 const _ = require('lodash');
 
 module.exports = function (callee) {
@@ -59,7 +58,7 @@ module.exports = function (callee) {
         const request = require('request');
         const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_PIXABAY;
-        let serviceKey = apiConfig.apiKey.pixabayApiKey + '&';
+        let serviceKey = process.env.pixabayApiKey + '&';
 
         let propertiesObject = querystring.stringify({
           q: query,
@@ -202,20 +201,6 @@ module.exports = function (callee) {
 
         let response;
 
-        //async를 위해 request 함수 선언
-        // function doRequest() {
-        //   return new Promise(function (resolve, reject) {
-        //     request(OPTIONS, (err, res, result) => {
-        //       response = statusCodeErrorHandlerAsync(res.statusCode, result);
-        //       if (response.message !== 'error') {
-        //         resolve(response);
-        //       } else {
-        //         reject(err);
-        //       }
-        //       //console.log(response)
-        //     });
-        //   });
-        // }
         function doRequest() {
           return new Promise(function (resolve, reject) {
             request(OPTIONS, (err, res, result) => {
@@ -342,20 +327,7 @@ module.exports = function (callee) {
       }
     };
   }
-  function statusCodeErrorHandler(statusCode, callback, data) {
-    try {
-      switch (statusCode) {
-        case 200:
-          callback(null, JSON.parse(data));
-          break;
-        default:
-          callback('error', JSON.parse(data));
-          break;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
+
   statusCodeErrorHandlerAsync = (statusCode, data) => {
     try {
       switch (statusCode) {
