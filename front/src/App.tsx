@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './Routes';
 import Sidebar from './containers/Sidebar/Sidebar';
+import { useSelector } from 'react-redux';
+import { RootState } from './store/rootReducer';
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -21,12 +23,22 @@ const Container = styled.div`
 
 // 컴포넌트 정의
 const Component = () => {
+  const { isSidebarOpen } = useSelector((state: RootState) => state.edit);
+  const openStyle = {
+    marginLeft: '350px',
+  };
+  const closeStyle = {
+    marginLeft: '0px',
+  };
   return (
     <Container>
       <Sidebar />
-      <Router>
-        <Routes />
-      </Router>
+
+      <div style={isSidebarOpen ? openStyle : closeStyle}>
+        <Router>
+          <Routes />
+        </Router>
+      </div>
     </Container>
   );
 };

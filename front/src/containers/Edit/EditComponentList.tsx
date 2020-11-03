@@ -22,7 +22,7 @@ const EditComponentList = () => {
       },
       {
         component: WeatherInfoContainer,
-        name: 'weather',
+        name: 'weatherInfo',
         category: 'weather',
         pageView: 'seoPage',
       },

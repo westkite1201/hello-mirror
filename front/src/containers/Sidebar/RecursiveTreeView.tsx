@@ -55,9 +55,9 @@ const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
     const objectArr = Object.keys(hello).map((item, key) => {
       const objectCategory = hello[item];
       const cateNm = _.find(hello[item], 'category').category; // ncms ,cms
-      //console.log('objectCategory ', objectCategory);
+      console.log('objectCategory ', objectCategory);
       const childrenObj = _.groupBy(objectCategory, 'pageView');
-      //console.log('childrenObj ', childrenObj);
+      console.log('childrenObj ', childrenObj);
       const sub = Object.keys(childrenObj).map((item, key) => {
         //item = 장애조회, 분석
         return {
@@ -65,11 +65,11 @@ const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
           name: item,
           children: childrenObj[item].map((item, key) => {
             const componentName = Object.keys(item)[0];
-            //console.log('item', item);
-            //console.log('componentName ', componentName);
+            console.log('item', item.name);
+            console.log('componentName ', componentName);
             return {
               id: item.category + '_' + item.pageView + '_' + key,
-              name: componentName,
+              name: item.name,
             };
           }),
         };
