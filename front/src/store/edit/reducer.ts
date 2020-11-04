@@ -9,7 +9,7 @@ export type RGLItem = {
   w: number;
   h: number;
   item: any;
-  TagName: any;
+  name: any;
 };
 
 export type ComponentItem = {
@@ -51,11 +51,12 @@ const editSlice = createSlice({
           w: 2,
           h: 2,
           item: null,
-          TagName: null,
+          name: null,
         };
       });
     },
     addComponent(state, action: PayloadAction<string>) {
+      console.log('addComponent');
       const tag = searchComponentByName(state.componentList, action.payload);
       const timeStamp = new Date().getTime();
       const data = {
@@ -65,7 +66,7 @@ const editSlice = createSlice({
         w: 3,
         h: 2,
         item: tag,
-        TagName: action.payload,
+        name: action.payload,
       };
       state.layout.push(data);
     },

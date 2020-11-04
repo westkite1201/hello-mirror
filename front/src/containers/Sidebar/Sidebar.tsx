@@ -6,10 +6,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addComponent } from '../../store/edit/reducer';
 import CSS from 'csstype';
 const Sidebar = () => {
-  const { layout, componentList, isSidebarOpen } = useSelector(
+  const { componentList, isSidebarOpen } = useSelector(
     (state: RootState) => state.edit,
   );
-
+  const dispatch = useDispatch();
   const sideBarOpenStyle: CSS.Properties = {
     width: '340px',
     padding: '100px 20px 20px 20px',
@@ -40,6 +40,9 @@ const Sidebar = () => {
   */
   }
 
+  const addSelectedComponent = (componentName: string) => {
+    dispatch(addComponent(componentName));
+  };
   return (
     <div>
       <div
@@ -51,7 +54,7 @@ const Sidebar = () => {
 
         <RecursiveTreeView
           pureComponents={componentList}
-          addSelectedComponent={addComponent}
+          addSelectedComponent={addSelectedComponent}
         ></RecursiveTreeView>
       </div>
     </div>

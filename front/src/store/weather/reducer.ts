@@ -41,16 +41,13 @@ const countSlice = createSlice({
     getWeatherShortTermLive(state, { payload }: PayloadAction<number>) {
       state.loading = true;
     },
-
     getWeatherRequest(state) {
       state.loading = true;
     },
-
     getWeatherSuccess(state, { payload }: PayloadAction<WeatherItem[]>) {
       state.weatherInfo = payload;
       state.loading = false;
     },
-
     getWeatherShortTermLiveRequest(state) {
       state.loading = true;
     },

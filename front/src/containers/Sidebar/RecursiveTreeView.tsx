@@ -47,6 +47,7 @@ type ObjectItem = {
 };
 
 const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
+  console.log('addSelectedComponent', addSelectedComponent);
   const [objectArr, setObjectArr] = useState([data]);
 
   useEffect(() => {
@@ -64,9 +65,7 @@ const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
           id: item + '_' + key,
           name: item,
           children: childrenObj[item].map((item, key) => {
-            const componentName = Object.keys(item)[0];
-            console.log('item', item.name);
-            console.log('componentName ', componentName);
+            //const componentName = Object.keys(item)[0];
             return {
               id: item.category + '_' + item.pageView + '_' + key,
               name: item.name,

@@ -1,4 +1,30 @@
 const _ = require('lodash');
+function doRequest(option) {
+  return new Promise(function (resolve, reject) {
+    request(option, (err, res, result) => {
+      try {
+        if (_.isNil(res)) {
+          reject(err);
+        }
+        if (!res) {
+          reject(err);
+        }
+        if (_.isNil(res.statusCode)) {
+          reject(err);
+        }
+        let statusCode = res.statusCode ? res.statusCode : 400;
+        response = statusCodeErrorHandlerAsync(statusCode, result);
+        if (response.message !== 'error') {
+          resolve(response);
+        } else {
+          reject(err);
+        }
+      } catch (e) {
+        reject(err);
+      }
+    });
+  });
+}
 
 module.exports = function (callee) {
   function CallSeverApi(callee) {
@@ -68,35 +94,7 @@ module.exports = function (callee) {
         OPTIONS.url += 'key=' + serviceKey;
         OPTIONS.url += propertiesObject;
         console.log('[seo] option,url', OPTIONS.url);
-        function doRequest() {
-          return new Promise(function (resolve, reject) {
-            request(OPTIONS, (err, res, result) => {
-              try {
-                if (_.isNil(res)) {
-                  reject(err);
-                }
-                if (!res) {
-                  reject(err);
-                }
-                if (_.isNil(res.statusCode)) {
-                  reject(err);
-                }
-                let statusCode = res.statusCode ? res.statusCode : 400;
-                response = statusCodeErrorHandlerAsync(statusCode, result);
-                if (response.message !== 'error') {
-                  resolve(response);
-                } else {
-                  reject(err);
-                }
-              } catch (e) {
-                reject(err);
-              }
-
-              //console.log(response)
-            });
-          });
-        }
-        let res = await doRequest();
+        let res = await doRequest(OPTIONS);
         //console.log("response " , res)
         return res;
       },
@@ -125,7 +123,6 @@ module.exports = function (callee) {
 
         //console.log('#################!!!!!!!!!!!! nx,ny', nx, ny);
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
-        //공개 위험
         let serviceKey = process.env.DATA_GO_API_KEY + '&';
 
         let propertiesObject = querystring.stringify({
@@ -136,49 +133,10 @@ module.exports = function (callee) {
           numOfRows: 175,
           dataType: type
         });
-        console.log('base_date ', base_date, ' base_time', base_time);
+
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
-        console.log('options ', OPTIONS);
-
-        //async를 위해 request 함수 선언
-        function doRequest() {
-          try {
-            return new Promise(function (resolve, reject) {
-              request(OPTIONS, (err, res, result) => {
-                if (err) {
-                  console.log('ERROR');
-                  reject(err);
-                  return;
-                } else if (!res) {
-                  reject(err);
-                  return;
-                }
-                // /console.log('[SEO] ERROR res ', res);
-                else if (_.isNaN(res)) {
-                  console.log('reject !!!!!!!!!!!!!!!');
-                  reject(err);
-                  return;
-                } else {
-                  let { statusCode } = res;
-                  statusCode = statusCode ? statusCode : 400;
-                  response = statusCodeErrorHandlerAsync(statusCode, result);
-                  if (response.message !== 'error') {
-                    resolve(response);
-                  } else {
-                    reject(err);
-                    return;
-                  }
-                }
-                //console.log(response)
-              });
-            });
-          } catch (e) {
-            console.log('Error ', e);
-          }
-        }
-
-        let res = await doRequest();
+        let res = await doRequest(OPTIONS);
         //console.log("response " , res)
         return res;
       },
@@ -187,8 +145,6 @@ module.exports = function (callee) {
         const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_NEAR_STATION;
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
-        //공개 위험
-        //let serviceKey = apiConfig.apiKey.datagoApiKey + '&';
         let serviceKey = process.env.DATA_GO_API_KEY + '&';
         let propertiesObject = querystring.stringify({
           tmX: tmX,
@@ -201,36 +157,7 @@ module.exports = function (callee) {
 
         let response;
 
-        function doRequest() {
-          return new Promise(function (resolve, reject) {
-            request(OPTIONS, (err, res, result) => {
-              try {
-                if (_.isNil(res)) {
-                  reject(err);
-                }
-                if (!res) {
-                  reject(err);
-                }
-                if (_.isNil(res.statusCode)) {
-                  reject(err);
-                }
-                let statusCode = res.statusCode ? res.statusCode : 400;
-                response = statusCodeErrorHandlerAsync(statusCode, result);
-                if (response.message !== 'error') {
-                  resolve(response);
-                } else {
-                  reject(err);
-                }
-              } catch (e) {
-                reject(err);
-              }
-
-              //console.log(response)
-            });
-          });
-        }
-
-        let res = await doRequest();
+        let res = await doRequest(OPTIONS);
         //console.log("response " , res)
         return res;
       },
@@ -240,8 +167,6 @@ module.exports = function (callee) {
         const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_GET_DUST_INFO;
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
-        //공개 위험
-        //let serviceKey = apiConfig.apiKey.datagoApiKey + '&';
         let serviceKey = process.env.DATA_GO_API_KEY + '&';
         console.log('stationName', stationName);
         let propertiesObject = querystring.stringify({
@@ -262,21 +187,8 @@ module.exports = function (callee) {
         //console.log( OPTIONS.url)
 
         //async를 위해 request 함수 선언
-        function doRequest() {
-          return new Promise(function (resolve, reject) {
-            request(OPTIONS, (err, res, result) => {
-              response = statusCodeErrorHandlerAsync(res.statusCode, result);
-              if (response.message !== 'error') {
-                resolve(response);
-              } else {
-                reject(err);
-              }
-              //console.log(response)
-            });
-          });
-        }
 
-        let res = await doRequest();
+        let res = await doRequest(OPTIONS);
         return res;
       },
 
@@ -300,29 +212,7 @@ module.exports = function (callee) {
         //console.log(OPTIONS)
         OPTIONS.url += '&ServiceKey=' + serviceKey;
 
-        console.log(OPTIONS.url);
-
-        //async를 위해 request 함수 선언
-        function doRequest() {
-          return new Promise(function (resolve, reject) {
-            request(OPTIONS, (err, res, result) => {
-              try {
-                response = statusCodeErrorHandlerAsync(res.statusCode, result);
-                if (response.message !== 'error') {
-                  resolve(response);
-                } else {
-                  reject(err);
-                }
-              } catch (e) {
-                reject(err);
-              }
-
-              //console.log(response)
-            });
-          });
-        }
-
-        let res = await doRequest();
+        let res = await doRequest(OPTIONS);
         return res;
       }
     };

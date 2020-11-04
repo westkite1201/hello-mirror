@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ClockContainer from '../Clock/ClockContainer';
-import Info from '../../components/Info/Info';
+import Info from '../Info/InfoContainer';
 import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
 import { setComponentList } from '../../store/edit/reducer';
 import { useDispatch } from 'react-redux';

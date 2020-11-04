@@ -148,6 +148,44 @@ router.post('/getNearbyMsrstnList', async (req, res) => {
   }
 });
 
+router.post('/getWeatherDataMid', async (req, res) => {
+  try {
+    //console.log('newdate', newdate, ' newTime', newtime);
+    let timeData = helpers.getNowTime();
+    //nx, ny는 디비에서 가져오기
+    //base_date오늘 날짜
+    //이 정보는 디비에서 글고 여기 함수에서 계산되는거임
+    let base_date, base_time, type, nx, ny, shortTermYn, shortTermLiveYn, midYn;
+    base_date = timeData.newdate;
+    base_time = timeData.newtime;
+    type = 'json';
+    (shortTermYn = false), (shortTermLiveYn = false);
+    midYn = false;
+    nx = req.body.nx;
+    ny = req.body.ny;
+    //console.log(nx, ny, shortTermYn);
+    let response = await CallSeverApi.weatherAsync(
+      base_date,
+      base_time,
+      nx,
+      ny,
+      type,
+      shortTermYn,
+      shortTermLiveYn,
+      true
+    );
+    //console.log('resposne ', response);
+    if (response.message !== 'error' && response.message === 'success') {
+      //온경우
+      return res.json(response.data.response.body);
+    } else {
+      console.log('error');
+    }
+  } catch (e) {
+    console.log('error', e);
+  }
+});
+
 /* api에서 조회  */
 router.post('/getWeatherDataPrivateMode', async (req, res) => {
   try {

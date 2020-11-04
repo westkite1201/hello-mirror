@@ -46,7 +46,7 @@ function MainContainer() {
 
   return (
     <div>
-      <App />
+      {/*<App />*/}
       {/*
       <ClockContainer />
       <Info infoString={'오늘 정말 멋지십니다'} />
