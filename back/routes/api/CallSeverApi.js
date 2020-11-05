@@ -50,6 +50,8 @@ module.exports = function (callee) {
       '/1360000/VilageFcstInfoService/getUltraSrtFcst?';
     const BASE_PATH_SHORT_TERM_LIVE =
       '/1360000/VilageFcstInfoService/getUltraSrtNcst?';
+    const BASE_PATH_MID = '/1360000/MidFcstInfoService/getMidLandFcst?';
+
     const BASE_PATH_GET_DUST_INFO =
       '/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?';
     const BASE_PATH_NEAR_STATION =
@@ -106,7 +108,7 @@ module.exports = function (callee) {
         type,
         shortTermYn,
         shortTermLiveYn,
-        callback
+        midYn
       ) => {
         //console.log("shortTermYn " , (shortTermYn) )
         if (shortTermYn === 'true' || shortTermYn) {
@@ -115,10 +117,13 @@ module.exports = function (callee) {
             ? BASE_PATH_SHORT_TERM_LIVE
             : BASE_PATH_SHORT_TERM;
           OPTIONS.url = HOST + path;
+        } else if (midYn) {
+          OPTIONS.url = HOST + BASE_PATH_MID;
         } else {
           OPTIONS.url = HOST + BASE_PATH;
         }
 
+        //중기는 대기 할것
         //console.log('#################!!!!!!!!!!!! nx,ny', nx, ny);
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
         let serviceKey = process.env.DATA_GO_API_KEY + '&';

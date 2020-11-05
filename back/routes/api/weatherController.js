@@ -46,6 +46,29 @@ let newdate = 0;
 //   }
 // });
 
+const FILE_ROOT_DIR = process.cwd();
+router.post('/getNaverRealtimeSearch', async (req, res) => {
+  //console.log(req.body);
+  let number = req.body.backjoonNumber;
+  //console.log(number);
+  try {
+    var util = require('util');
+    var spawn = require('child_process').spawn;
+    var process = spawn('python', [
+      FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py',
+      number
+    ]);
+    util.log('readingin');
+    process.stdout.on('data', function (chunk) {
+      var textChunk = chunk.toString('utf-8'); // buffer to string
+      //textChunk = a(textChunk);
+      util.log(textChunk);
+      res.json(textChunk);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+});
 router.post('/getPixabayImages', async (req, res) => {
   let query = req.body.query;
   let imageType = req.body.imageType;
@@ -160,7 +183,7 @@ router.post('/getWeatherDataMid', async (req, res) => {
     base_time = timeData.newtime;
     type = 'json';
     (shortTermYn = false), (shortTermLiveYn = false);
-    midYn = false;
+    midYn = true;
     nx = req.body.nx;
     ny = req.body.ny;
     //console.log(nx, ny, shortTermYn);
@@ -172,7 +195,7 @@ router.post('/getWeatherDataMid', async (req, res) => {
       type,
       shortTermYn,
       shortTermLiveYn,
-      true
+      midYn
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
@@ -249,7 +272,7 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
     );
     if (result.message !== 'error') {
       //온경우
-      return res.json(result.data.response.body);
+      return res.json(result.data.response.body.items.item);
     } else {
       console.log('error');
     }
