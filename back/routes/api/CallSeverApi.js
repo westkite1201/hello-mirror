@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const request = require('request');
+const querystring = require('querystring');
 function doRequest(option) {
   return new Promise(function (resolve, reject) {
     request(option, (err, res, result) => {
@@ -81,8 +83,6 @@ module.exports = function (callee) {
     })(callee);
     return {
       pixabay: async (query, imageType) => {
-        const request = require('request');
-        const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_PIXABAY;
         let serviceKey = process.env.pixabayApiKey + '&';
 
@@ -108,8 +108,6 @@ module.exports = function (callee) {
         shortTermLiveYn,
         callback
       ) => {
-        const request = require('request');
-        const querystring = require('querystring');
         //console.log("shortTermYn " , (shortTermYn) )
         if (shortTermYn === 'true' || shortTermYn) {
           //console.log('tq');
@@ -163,8 +161,6 @@ module.exports = function (callee) {
       },
 
       getDustInfo: async (stationName) => {
-        const request = require('request');
-        const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_GET_DUST_INFO;
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
         let serviceKey = process.env.DATA_GO_API_KEY + '&';
@@ -193,8 +189,6 @@ module.exports = function (callee) {
       },
 
       getAreaRiseSetInfo: async (location, locDate) => {
-        const request = require('request');
-        const querystring = require('querystring');
         OPTIONS.url = HOST + BASE_PATH_RIST_SET;
         //서비스 키에 요상한 값이 있어서 계속 안됌 그래서 그냥 붙히는 걸로 함 ^^;
         //공개 위험
