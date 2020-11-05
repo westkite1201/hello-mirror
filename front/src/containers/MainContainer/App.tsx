@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
 
 import Counter from './Counter';
-import { addCount, minusCount } from '../../store/weather/reducer';
+//import { addCount, minusCount } from '../../store/weather/reducer';
 
 export const incrementAsync = (str: string) => ({
   type: 'INCREMENT_ASYNC',
@@ -15,11 +15,11 @@ function App() {
   const { clicks } = useSelector((state: RootState) => state.count);
 
   const increment = (page: number) => {
-    dispatch(addCount(page));
+    //dispatch(addCount(page));
   };
 
   const decrement = (page: number) => {
-    dispatch(minusCount(page));
+    // dispatch(minusCount(page));
   };
 
   return (

@@ -1,17 +1,29 @@
 import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
 import { WeatherItem } from '../../lib/api/weather';
+import { getWeatherClassName } from '../../lib/helpers';
 
+type WeatherInfoData = {
+  baseDate: string;
+  baseTime: string;
+  temperatureNow: string;
+  rainNow: string;
+  humidityNow: string;
+  weatherClassName: string;
+  weatherInfoName: string;
+};
 type CurrentDisplayState = {
   clicks: number;
   weatherInfo: WeatherItem[];
-  shortWeatherInfo: WeatherItem[];
+  shortWeatherInfo: WeatherInfoData | null;
+  isFetchingShort: boolean;
   loading: boolean;
 };
 
 const initialState: CurrentDisplayState = {
   clicks: 0,
   weatherInfo: [],
-  shortWeatherInfo: [],
+  shortWeatherInfo: null,
+  isFetchingShort: false,
   loading: false,
 };
 
@@ -35,12 +47,7 @@ const countSlice = createSlice({
     minusCount(state, action: PayloadAction<number>) {
       state.clicks -= action.payload;
     },
-    getWeatherShortTerm(state, action: PayloadAction<WeatherItem[]>) {
-      state.weatherInfo = action.payload;
-    },
-    getWeatherShortTermLive(state, { payload }: PayloadAction<number>) {
-      state.loading = true;
-    },
+
     getWeatherRequest(state) {
       state.loading = true;
     },
@@ -48,15 +55,62 @@ const countSlice = createSlice({
       state.weatherInfo = payload;
       state.loading = false;
     },
-    getWeatherShortTermLiveRequest(state) {
+    getWeatherShortTerm(state, action: PayloadAction<WeatherItem[]>) {
+      state.weatherInfo = action.payload;
+    },
+    getWeatherShortTermLive(state, { payload }: PayloadAction<number>) {
       state.loading = true;
+    },
+    getWeatherShortTermLiveRequest(state) {
+      state.isFetchingShort = true;
     },
     getWeatherShortTermLiveSuccess(
       state,
       { payload }: PayloadAction<WeatherItem[]>,
     ) {
-      state.shortWeatherInfo = payload;
-      state.loading = false;
+      let sky; //날씨
+      let pty; //강수형태
+      let temperatureNow;
+      let humidityNow;
+      let rainNow;
+      let baseDate;
+      let baseTime;
+      let dayTimeYn;
+      const weatherInfo = payload;
+      console.log('weatjerImfo', weatherInfo);
+      weatherInfo.map(item => {
+        console.log('item', item.category);
+        if (item.category === 'SKY') {
+          sky = parseInt(item.obsrValue);
+        }
+        if (item.category === 'PTY') {
+          pty = parseInt(item.obsrValue);
+        }
+        if (item.category === 'T1H') {
+          temperatureNow = parseInt(item.obsrValue);
+        }
+        if (item.category === 'RN1') {
+          rainNow = item.obsrValue;
+        }
+        if (item.category === 'REH') {
+          humidityNow = parseInt(item.obsrValue);
+        }
+        baseDate = item.baseDate;
+        baseTime = item.baseTime;
+      });
+      const skyInfoStr = String(sky) + String(pty);
+      const weatherInfoData = getWeatherClassName(skyInfoStr, dayTimeYn);
+      const shortWeatherInfoTemp = {
+        baseDate: baseDate,
+        baseTime: baseTime,
+        weatherClassName: weatherInfoData.weatherClassName,
+        weatherInfoName: weatherInfoData.weatherInfoName,
+        temperatureNow: temperatureNow,
+        rainNow: rainNow,
+        humidityNow: humidityNow,
+      };
+      state.shortWeatherInfo = shortWeatherInfoTemp;
+      state.isFetchingShort = false;
     },
   },
 });

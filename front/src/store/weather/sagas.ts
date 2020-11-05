@@ -8,6 +8,7 @@ import {
   getWeatherDataPrivateMode,
   getWeatherDataShortTermLivePrivateMode,
   WeatherRes,
+  WeatherItem,
 } from '../../lib/api/weather';
 type payloadA = {
   nx: string;
@@ -20,14 +21,14 @@ export function* incrementAsync() {
 }
 function* getWeather(action) {
   try {
-    const weatherRes: WeatherRes = yield call(
+    const weatherRes: WeatherItem[] = yield call(
       getWeatherDataPrivateMode,
       action.payload,
     );
     console.log('weatherRes ', weatherRes);
-    yield put(getWeatherShortTermLiveSuccess(weatherRes.items));
+    yield put(getWeatherShortTermLiveSuccess(weatherRes));
   } catch (e) {
-    console.log('error');
+    console.log('error', e);
     // yield put({
     //   type: updateQuotesAsync.failure,
     //   payload: { message: e.message }
@@ -36,11 +37,12 @@ function* getWeather(action) {
 }
 function* getWeatherShortTerm(action) {
   try {
-    const weatherRes: WeatherRes = yield call(
+    const weatherRes: WeatherItem[] = yield call(
       getWeatherDataShortTermLivePrivateMode,
       action.payload,
     );
-    yield put(getWeatherShortTermLiveSuccess(weatherRes.items));
+    console.log('weatherRes', weatherRes);
+    yield put(getWeatherShortTermLiveSuccess(weatherRes));
   } catch (e) {
     console.log('error');
     // yield put({

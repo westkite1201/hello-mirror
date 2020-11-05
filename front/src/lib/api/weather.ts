@@ -48,6 +48,7 @@ export interface WeatherItem {
   ny: number;
   obsrValue: string;
 }
+
 interface shortTermType {
   nx: string;
   ny: string;

@@ -14,7 +14,9 @@ function ClockContainer() {
 
   return (
     <div>
-      <div className="neon pink"> {time.format('YYYY-MM-DD')}</div>
+      <div className="neon pink" style={{ fontFamily: 'alarm_clock' }}>
+        {time.format('YYYY-MM-DD')}
+      </div>
       <div className="neon blue"> {time.format('HH-mm-ss')}</div>
     </div>
   );

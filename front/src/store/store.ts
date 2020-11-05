@@ -20,10 +20,12 @@ export default function configureAppStore(initialState = {}) {
       runSaga,
     }),
   ];
-
+  const customizedMiddleware = getDefaultMiddleware({
+    serializableCheck: false,
+  });
   const store = configureStore({
     reducer: createReducer(),
-    middleware: [...getDefaultMiddleware(), ...middlewares],
+    middleware: [...customizedMiddleware, ...middlewares],
     preloadedState: initialState,
     devTools: process.env.NODE_ENV !== 'production',
     enhancers,

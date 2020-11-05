@@ -1,0 +1,44 @@
+.dust_info_container{
+    color: white;
+    text-align: center;
+    .station_info{
+        font-size: 1rem;
+        .station_info_date{
+            font-weight : bold;
+            .station_info_date_time{
+                
+            }
+        }
+        .station_info_distance{
+
+        }
+        .station_info_name{
+            font-weight: bold;
+        }
+        .station_info_addr{
+            font-size: 1rem;
+        }
+    }
+    .display_icon_wrapper{
+        font-size: 1rem;
+        .info_header{
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .info_icon{
+            font-size: 4rem;
+        }
+        .info_name{
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .info_value{
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .info_message{
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    }
+}

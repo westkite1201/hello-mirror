@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 //import GridWrapper from '../../components/common/GridWrapper';
 import EditView from '../Edit/EditView';
-import App from './App';
+import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
 export interface ICoordinates {
   latitude: number;
   longitude: number;
@@ -52,7 +52,7 @@ function MainContainer() {
       <Info infoString={'오늘 정말 멋지십니다'} />
       <WeatherInfoContainer />
       */}
-      {/*<WeatherInfoContainer />*/}
+      {<WeatherInfoContainer />}
       <EditView />
     </div>
   );
