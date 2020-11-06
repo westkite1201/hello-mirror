@@ -3,7 +3,7 @@ import { all } from 'redux-saga/effects';
 import weatherReducer from './weather/reducer';
 import editReducer from './edit/reducer';
 import { weatherSaga } from './weather'; //test
-const reducers = { count: weatherReducer, edit: editReducer };
+const reducers = { weather: weatherReducer, edit: editReducer };
 
 export let rootReducer = combineReducers({
   ...reducers,

@@ -1,0 +1,48 @@
+.weather_wrapper {
+  width: 100%;
+  padding: 1rem;
+  color: #e9ecef;
+  .location_info {
+    font-size: 1.5rem;
+  }
+  .location-info-time {
+    font-size: 12px;
+  }
+  //border: 10px solid rgba(255,255,255,.15);
+  //background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+  // -webkit-background-clip: text;
+  // -webkit-text-fill-color: transparent;
+  .weather_icon_wrapper {
+    text-align: center;
+    .weather_icon {
+      font-size: 8rem;
+      //background: linear-gradient(to right, #dd5e89, #f7bb97); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+    .weather-info-name {
+      margin-top: 10px;
+      font-size: 1.5rem;
+      font-style: bold;
+    }
+  }
+
+  .temperture {
+    text-align: center;
+    // position: fixed;
+    top: 50px;
+    left: 2rem;
+    color: azure;
+    font-size: 5rem;
+    /* display: flex; */
+  }
+  .weather_info {
+    padding: 1rem;
+    width: 100%;
+    font-size: 3rem;
+    .rain_icon {
+      color: #1864ab;
+    }
+    .humidity_icon {
+      color: #748ffc;
+    }
+  }
+}

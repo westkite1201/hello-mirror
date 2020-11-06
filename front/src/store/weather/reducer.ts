@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
-import { WeatherItem } from '../../lib/api/weather';
+import {
+  WeatherItem,
+  WeatherShortItem,
+  WeatherRequestPayloadType,
+} from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
+import _ from 'lodash';
 
-type WeatherInfoData = {
+export type WeatherShortInfoData = {
   baseDate: string;
   baseTime: string;
   temperatureNow: string;
@@ -11,10 +16,16 @@ type WeatherInfoData = {
   weatherClassName: string;
   weatherInfoName: string;
 };
+
+export type WeatherInfoData = {
+  dateTime: string;
+  value: WeatherItem[];
+};
+
 type CurrentDisplayState = {
   clicks: number;
-  weatherInfo: WeatherItem[];
-  shortWeatherInfo: WeatherInfoData | null;
+  weatherInfo: WeatherInfoData[];
+  shortWeatherInfo?: WeatherShortInfoData;
   isFetchingShort: boolean;
   loading: boolean;
 };
@@ -22,7 +33,7 @@ type CurrentDisplayState = {
 const initialState: CurrentDisplayState = {
   clicks: 0,
   weatherInfo: [],
-  shortWeatherInfo: null,
+  shortWeatherInfo: undefined,
   isFetchingShort: false,
   loading: false,
 };
@@ -48,15 +59,28 @@ const countSlice = createSlice({
       state.clicks -= action.payload;
     },
 
-    getWeatherRequest(state) {
+    getWeatherRequest(
+      state,
+      { payload }: PayloadAction<WeatherRequestPayloadType>,
+    ) {
       state.loading = true;
     },
     getWeatherSuccess(state, { payload }: PayloadAction<WeatherItem[]>) {
-      state.weatherInfo = payload;
+      const temp = payload.map(item => {
+        return {
+          ...item,
+          fcstDate_fcstTime: item.fcstDate + '_' + item.fcstTime,
+        };
+      });
+      const weatherInfo = _.chain(temp)
+        .groupBy('fcstDate_fcstTime')
+        .map((item, key) => ({ dateTime: key, value: item }))
+        .value();
       state.loading = false;
+      state.weatherInfo = weatherInfo;
     },
     getWeatherShortTerm(state, action: PayloadAction<WeatherItem[]>) {
-      state.weatherInfo = action.payload;
+      //state.weatherInfo = action.payload;
     },
     getWeatherShortTermLive(state, { payload }: PayloadAction<number>) {
       state.loading = true;
@@ -66,7 +90,7 @@ const countSlice = createSlice({
     },
     getWeatherShortTermLiveSuccess(
       state,
-      { payload }: PayloadAction<WeatherItem[]>,
+      { payload }: PayloadAction<WeatherShortItem[]>,
     ) {
       let sky; //날씨
       let pty; //강수형태
@@ -118,6 +142,8 @@ const countSlice = createSlice({
 export const {
   addCount,
   minusCount,
+  getWeatherRequest,
+  getWeatherSuccess,
   getWeatherShortTerm,
   getWeatherShortTermLive,
   getWeatherShortTermLiveRequest,

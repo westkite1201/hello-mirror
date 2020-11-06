@@ -1,6 +1,15 @@
-import { all, call, delay, put, takeEvery } from 'redux-saga/effects';
+import {
+  all,
+  call,
+  delay,
+  put,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import {
   addCount,
+  getWeatherRequest,
+  getWeatherSuccess,
   getWeatherShortTermLiveSuccess,
   getWeatherDataShortTermLive,
 } from './reducer';
@@ -8,6 +17,7 @@ import {
   getWeatherDataPrivateMode,
   getWeatherDataShortTermLivePrivateMode,
   WeatherRes,
+  WeatherShortItem,
   WeatherItem,
 } from '../../lib/api/weather';
 type payloadA = {
@@ -19,6 +29,7 @@ export function* incrementAsync() {
   yield delay(1000);
   yield put(addCount(1));
 }
+
 function* getWeather(action) {
   try {
     const weatherRes: WeatherItem[] = yield call(
@@ -26,7 +37,7 @@ function* getWeather(action) {
       action.payload,
     );
     console.log('weatherRes ', weatherRes);
-    yield put(getWeatherShortTermLiveSuccess(weatherRes));
+    yield put(getWeatherSuccess(weatherRes));
   } catch (e) {
     console.log('error', e);
     // yield put({
@@ -37,7 +48,7 @@ function* getWeather(action) {
 }
 function* getWeatherShortTerm(action) {
   try {
-    const weatherRes: WeatherItem[] = yield call(
+    const weatherRes: WeatherShortItem[] = yield call(
       getWeatherDataShortTermLivePrivateMode,
       action.payload,
     );
@@ -54,6 +65,6 @@ function* getWeatherShortTerm(action) {
 
 export function* weatherSaga() {
   yield takeEvery('INCREMENT_ASYNC', incrementAsync);
-  yield takeEvery(getWeatherDataShortTermLive, getWeatherShortTerm);
-  //yield takeEvery(getWeatherDataShortTermLive, getWeatherShortTerm);
+  yield takeLatest(getWeatherDataShortTermLive, getWeatherShortTerm);
+  yield takeLatest(getWeatherRequest, getWeather);
 }

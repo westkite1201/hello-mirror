@@ -221,27 +221,32 @@ router.post('/getWeatherDataPrivateMode', async (req, res) => {
     base_date = timeData.newdate;
     base_time = timeData.newtime;
     type = 'json';
-    shortTermYn = req.body.shortTermYn;
+    shortTermYn = req.body.isShortTeamYn;
     nx = req.body.nx;
     ny = req.body.ny;
-    //console.log(nx, ny, shortTermYn);
+    numOfRows = req.body.numOfRows;
+    console.log(nx, ny, shortTermYn, numOfRows);
     let response = await CallSeverApi.weatherAsync(
       base_date,
       base_time,
       nx,
       ny,
       type,
-      shortTermYn
+      shortTermYn, //short
+      false, //live
+      false, //mid
+      numOfRows
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
       //온경우
-      return res.json(response.data.response.body);
+      return res.json(response.data.response.body.items.item);
     } else {
-      console.log('error');
+      return res.json({ message: 'error no data ', status: 400 });
     }
   } catch (e) {
     console.log('error', e);
+    return res.json({ message: 'error' + e, status: 400 });
   }
 });
 /* api에서 조회  */

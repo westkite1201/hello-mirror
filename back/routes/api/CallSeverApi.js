@@ -108,7 +108,8 @@ module.exports = function (callee) {
         type,
         shortTermYn,
         shortTermLiveYn,
-        midYn
+        midYn,
+        numOfRows = 100
       ) => {
         //console.log("shortTermYn " , (shortTermYn) )
         if (shortTermYn === 'true' || shortTermYn) {
@@ -133,14 +134,14 @@ module.exports = function (callee) {
           base_time: base_time,
           nx: nx,
           ny: ny,
-          numOfRows: 175,
+          numOfRows: numOfRows,
           dataType: type
         });
 
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
         let res = await doRequest(OPTIONS);
-        //console.log("response " , res)
+        console.log('response ', res);
         return res;
       },
       getDustNearStation: async (tmX, tmY) => {

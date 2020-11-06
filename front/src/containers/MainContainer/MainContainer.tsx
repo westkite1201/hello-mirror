@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 //import GridWrapper from '../../components/common/GridWrapper';
 import EditView from '../Edit/EditView';
 import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
+import WeatherInfoOverview from '../Weather/WeatherInfoOverview';
 export interface ICoordinates {
   latitude: number;
   longitude: number;
@@ -52,7 +53,7 @@ function MainContainer() {
       <Info infoString={'오늘 정말 멋지십니다'} />
       <WeatherInfoContainer />
       */}
-      {<WeatherInfoContainer />}
+      {<WeatherInfoOverview />}
       <EditView />
     </div>
   );

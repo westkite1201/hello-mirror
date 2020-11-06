@@ -34,13 +34,13 @@ export interface IError {
 
 export interface WeatherRes {
   dataType: string;
-  items: WeatherItem[];
+  items: WeatherItem[] | WeatherShortItem[];
   pageNo: number;
   numOfRows: number;
   totalCount: number;
 }
 
-export interface WeatherItem {
+export interface WeatherShortItem {
   baseDate: string;
   baseTime: string;
   category: string;
@@ -49,14 +49,27 @@ export interface WeatherItem {
   obsrValue: string;
 }
 
-interface shortTermType {
+export interface WeatherItem {
+  baseDate: string;
+  baseTime: string;
+  category: string;
+  fcstDate: string;
+  fcstTime: string;
+  nx: number;
+  ny: number;
+  fcstValue: string;
+}
+
+export interface WeatherRequestPayloadType {
   nx: string;
   ny: string;
-  shortTermYn: boolean;
+  isShortTeamYn: boolean;
 }
 
 /* api 이용 */
-export async function getWeatherDataPrivateMode(payload: shortTermType) {
+export async function getWeatherDataPrivateMode(
+  payload: WeatherRequestPayloadType,
+) {
   const res = await axios.post<WeatherRes>(
     clientConfig.endpoint.api + '/weather/getWeatherDataPrivateMode',
     payload,
@@ -64,7 +77,7 @@ export async function getWeatherDataPrivateMode(payload: shortTermType) {
   return res.data;
 }
 export async function getWeatherDataShortTermLivePrivateMode(
-  payload: shortTermType,
+  payload: WeatherRequestPayloadType,
 ) {
   const res = await axios.post<WeatherRes>(
     clientConfig.endpoint.api +
