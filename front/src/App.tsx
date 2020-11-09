@@ -5,8 +5,10 @@ import styled from 'styled-components';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './Routes';
 import Sidebar from './containers/Sidebar/Sidebar';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/rootReducer';
+import { handleSidebar } from './store/edit/reducer';
+import { Switch } from 'antd';
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -23,6 +25,7 @@ const Container = styled.div`
 
 // 컴포넌트 정의
 const Component = () => {
+  const dispatch = useDispatch();
   const { isSidebarOpen } = useSelector((state: RootState) => state.edit);
   const openStyle = {
     marginLeft: '350px',
@@ -30,8 +33,15 @@ const Component = () => {
   const closeStyle = {
     marginLeft: '0px',
   };
+  function onChange(checked) {
+    dispatch(handleSidebar(checked));
+    console.log(`switch to ${checked}`);
+  }
   return (
     <Container>
+      <div style={{ zIndex: 100 }}>
+        <Switch defaultChecked onChange={onChange} />
+      </div>
       <Sidebar />
 
       <div style={isSidebarOpen ? openStyle : closeStyle}>

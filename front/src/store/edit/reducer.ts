@@ -82,6 +82,9 @@ const editSlice = createSlice({
     editHandle(state) {
       state.isEdit = !state.isEdit;
     },
+    handleSidebar(state, action: PayloadAction<boolean>) {
+      state.isSidebarOpen = action.payload;
+    },
   },
 });
 
@@ -91,6 +94,7 @@ export const {
   setComponentList,
   removeItem,
   editHandle,
+  handleSidebar,
 } = editSlice.actions;
 
 export default editSlice.reducer;

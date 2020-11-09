@@ -1,12 +1,16 @@
 import React, { Fragment } from 'react';
 import 'weather-icons/css/weather-icons.css';
 import moment from 'moment';
-import { WeatherShortInfoData } from '../../store/weather/reducer';
+import {
+  WeatherShortInfoData,
+  WeatherInfoData,
+} from '../../store/weather/reducer';
 
 interface WeatherItemProps {
-  weatherItem?: WeatherShortInfoData;
+  weatherItem?: WeatherInfoData;
 }
 const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
+  console.log('[seo] weatherItem', weatherItem);
   //   const override = `
   //   display: block;
   //   margin: 0 auto;
@@ -22,13 +26,22 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
             {/*(LocationA, LocationB, LocationC)*/}
           </div>
           <div className="location-info-time">
-            {moment(weatherItem.baseDate).format('YYYY월 MM월 DD일 ')}
-            {weatherItem.baseTime}
+            {moment(weatherItem.value.baseDate).format('YYYY월 MM월 DD일 ')}
+            {weatherItem.value.baseTime}
           </div>
           <div className="weather_icon_wrapper">
-            <i className={weatherItem.weatherClassName}></i>
+            <i className={weatherItem.value.weatherClassName}></i>
             <div className="weather-info-name">
-              {weatherItem.weatherInfoName}
+              {weatherItem.value.weatherInfoName}
+            </div>
+            <div className="weather-info-name">
+              {weatherItem.value.temperatureNow}
+            </div>
+            <div className="weather-info-name">
+              {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0}
+            </div>
+            <div className="weather-info-name">
+              {weatherItem.value.humidityNow}
             </div>
           </div>
         </Fragment>

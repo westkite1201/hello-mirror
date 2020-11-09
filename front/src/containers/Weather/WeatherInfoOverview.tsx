@@ -37,7 +37,7 @@ const WeatherInfoOverview = () => {
       {weatherInfoItems &&
         weatherInfoItems.slice(START, END).map((weatherItem, key) => {
           console.log('weatherItme ', weatherItem);
-          return <WeatherItem weatherItem={weatherItem.value} key={key} />;
+          return <WeatherItem weatherItem={weatherItem} key={key} />;
         })}
     </S_weatherItensWrapper>
   );
