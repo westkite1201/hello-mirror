@@ -50,14 +50,14 @@ export interface WeatherShortItem {
 }
 
 export interface WeatherItem {
-  baseDate: string;
-  baseTime: string;
-  category: string;
-  fcstDate: string;
-  fcstTime: string;
-  nx: number;
-  ny: number;
-  fcstValue: string;
+  baseDate?: string;
+  baseTime?: string;
+  category?: string;
+  fcstDate?: string;
+  fcstTime?: string;
+  nx?: number;
+  ny?: number;
+  fcstValue?: string;
 }
 
 export interface WeatherRequestPayloadType {

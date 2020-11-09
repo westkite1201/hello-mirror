@@ -19,7 +19,7 @@ export type WeatherShortInfoData = {
 
 export type WeatherInfoData = {
   dateTime: string;
-  value: WeatherItem[];
+  value: WeatherShortInfoData;
 };
 
 type CurrentDisplayState = {
@@ -72,10 +72,47 @@ const countSlice = createSlice({
           fcstDate_fcstTime: item.fcstDate + '_' + item.fcstTime,
         };
       });
+      function processingItem(item) {
+        let sky; //날씨
+        let pty; //강수형태
+        let temperatureNow;
+        let humidityNow;
+        let rainNow;
+
+        let dayTimeYn;
+        const skyInfoStr = String(sky) + String(pty);
+        const weatherInfoData = getWeatherClassName(skyInfoStr, dayTimeYn);
+        if (item.category === 'SKY') {
+          sky = parseInt(item.obsrValue);
+        }
+        if (item.category === 'PTY') {
+          pty = parseInt(item.obsrValue);
+        }
+        if (item.category === 'T1H') {
+          temperatureNow = parseInt(item.obsrValue);
+        }
+        if (item.category === 'RN1') {
+          rainNow = item.obsrValue;
+        }
+        if (item.category === 'REH') {
+          humidityNow = parseInt(item.obsrValue);
+        }
+        const baseDate = item.baseDate;
+        const baseTime = item.baseTime;
+
+        return {
+          ...item,
+          baseDate: baseDate,
+          baseTime: baseTime,
+          weatherClassName: weatherInfoData.weatherClassName,
+          weatherInfoName: weatherInfoData.weatherInfoName,
+        };
+      }
       const weatherInfo = _.chain(temp)
         .groupBy('fcstDate_fcstTime')
-        .map((item, key) => ({ dateTime: key, value: item }))
+        .map((item, key) => ({ dateTime: key, value: processingItem(item) }))
         .value();
+
       state.loading = false;
       state.weatherInfo = weatherInfo;
     },

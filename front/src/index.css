@@ -32,6 +32,7 @@ code {
   background-origin: content-box;
   box-sizing: border-box;
   cursor: se-resize;
+  z-index: 100;
 }
 
 .componentContainer {

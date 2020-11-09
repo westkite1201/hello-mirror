@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import ClockContainer from '../Clock/ClockContainer';
 import Info from '../Info/InfoContainer';
 import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
+import WeatherInfoOverview from '../Weather/WeatherInfoOverview';
 import { setComponentList } from '../../store/edit/reducer';
 import { useDispatch } from 'react-redux';
 const EditComponentList = () => {
@@ -23,6 +24,12 @@ const EditComponentList = () => {
       {
         component: WeatherInfoContainer,
         name: 'weatherInfo',
+        category: 'weather',
+        pageView: 'seoPage',
+      },
+      {
+        component: WeatherInfoOverview,
+        name: 'WeatherInfoOverview',
         category: 'weather',
         pageView: 'seoPage',
       },
