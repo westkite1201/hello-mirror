@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
-import { searchComponentByName } from '../../lib/helpers';
+import {
+  searchComponentByName,
+  handleDispatchEventResize,
+} from '../../lib/helpers';
 import _ from 'lodash';
 let layoutTemporaryStorage;
 export type RGLItem = {
@@ -87,7 +90,7 @@ const editSlice = createSlice({
     },
     onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
       const layoutTemp = action.payload;
-      // console.log('onLayoutChange ', layout)
+
       layoutTemp.map((item, i) => {
         return {
           ...item,

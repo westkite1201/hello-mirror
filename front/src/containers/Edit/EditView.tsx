@@ -6,7 +6,10 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import CSS from 'csstype';
 import { RootState } from '../../store/rootReducer';
-import { searchComponentByName } from '../../lib/helpers';
+import {
+  searchComponentByName,
+  handleDispatchEventResize,
+} from '../../lib/helpers';
 import { removeItem, onLayoutChange } from '../../store/edit/reducer';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const EditView = () => {
@@ -53,9 +56,17 @@ const EditView = () => {
     );
   };
   const handleLayoutChange = layout => {
-    console.log('layout ', layout);
     dispatch(onLayoutChange(layout));
   };
+  // const handleResizeChildComponent = (allChild, target) => {
+  //   console.log('[seo] onResize ', allChild, target);
+  //   // let rect = document.getElementById(target.i).getBoundingClientRect();
+  //   // let targetDiv = document.getElementById(target.i + '_c');
+  //   // if (!helpers.isEmpty(targetDiv)) {
+  //   //   targetDiv.style.width = rect.width;
+  //   //   targetDiv.style.height = rect.height;
+  //   // }
+  // };
 
   return (
     <div>
@@ -63,7 +74,8 @@ const EditView = () => {
         className="layout"
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={1}
-        measureBeforeMount={true}
+        //onResize={handleResizeChildComponent}
+        //measureBeforeMount={true}
         //   breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         //   cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         draggableHandle=".dragHandle"

@@ -8,6 +8,7 @@ import Sidebar from './containers/Sidebar/Sidebar';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/rootReducer';
 import { handleSidebar } from './store/edit/reducer';
+import { handleDispatchEventResize } from './lib/helpers';
 import { Switch } from 'antd';
 function App() {
   return (
@@ -28,21 +29,27 @@ const Component = () => {
   const dispatch = useDispatch();
   const { isSidebarOpen } = useSelector((state: RootState) => state.edit);
   const openStyle = {
+    zIndex: 10,
     marginLeft: '350px',
   };
   const closeStyle = {
+    zIndex: 10,
     marginLeft: '0px',
   };
-  function onChange(checked) {
+  function onChange(checked: boolean) {
     dispatch(handleSidebar(checked));
+    handleDispatchEventResize();
+
     console.log(`switch to ${checked}`);
   }
   return (
     <Container>
-      <div style={{ zIndex: 100 }}>
+      <div style={{ zIndex: 200 }}>
         <Switch defaultChecked onChange={onChange} />
       </div>
-      <Sidebar />
+      <div>
+        <Sidebar />
+      </div>
 
       <div style={isSidebarOpen ? openStyle : closeStyle}>
         <Router>
