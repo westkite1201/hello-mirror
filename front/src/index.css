@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Londrina+Outline');
 
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);
+
+* {
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif';
+}
 @font-face {
   font-family: 'alarm_clock';
   src: url('./styles/fonts/alarm_clock.ttf');

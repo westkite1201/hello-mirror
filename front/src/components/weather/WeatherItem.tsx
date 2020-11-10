@@ -21,40 +21,64 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
   return (
     <div className="weather_wrapper" style={{ color: 'black' }}>
       {weatherItem && (
-        <Fragment>
-          <div className="location_info">
-            {/*(LocationA, LocationB, LocationC)*/}
-          </div>
+        <S_weatherInfoWrapper>
           <div className="location-info-time">
             {moment(weatherItem.value.baseDate).format('YYYY월 MM월 DD일 ')}
             {weatherItem.value.baseTime}
           </div>
-          <S_weatherInfoWrapper>
-            <i className={weatherItem.value.weatherClassName}></i>
-            <div className="weather-info-name">
-              {weatherItem.value.weatherInfoName}
-            </div>
-            <S_weatherInfoContainer>
-              <S_weatherInfoTemperture>
-                {weatherItem.value.temperatureNow}
-              </S_weatherInfoTemperture>
-              <S_weatherInfopRain>
-                {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0}
-              </S_weatherInfopRain>
-              <S_weatherInfoTemHumidity>
-                {weatherItem.value.humidityNow}
-              </S_weatherInfoTemHumidity>
-            </S_weatherInfoContainer>
-          </S_weatherInfoWrapper>
-        </Fragment>
+          <S_weatherInfoContainer>
+            <S_weatherInfoWeatherRight>
+              <i className={weatherItem.value.weatherClassName}></i>
+              <div>{weatherItem.value.weatherInfoName}</div>
+            </S_weatherInfoWeatherRight>
+            <S_weatherInfoWeatherLeft>
+              <div>
+                <span>온도 : </span>
+                <span>{weatherItem.value.temperatureNow} °C </span>
+              </div>
+              <div>
+                <span>강수량 : </span>
+                <span>
+                  {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0} mm
+                </span>
+              </div>
+              <div>
+                <span>습도 : </span>
+                <span> {weatherItem.value.humidityNow}% </span>
+              </div>
+            </S_weatherInfoWeatherLeft>
+          </S_weatherInfoContainer>
+        </S_weatherInfoWrapper>
       )}
     </div>
   );
 };
 
 export default WeatherItem;
-const S_weatherInfoWrapper = styled.div``;
-const S_weatherInfoContainer = styled.div``;
-const S_weatherInfoTemperture = styled.div``;
-const S_weatherInfopRain = styled.div``;
-const S_weatherInfoTemHumidity = styled.div``;
+const S_weatherInfoWrapper = styled.div`
+  text-align: center;
+  border-radius: 4px;
+  padding: 0.3rem;
+  background-color: black;
+  color: white;
+`;
+const S_weatherInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+`;
+const S_weatherInfoWeatherRight = styled.div`
+  font-size: 2rem;
+  text-align: center;
+`;
+const S_weatherInfoWeatherLeft = styled.div`
+  font-size: 1rem;
+  text-align: left;
+  margin: auto;
+  div {
+    display: flex;
+    justify-content: space-between;
+    span {
+      font-size: 0.8rem;
+    }
+  }
+`;
