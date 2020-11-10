@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
 import { searchComponentByName } from '../../lib/helpers';
 import _ from 'lodash';
-
+let layoutTemporaryStorage;
 export type RGLItem = {
   i: string;
   x: number;
@@ -85,6 +85,19 @@ const editSlice = createSlice({
     handleSidebar(state, action: PayloadAction<boolean>) {
       state.isSidebarOpen = action.payload;
     },
+    onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
+      const layoutTemp = action.payload;
+      // console.log('onLayoutChange ', layout)
+      layoutTemp.map((item, i) => {
+        return {
+          ...item,
+          item: layoutTemp[i].item,
+          name: layoutTemp[i].name,
+        };
+      });
+      layoutTemporaryStorage = JSON.stringify({ ['layout']: layoutTemp });
+      localStorage.setItem('layout', layoutTemporaryStorage);
+    },
   },
 });
 
@@ -95,6 +108,7 @@ export const {
   removeItem,
   editHandle,
   handleSidebar,
+  onLayoutChange,
 } = editSlice.actions;
 
 export default editSlice.reducer;

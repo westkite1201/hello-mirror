@@ -1,5 +1,14 @@
 import { ComponentItem } from '../store/edit/reducer';
 
+export const handleDispatchEventResize = () => {
+  const event = new CustomEvent('resize', {
+    bubbles: false,
+  });
+  window.dispatchEvent(event);
+  setTimeout(() => {
+    window.dispatchEvent(event);
+  }, 10);
+};
 export const searchComponentByName = (
   componentList: ComponentItem[],
   thisComponentName: string,

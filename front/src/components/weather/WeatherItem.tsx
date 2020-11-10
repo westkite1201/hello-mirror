@@ -5,7 +5,7 @@ import {
   WeatherShortInfoData,
   WeatherInfoData,
 } from '../../store/weather/reducer';
-
+import styled from 'styled-components';
 interface WeatherItemProps {
   weatherItem?: WeatherInfoData;
 }
@@ -29,21 +29,23 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
             {moment(weatherItem.value.baseDate).format('YYYY월 MM월 DD일 ')}
             {weatherItem.value.baseTime}
           </div>
-          <div className="weather_icon_wrapper">
+          <S_weatherInfoWrapper>
             <i className={weatherItem.value.weatherClassName}></i>
             <div className="weather-info-name">
               {weatherItem.value.weatherInfoName}
             </div>
-            <div className="weather-info-name">
-              {weatherItem.value.temperatureNow}
-            </div>
-            <div className="weather-info-name">
-              {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0}
-            </div>
-            <div className="weather-info-name">
-              {weatherItem.value.humidityNow}
-            </div>
-          </div>
+            <S_weatherInfoContainer>
+              <S_weatherInfoTemperture>
+                {weatherItem.value.temperatureNow}
+              </S_weatherInfoTemperture>
+              <S_weatherInfopRain>
+                {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0}
+              </S_weatherInfopRain>
+              <S_weatherInfoTemHumidity>
+                {weatherItem.value.humidityNow}
+              </S_weatherInfoTemHumidity>
+            </S_weatherInfoContainer>
+          </S_weatherInfoWrapper>
         </Fragment>
       )}
     </div>
@@ -51,3 +53,8 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
 };
 
 export default WeatherItem;
+const S_weatherInfoWrapper = styled.div``;
+const S_weatherInfoContainer = styled.div``;
+const S_weatherInfoTemperture = styled.div``;
+const S_weatherInfopRain = styled.div``;
+const S_weatherInfoTemHumidity = styled.div``;

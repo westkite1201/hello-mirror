@@ -7,7 +7,7 @@ import _ from 'lodash';
 import CSS from 'csstype';
 import { RootState } from '../../store/rootReducer';
 import { searchComponentByName } from '../../lib/helpers';
-import { removeItem } from '../../store/edit/reducer';
+import { removeItem, onLayoutChange } from '../../store/edit/reducer';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const EditView = () => {
   const dispatch = useDispatch();
@@ -52,15 +52,23 @@ const EditView = () => {
       </div>
     );
   };
+  const handleLayoutChange = layout => {
+    console.log('layout ', layout);
+    dispatch(onLayoutChange(layout));
+  };
 
   return (
     <div>
       <ResponsiveReactGridLayout
+        className="layout"
+        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        rowHeight={1}
         measureBeforeMount={true}
         //   breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
         //   cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         draggableHandle=".dragHandle"
         verticalCompact={false}
+        onLayoutChange={handleLayoutChange}
       >
         {layout.map((el, index) => createElement(el, index))}
       </ResponsiveReactGridLayout>
