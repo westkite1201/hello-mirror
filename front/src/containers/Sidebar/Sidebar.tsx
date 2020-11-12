@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addComponent } from '../../store/edit/reducer';
 import CSS from 'csstype';
 const Sidebar = () => {
-  const { componentList, isSidebarOpen } = useSelector(
+  const { componentList, isEdit } = useSelector(
     (state: RootState) => state.edit,
   );
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const Sidebar = () => {
       <div
         id="mySidebar"
         className={style.sidenav}
-        style={isSidebarOpen ? sideBarOpenStyle : sideBarCloseStyle}
+        style={isEdit ? sideBarOpenStyle : sideBarCloseStyle}
       >
         <div className={style.myBlogName}>SMART MIRROR</div>
 

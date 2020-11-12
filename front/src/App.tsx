@@ -7,9 +7,9 @@ import Routes from './Routes';
 import Sidebar from './containers/Sidebar/Sidebar';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/rootReducer';
-import { handleSidebar } from './store/edit/reducer';
+import { editHandle, saveLayout } from './store/edit/reducer';
 import { handleDispatchEventResize } from './lib/helpers';
-import { Switch } from 'antd';
+import TopRowContainer from './containers/TopRow/TopRowContainer';
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -22,12 +22,13 @@ const Container = styled.div`
   height: 100vh;
   background-color: ${props => props.theme.light.mainBackground};
   color: ${props => props.theme.dark.primaryText};
+  overflow: hidden;
 `;
 
 // 컴포넌트 정의
 const Component = () => {
   const dispatch = useDispatch();
-  const { isSidebarOpen } = useSelector((state: RootState) => state.edit);
+  const { isEdit } = useSelector((state: RootState) => state.edit);
   const openStyle = {
     zIndex: 10,
     marginLeft: '350px',
@@ -36,22 +37,18 @@ const Component = () => {
     zIndex: 10,
     marginLeft: '0px',
   };
-  function onChange(checked: boolean) {
-    dispatch(handleSidebar(checked));
+  function handleEdit() {
+    dispatch(editHandle());
     handleDispatchEventResize();
-
-    console.log(`switch to ${checked}`);
+  }
+  function handleSaveLayout() {
+    dispatch(saveLayout());
   }
   return (
     <Container>
-      <div style={{ zIndex: 200 }}>
-        <Switch defaultChecked onChange={onChange} />
-      </div>
-      <div>
-        <Sidebar />
-      </div>
-
-      <div style={isSidebarOpen ? openStyle : closeStyle}>
+      <TopRowContainer handleEdit={handleEdit} saveLayout={handleSaveLayout} />
+      <Sidebar />
+      <div style={isEdit ? openStyle : closeStyle}>
         <Router>
           <Routes />
         </Router>
@@ -59,4 +56,5 @@ const Component = () => {
     </Container>
   );
 };
+
 export default App;

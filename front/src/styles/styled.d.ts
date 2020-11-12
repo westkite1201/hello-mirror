@@ -27,6 +27,9 @@ declare module 'styled-components' {
       divider: string;
       background: string;
       tableHeader: string;
+      firstZIndex: number;
+      secondZIndex: number;
+      sideBarWidth: number;
     };
     light: {
       mainBackground: string;

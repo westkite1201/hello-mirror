@@ -19,6 +19,7 @@ const WeatherInfoOverview = () => {
     (state: RootState) => state.weather,
   );
   const [weatherInfoItems, setWeatheInfoItmes] = useState<WeatherInfoData[]>();
+
   useEffect(() => {
     const nx = '55';
     const ny = '127';
@@ -36,7 +37,6 @@ const WeatherInfoOverview = () => {
     <S_weatherItensWrapper>
       {weatherInfoItems &&
         weatherInfoItems.slice(START, END).map((weatherItem, key) => {
-          console.log('weatherItme ', weatherItem);
           return <WeatherItem weatherItem={weatherItem} key={key} />;
         })}
     </S_weatherItensWrapper>

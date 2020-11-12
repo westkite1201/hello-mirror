@@ -85,9 +85,6 @@ const editSlice = createSlice({
     editHandle(state) {
       state.isEdit = !state.isEdit;
     },
-    handleSidebar(state, action: PayloadAction<boolean>) {
-      state.isSidebarOpen = action.payload;
-    },
     onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
       const layoutTemp = action.payload;
 
@@ -101,6 +98,10 @@ const editSlice = createSlice({
       layoutTemporaryStorage = JSON.stringify({ ['layout']: layoutTemp });
       localStorage.setItem('layout', layoutTemporaryStorage);
     },
+    saveLayout(state) {
+      localStorage.setItem('layout', JSON.stringify(state.layout));
+      //localStorageMode
+    },
   },
 });
 
@@ -110,8 +111,8 @@ export const {
   setComponentList,
   removeItem,
   editHandle,
-  handleSidebar,
   onLayoutChange,
+  saveLayout,
 } = editSlice.actions;
 
 export default editSlice.reducer;
