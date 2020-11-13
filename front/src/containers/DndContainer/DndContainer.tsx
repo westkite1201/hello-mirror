@@ -8,8 +8,8 @@ import type {
   PreDragActions,
   SnapDragActions,
   SensorAPI,
-  DragDropContext,
 } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd'
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
@@ -18,10 +18,10 @@ type ControlProps = {
   quotes: Quote[];
   canLift: boolean;
   isDragging: boolean;
-  lift: (quoteId: string) => ?SnapDragActions;
+  lift: (quoteId: string) => SnapDragActions;
 };
 
-function noop() {}
+function noop() { }
 
 const ControlBox = styled.div`
   display: flex;
@@ -76,9 +76,9 @@ const ActionButton = styled(Button)`
 
 function Controls(props: ControlProps) {
   const { quotes, canLift, isDragging, lift } = props;
-  const actionsRef = useRef<?SnapDragActions>(null);
+  const actionsRef = useRef<SnapDragActions | null>();
 
-  const selectRef = createRef();
+  const selectRef = createRef<HTMLSelectElement>();
 
   function maybe(fn: (callbacks: SnapDragActions) => void) {
     if (actionsRef.current) {
@@ -99,15 +99,14 @@ function Controls(props: ControlProps) {
         type="button"
         disabled={!canLift}
         onClick={() => {
-          const select: ?HTMLSelectElement = selectRef.current;
+          const select = selectRef.current;
           if (!select) {
             return;
           }
-
           actionsRef.current = lift(select.value);
         }}
       >
-        Lift{' '}
+        Lift
         <span role="img" aria-label="lift">
           🏋️‍♀️
         </span>
@@ -134,12 +133,16 @@ function Controls(props: ControlProps) {
             maybe((callbacks: SnapDragActions) => callbacks.moveUp())
           }
           disabled={!isDragging}
-          label="up"
+        //label="up"
         >
           ↑
         </ArrowButton>
         <div>
-          <ArrowButton type="button" disabled={!isDragging} label="left">
+          <ArrowButton
+            type="button"
+            disabled={!isDragging}
+          //label="left"
+          >
             ←
           </ArrowButton>
           <ArrowButton
@@ -148,11 +151,15 @@ function Controls(props: ControlProps) {
               maybe((callbacks: SnapDragActions) => callbacks.moveDown())
             }
             disabled={!isDragging}
-            label="down"
+          //label="down"
           >
             ↓
           </ArrowButton>
-          <ArrowButton type="button" disabled={!isDragging} label="right">
+          <ArrowButton
+            type="button"
+            disabled={!isDragging}
+          //label="right"
+          >
             →
           </ArrowButton>
         </div>
@@ -178,7 +185,7 @@ export default function QuoteApp(props: Props) {
   const [quotes, setQuotes] = useState(props.initial);
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
-  const sensorAPIRef = useRef<?SensorAPI>(null);
+  const sensorAPIRef = useRef<SensorAPI | null>(null);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
@@ -204,19 +211,19 @@ export default function QuoteApp(props: Props) {
     [quotes],
   );
 
-  function lift(quoteId: string): ?SnapDragActions {
+  function lift(quoteId: string) {
     if (isDragging) {
       return null;
     }
 
-    const api: ?SensorAPI = sensorAPIRef.current;
+    const api = sensorAPIRef.current;
 
     if (!api) {
       console.warn('unable to find sensor api');
       return null;
     }
 
-    const preDrag: ?PreDragActions = api.tryGetLock(quoteId, noop);
+    const preDrag = api.tryGetLock(quoteId, noop);
 
     if (!preDrag) {
       console.log('unable to start capturing');
@@ -237,7 +244,7 @@ export default function QuoteApp(props: Props) {
       ]}
     >
       <Layout>
-        <QuoteList listId="list" quotes={quotes} />
+        <QuoteList listId="list" quotes={quotes} title='hello' />
         <Controls
           quotes={quotes}
           canLift={!isDragging}
