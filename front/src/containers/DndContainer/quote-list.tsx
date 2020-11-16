@@ -2,12 +2,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors } from '@atlaskit/theme';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+//import { Droppable, Draggable } from 'react-beautiful-dnd';
 import QuoteItem from './quote-item';
 import { grid } from './constants';
 import Title from './title';
 import type { Quote } from './types';
-import type {
+import {
+  Droppable,
+  Draggable,
   DroppableProvided,
   DroppableStateSnapshot,
   DraggableProvided,
@@ -27,9 +29,18 @@ export const getBackgroundColor = (
   return colors.N30;
 };
 
+interface WrapperSProps {
+  isDraggingOver: boolean;
+  isDraggingFrom: boolean;
+  isDropDisabled?: boolean;
+}
 const Wrapper = styled.div`
+  background-color: ${(props: WrapperSProps) =>
+    getBackgroundColor(props.isDraggingOver, props.isDraggingFrom)};
   display: flex;
   flex-direction: column;
+  opacity: ${({ isDropDisabled }: WrapperSProps) =>
+    isDropDisabled ? 0.5 : 'inherit'};
   padding: ${grid}px;
   border: ${grid}px;
   padding-bottom: 0;
@@ -38,7 +49,7 @@ const Wrapper = styled.div`
   width: 250px;
 `;
 
-const scrollContainerHeight: number = 250;
+const scrollContainerHeight = 250;
 
 const DropZone = styled.div`
   /* stop the list collapsing when empty */
@@ -66,10 +77,10 @@ type Props = {
   quotes: Quote[];
   title: string;
   internalScroll?: boolean;
-  scrollContainerStyle?: Object;
+  scrollContainerStyle?: any;
   isDropDisabled?: boolean;
   isCombineEnabled?: boolean;
-  style?: Object;
+  style?: any;
   // may not be provided - and might be null
   ignoreContainerClipping?: boolean;
 
@@ -81,12 +92,14 @@ type QuoteListProps = {
 };
 
 const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
-  return quotes.map((quote: Quote, index: number) => (
-    <Draggable key={quote.id} draggableId={quote.id} index={index}>
-      {(
-        dragProvided: DraggableProvided,
-        dragSnapshot: DraggableStateSnapshot,
-      ) => (
+  return (
+    quotes &&
+    quotes.map((quote: Quote, index: number) => (
+      <Draggable key={quote.id} draggableId={quote.id} index={index}>
+        {(
+          dragProvided: DraggableProvided,
+          dragSnapshot: DraggableStateSnapshot,
+        ) => (
           <QuoteItem
             key={quote.id}
             quote={quote}
@@ -95,8 +108,9 @@ const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
             provided={dragProvided}
           />
         )}
-    </Draggable>
-  ));
+      </Draggable>
+    ))
+  );
 };
 
 type InnerListProps = {
@@ -146,47 +160,47 @@ export default function QuoteList(props: Props) {
       ignoreContainerClipping={ignoreContainerClipping}
       isDropDisabled={isDropDisabled}
       isCombineEnabled={isCombineEnabled}
-    // renderClone={
-    //   useClone
-    //     ? (provided, snapshot, descriptor) => (
-    //       <QuoteItem
-    //         quote={quotes[descriptor.source.index]}
-    //         provided={provided}
-    //         isDragging={snapshot.isDragging}
-    //         isClone
-    //       />
-    //     )
-    //     : null
-    // }
+      renderClone={
+        useClone
+          ? (provided, snapshot, rubric) => (
+              <QuoteItem
+                quote={quotes[rubric.source.index]}
+                provided={provided}
+                isDragging={snapshot.isDragging}
+                isClone
+              />
+            )
+          : undefined
+      }
     >
       {(
         dropProvided: DroppableProvided,
         dropSnapshot: DroppableStateSnapshot,
       ) => (
-          <Wrapper
-            style={style}
-            // isDraggingOver={dropSnapshot.isDraggingOver}
-            // isDropDisabled={isDropDisabled}
-            // isDraggingFrom={Boolean(dropSnapshot.draggingFromThisWith)}
-            {...dropProvided.droppableProps}
-          >
-            {internalScroll ? (
-              <ScrollContainer style={scrollContainerStyle}>
-                <InnerList
-                  quotes={quotes}
-                  title={title}
-                  dropProvided={dropProvided}
-                />
-              </ScrollContainer>
-            ) : (
-                <InnerList
-                  quotes={quotes}
-                  title={title}
-                  dropProvided={dropProvided}
-                />
-              )}
-          </Wrapper>
-        )}
+        <Wrapper
+          style={style}
+          isDraggingOver={dropSnapshot.isDraggingOver}
+          isDropDisabled={isDropDisabled}
+          isDraggingFrom={Boolean(dropSnapshot.draggingFromThisWith)}
+          {...dropProvided.droppableProps}
+        >
+          {internalScroll ? (
+            <ScrollContainer style={scrollContainerStyle}>
+              <InnerList
+                quotes={quotes}
+                title={title}
+                dropProvided={dropProvided}
+              />
+            </ScrollContainer>
+          ) : (
+            <InnerList
+              quotes={quotes}
+              title={title}
+              dropProvided={dropProvided}
+            />
+          )}
+        </Wrapper>
+      )}
     </Droppable>
   );
 }

@@ -1,27 +1,43 @@
 // @flow
 /* eslint-disable no-console */
-import React, { useRef, createRef, useState, useCallback } from 'react';
+import React, {
+  useRef,
+  createRef,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 import styled from 'styled-components';
 import type { Quote } from './types';
-import type {
+// import type {
+//   DropResult,
+//   PreDragActions,
+//   SnapDragActions,
+//   SensorAPI,
+// } from 'react-beautiful-dnd';
+import {
   DropResult,
   PreDragActions,
   SnapDragActions,
   SensorAPI,
+  DragDropContext,
 } from 'react-beautiful-dnd';
-import { DragDropContext } from 'react-beautiful-dnd'
+import { getQuotes } from './data';
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
+import { createAsyncAction } from 'typesafe-actions';
 
 type ControlProps = {
   quotes: Quote[];
   canLift: boolean;
   isDragging: boolean;
-  lift: (quoteId: string) => SnapDragActions;
+  lift: (quoteId: string) => SnapDragActions | null;
 };
 
-function noop() { }
+function noop() {
+  // do nothing.
+}
 
 const ControlBox = styled.div`
   display: flex;
@@ -86,8 +102,34 @@ function Controls(props: ControlProps) {
     }
   }
 
+  function timeResist() {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        resolve('time resist');
+      }, 800);
+    });
+  }
+  async function programming() {
+    console.log('quotes', quotes);
+    //선택,
+    const selectId = quotes[0].id;
+    actionsRef.current = lift(selectId);
+    //actionsRef.current
+    //이동
+    for (let index = 0; index < quotes.length; index++) {}
+    for (let i = 0; i < 2; i++) {
+      await timeResist();
+      maybe((callbacks: SnapDragActions) => callbacks.moveDown());
+    }
+    await timeResist();
+    maybe((callbacks: SnapDragActions) => {
+      actionsRef.current = null;
+      callbacks.drop();
+    });
+  }
   return (
     <ControlBox>
+      <button onClick={programming}>버튼 테스트 </button>
       <select disabled={!canLift} ref={selectRef}>
         {quotes.map((quote: Quote) => (
           <option key={quote.id} value={quote.id}>
@@ -133,7 +175,7 @@ function Controls(props: ControlProps) {
             maybe((callbacks: SnapDragActions) => callbacks.moveUp())
           }
           disabled={!isDragging}
-        //label="up"
+          //label="up"
         >
           ↑
         </ArrowButton>
@@ -141,7 +183,7 @@ function Controls(props: ControlProps) {
           <ArrowButton
             type="button"
             disabled={!isDragging}
-          //label="left"
+            //label="left"
           >
             ←
           </ArrowButton>
@@ -151,14 +193,14 @@ function Controls(props: ControlProps) {
               maybe((callbacks: SnapDragActions) => callbacks.moveDown())
             }
             disabled={!isDragging}
-          //label="down"
+            //label="down"
           >
             ↓
           </ArrowButton>
           <ArrowButton
             type="button"
             disabled={!isDragging}
-          //label="right"
+            //label="right"
           >
             →
           </ArrowButton>
@@ -181,8 +223,10 @@ type Props = {
   initial: Quote[];
 };
 
-export default function QuoteApp(props: Props) {
-  const [quotes, setQuotes] = useState(props.initial);
+export default function DndContainer(props: Props) {
+  //const [quotes, setQuotes] = useState(props.initial);
+  const [quotes, setQuotes] = useState(getQuotes(5));
+
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
@@ -234,24 +278,26 @@ export default function QuoteApp(props: Props) {
   }
 
   return (
-    <DragDropContext
-      onDragStart={() => setIsDragging(true)}
-      onDragEnd={onDragEnd}
-      sensors={[
-        api => {
-          sensorAPIRef.current = api;
-        },
-      ]}
-    >
-      <Layout>
-        <QuoteList listId="list" quotes={quotes} title='hello' />
-        <Controls
-          quotes={quotes}
-          canLift={!isDragging}
-          isDragging={isControlDragging}
-          lift={lift}
-        />
-      </Layout>
-    </DragDropContext>
+    <React.Fragment>
+      <DragDropContext
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={onDragEnd}
+        sensors={[
+          api => {
+            sensorAPIRef.current = api;
+          },
+        ]}
+      >
+        <Layout>
+          <QuoteList listId="list" quotes={quotes} title="hello" />
+          <Controls
+            quotes={quotes}
+            canLift={!isDragging}
+            isDragging={isControlDragging}
+            lift={lift}
+          />
+        </Layout>
+      </DragDropContext>
+    </React.Fragment>
   );
 }

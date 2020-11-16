@@ -12,17 +12,17 @@ type Props = {
   provided: DraggableProvided;
   isClone?: boolean;
   isGroupedOver?: boolean;
-  style?: Object;
+  style?: any;
   index?: number;
 };
 
 const getBackgroundColor = (
   isDragging: boolean,
-  isGroupedOver: boolean,
-  authorColors: AuthorColors,
+  isGroupedOver?: boolean,
+  authorColors?: AuthorColors,
 ) => {
   if (isDragging) {
-    return authorColors.soft;
+    return authorColors && authorColors.soft;
   }
 
   if (isGroupedOver) {
@@ -35,7 +35,7 @@ const getBackgroundColor = (
 const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
   isDragging ? authorColors.hard : 'transparent';
 
-const imageSize: number = 40;
+const imageSize = 40;
 
 const CloneBadge = styled.div`
   background: ${colors.G100};
@@ -55,11 +55,21 @@ const CloneBadge = styled.div`
   align-items: center;
 `;
 
+interface ContainerSProps {
+  isDragging: boolean;
+  colors: AuthorColors;
+  isGroupedOver?: boolean;
+  isClone?: boolean;
+}
 const Container = styled.a`
   border-radius: ${borderRadius}px;
-
-
   border: 2px solid transparent;
+  border-color: ${(props: ContainerSProps) =>
+    getBorderColor(props.isDragging, props.colors)};
+  background-color: ${(props: ContainerSProps) =>
+    getBackgroundColor(props.isDragging, props.isGroupedOver, props.colors)};
+  box-shadow: ${(props: ContainerSProps) =>
+    props.isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
   box-sizing: border-box;
   padding: ${grid}px;
   min-height: ${imageSize}px;
@@ -77,7 +87,7 @@ const Container = styled.a`
 
   &:focus {
     outline: none;
-
+    border-color: ${props => props.colors.hard};
     box-shadow: none;
   }
 
@@ -122,6 +132,16 @@ const Footer = styled.div`
   align-items: center;
 `;
 
+// const Author = styled.small`
+//   color: ${props => props.colors.hard};
+//   flex-grow: 0;
+//   margin: 0;
+//   background-color: ${props => props.colors.soft};
+//   border-radius: ${borderRadius}px;
+//   font-weight: normal;
+//   padding: ${grid / 2}px;
+// `;
+
 const QuoteId = styled.small`
   flex-grow: 1;
   flex-shrink: 1;
@@ -131,7 +151,7 @@ const QuoteId = styled.small`
   text-align: right;
 `;
 
-function getStyle(provided: DraggableProvided, style: Object) {
+function getStyle(provided: DraggableProvided, style: any) {
   if (!style) {
     return provided.draggableProps.style;
   }
@@ -163,12 +183,18 @@ function QuoteItem(props: Props) {
   return (
     <Container
       href={quote.author.url}
+      isDragging={isDragging}
+      isGroupedOver={isGroupedOver}
+      isClone={isClone}
+      colors={quote.author.colors}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
+      style={getStyle(provided, style)}
       data-is-dragging={isDragging}
       data-testid={quote.id}
       data-index={index}
+      aria-label={`${quote.author.name} quote ${quote.content}`}
     >
       <Avatar src={quote.author.avatarUrl} alt={quote.author.name} />
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
