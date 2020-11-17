@@ -22,14 +22,18 @@ import {
   SensorAPI,
   DragDropContext,
 } from 'react-beautiful-dnd';
-import { getQuotes } from './data';
+import { getQuotes, getQuote } from './data';
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
-import { createAsyncAction } from 'typesafe-actions';
-
+interface quotesMapObject {
+  content: Quote;
+  order: number;
+}
 type ControlProps = {
   quotes: Quote[];
+  quotesNext: Quote[];
+  quotesNextMap: Map<string, quotesMapObject>;
   canLift: boolean;
   isDragging: boolean;
   lift: (quoteId: string) => SnapDragActions | null;
@@ -91,7 +95,16 @@ const ActionButton = styled(Button)`
 `;
 
 function Controls(props: ControlProps) {
-  const { quotes, canLift, isDragging, lift } = props;
+  const {
+    quotes,
+    canLift,
+    isDragging,
+    lift,
+    quotesNext,
+    quotesNextMap,
+  } = props;
+
+  const [sortingIndex, setSortingIndex] = useState(1);
   const actionsRef = useRef<SnapDragActions | null>();
 
   const selectRef = createRef<HTMLSelectElement>();
@@ -106,20 +119,16 @@ function Controls(props: ControlProps) {
     return new Promise(function (resolve, reject) {
       setTimeout(function () {
         resolve('time resist');
-      }, 800);
+      }, 100);
     });
   }
-  async function programming() {
-    console.log('quotes', quotes);
-    //선택,
-    const selectId = quotes[0].id;
-    actionsRef.current = lift(selectId);
-    //actionsRef.current
-    //이동
-    for (let index = 0; index < quotes.length; index++) {}
-    for (let i = 0; i < 2; i++) {
+
+  async function moveItem(gap: number, isUp: boolean) {
+    for (let i = 0; i < gap; i++) {
       await timeResist();
-      maybe((callbacks: SnapDragActions) => callbacks.moveDown());
+      maybe((callbacks: SnapDragActions) =>
+        isUp ? callbacks.moveUp() : callbacks.moveDown(),
+      );
     }
     await timeResist();
     maybe((callbacks: SnapDragActions) => {
@@ -127,9 +136,93 @@ function Controls(props: ControlProps) {
       callbacks.drop();
     });
   }
+
+  async function moveToOrder(quoteItem) {
+    console.log(quoteItem[0] + ' ' + quoteItem[1]);
+    const presentQuoteId = quoteItem[0];
+    const presentQuoteOrder = quoteItem[1].order;
+    const nextQuoteItem = quotesNextMap.get(presentQuoteId);
+    if (nextQuoteItem) {
+      const nextQuoteOrder = nextQuoteItem.order;
+      //다른 경우 gap 만큼 이동
+      if (presentQuoteOrder !== nextQuoteOrder) {
+        //pre 1 next 3
+        //gap 1 - 3 = ( -2 )
+        const gap = presentQuoteOrder - nextQuoteOrder;
+        console.log(gap);
+        actionsRef.current = lift(presentQuoteId);
+        if (gap > 0) {
+          await moveItem(gap, true);
+          return true;
+        } else {
+          await moveItem(Math.abs(gap), false);
+          return true;
+        }
+      } else {
+        //같은 경우 이동 할 필요 없음
+        maybe((callbacks: SnapDragActions) => {
+          actionsRef.current = null;
+          callbacks.drop();
+        });
+        return false;
+      }
+    }
+  }
+  //리펙토링 필요
+  function isDifferent() {
+    const quoteMap = new Map<string, quotesMapObject>();
+    for (let i = 0; i < quotes.length; i++) {
+      quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+    }
+    for (const quoteItem of Array.from(quoteMap)) {
+      console.log(quoteItem[0] + ' ' + quoteItem[1]);
+      const presentQuoteId = quoteItem[0];
+      const presentQuoteOrder = quoteItem[1].order;
+      const nextQuoteItem = quotesNextMap.get(presentQuoteId);
+      if (nextQuoteItem) {
+        const nextQuoteOrder = nextQuoteItem.order;
+        if (presentQuoteOrder === nextQuoteOrder) {
+          continue;
+        } else {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  async function programming2() {
+    const quoteMap = new Map<string, quotesMapObject>();
+    for (let i = 0; i < quotes.length; i++) {
+      quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+    }
+
+    let selectQuotes;
+    for (const quoteItem of Array.from(quoteMap)) {
+      if (quoteItem[1].order === sortingIndex) {
+        selectQuotes = quoteItem;
+        break;
+      }
+    }
+
+    const isMoving = await moveToOrder(selectQuotes);
+    if (!isMoving) {
+      //움직이지 않았으면 소팅인덱스를 1씩 증가시킴
+      setSortingIndex(prev => prev + 1);
+    }
+  }
+  useEffect(() => {
+    //두 배열이 다르고 소팅인덱스가 quotes.length가 아닐떄
+    // if (isDifferent() && sortingIndex !== quotes.length) {
+    //   programming2();
+    // } else {
+    //   setSortingIndex(1); //초기화
+    // }
+  }, [quotes, sortingIndex]);
+
   return (
     <ControlBox>
-      <button onClick={programming}>버튼 테스트 </button>
+      <button onClick={programming2}>버튼 테스트 </button>
       <select disabled={!canLift} ref={selectRef}>
         {quotes.map((quote: Quote) => (
           <option key={quote.id} value={quote.id}>
@@ -175,16 +268,11 @@ function Controls(props: ControlProps) {
             maybe((callbacks: SnapDragActions) => callbacks.moveUp())
           }
           disabled={!isDragging}
-          //label="up"
         >
           ↑
         </ArrowButton>
         <div>
-          <ArrowButton
-            type="button"
-            disabled={!isDragging}
-            //label="left"
-          >
+          <ArrowButton type="button" disabled={!isDragging}>
             ←
           </ArrowButton>
           <ArrowButton
@@ -192,16 +280,11 @@ function Controls(props: ControlProps) {
             onClick={() =>
               maybe((callbacks: SnapDragActions) => callbacks.moveDown())
             }
-            disabled={!isDragging}
-            //label="down"
+            disabled={!isDragging} //label="down"
           >
             ↓
           </ArrowButton>
-          <ArrowButton
-            type="button"
-            disabled={!isDragging}
-            //label="right"
-          >
+          <ArrowButton type="button" disabled={!isDragging}>
             →
           </ArrowButton>
         </div>
@@ -225,11 +308,30 @@ type Props = {
 
 export default function DndContainer(props: Props) {
   //const [quotes, setQuotes] = useState(props.initial);
-  const [quotes, setQuotes] = useState(getQuotes(5));
+  const [quotes, setQuotes] = useState(getQuotes(5, false));
+  const [quotesNext, setQuotesNext] = useState(getQuotes(5, true));
+  const [quotesNextMap, setQuotesNextMap] = useState(
+    new Map<string, quotesMapObject>(),
+  );
 
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
+
+  function deleteItem() {
+    const newState = [...quotes];
+    newState.splice(0, 1);
+    setQuotes(newState);
+  }
+
+  //다음 변경될 quotes 세팅
+  useEffect(() => {
+    const quoteNextMap = new Map<string, quotesMapObject>();
+    for (let i = 0; i < quotesNext.length; i++) {
+      quoteNextMap.set(quotesNext[i].id, { content: quotesNext[i], order: i });
+    }
+    setQuotesNextMap(quoteNextMap);
+  }, [quotes]);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
@@ -249,7 +351,7 @@ export default function DndContainer(props: Props) {
         result.source.index,
         result.destination.index,
       );
-
+      console.log('new Quotes!');
       setQuotes(newQuotes);
     },
     [quotes],
@@ -279,6 +381,17 @@ export default function DndContainer(props: Props) {
 
   return (
     <React.Fragment>
+      <button onClick={deleteItem} style={{ padding: '100px' }}>
+        지우기
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setQuotes([...quotes, getQuote()]);
+        }}
+      >
+        Add new item
+      </button>
       <DragDropContext
         onDragStart={() => setIsDragging(true)}
         onDragEnd={onDragEnd}
@@ -292,6 +405,8 @@ export default function DndContainer(props: Props) {
           <QuoteList listId="list" quotes={quotes} title="hello" />
           <Controls
             quotes={quotes}
+            quotesNext={quotesNext}
+            quotesNextMap={quotesNextMap}
             canLift={!isDragging}
             isDragging={isControlDragging}
             lift={lift}
