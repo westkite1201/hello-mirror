@@ -34,8 +34,10 @@ type ControlProps = {
   quotes: Quote[];
   quotesNext: Quote[];
   quotesNextMap: Map<string, quotesMapObject>;
+  removeQuotes: Quote[];
   canLift: boolean;
   isDragging: boolean;
+  removeFinal: () => void;
   lift: (quoteId: string) => SnapDragActions | null;
 };
 
@@ -101,10 +103,13 @@ function Controls(props: ControlProps) {
     isDragging,
     lift,
     quotesNext,
+    removeQuotes,
+    removeFinal,
     quotesNextMap,
   } = props;
 
   const [sortingIndex, setSortingIndex] = useState(1);
+  const completeMoveArray = useRef<string[] | null>([]);
   const actionsRef = useRef<SnapDragActions | null>();
 
   const selectRef = createRef<HTMLSelectElement>();
@@ -119,11 +124,12 @@ function Controls(props: ControlProps) {
     return new Promise(function (resolve, reject) {
       setTimeout(function () {
         resolve('time resist');
-      }, 100);
+      }, 300);
     });
   }
 
   async function moveItem(gap: number, isUp: boolean) {
+    console.log('[seo] move itEM');
     for (let i = 0; i < gap; i++) {
       await timeResist();
       maybe((callbacks: SnapDragActions) =>
@@ -211,14 +217,59 @@ function Controls(props: ControlProps) {
       setSortingIndex(prev => prev + 1);
     }
   }
+
+  async function removeItemsMoveToBottom() {
+    console.log('removeItemsMoveToBottom');
+    //1. remove quotes 하단으로 이동
+    for (let i = 0; i < removeQuotes.length; i++) {
+      let targetIndex = 0;
+      console.log('[seo] removeItemsMoveToBottom', completeMoveArray.current);
+      if (
+        completeMoveArray.current &&
+        !completeMoveArray.current.includes(removeQuotes[i].id)
+      ) {
+        for (let j = 0; j < quotes.length; j++) {
+          if (removeQuotes[i].id === quotes[j].id) {
+            targetIndex = j;
+            actionsRef.current = lift(removeQuotes[i].id);
+            console.log('[seo] hello push');
+            completeMoveArray.current.push(removeQuotes[i].id);
+            break;
+          }
+        }
+        const gap = quotes.length - targetIndex;
+        await moveItem(gap, false);
+        break;
+      }
+    }
+    console.log('[seo] completeMoveArray.current', completeMoveArray.current);
+    console.log('[seo] removeQuotes.length.current', completeMoveArray.current);
+    //2. removeItems 정렬이 완료되었으면 제거
+    if (
+      completeMoveArray.current &&
+      completeMoveArray.current.length === removeQuotes.length
+    ) {
+      removeFinal();
+      completeMoveArray.current = [];
+    }
+  }
   useEffect(() => {
+    if (removeQuotes && removeQuotes.length !== 0) {
+      console.log(
+        '[seo] completeMoveArray ',
+        completeMoveArray,
+        ' removeQuotes ',
+        removeQuotes,
+      );
+      removeItemsMoveToBottom();
+    }
     //두 배열이 다르고 소팅인덱스가 quotes.length가 아닐떄
     // if (isDifferent() && sortingIndex !== quotes.length) {
     //   programming2();
     // } else {
     //   setSortingIndex(1); //초기화
     // }
-  }, [quotes, sortingIndex]);
+  }, [removeQuotes, quotes, sortingIndex]);
 
   return (
     <ControlBox>
@@ -308,6 +359,9 @@ type Props = {
 
 export default function DndContainer(props: Props) {
   //const [quotes, setQuotes] = useState(props.initial);
+  const [leftQuotes, setLeftQuotes] = useState<Quote[]>([]);
+  const [removeQuotes, setRemoveQuotes] = useState<Quote[]>([]);
+  const [concatQuotes, setConcatQuotes] = useState<Quote[]>([]);
   const [quotes, setQuotes] = useState(getQuotes(5, false));
   const [quotesNext, setQuotesNext] = useState(getQuotes(5, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
@@ -317,12 +371,6 @@ export default function DndContainer(props: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
-
-  function deleteItem() {
-    const newState = [...quotes];
-    newState.splice(0, 1);
-    setQuotes(newState);
-  }
 
   //다음 변경될 quotes 세팅
   useEffect(() => {
@@ -379,6 +427,65 @@ export default function DndContainer(props: Props) {
     return preDrag.snapLift();
   }
 
+  // function manageQuotes() {}
+
+  function deleteItem() {
+    const leftQuotes: Quote[] = [];
+    const quotesRemove = quotes.filter(item => {
+      //중복 제거
+      for (let i = 0; i < quotesNext.length; i++) {
+        if (quotesNext[i].id === item.id) {
+          leftQuotes.push(item); //남은 친구들
+          return false;
+        }
+      }
+      return true;
+    });
+    console.log('leftQuotes', leftQuotes);
+    console.log('quotesRemove', quotesRemove);
+    setRemoveQuotes(quotesRemove);
+    setLeftQuotes(leftQuotes);
+    //remove 할 애들
+    //quotes 움직이기
+    //remove 하기
+    //추가할 애들 추가
+
+    // newQuotes.splice(0, 1);
+    //setQuotes(quotesLeft);
+    // if (newQuotes.length !== 0) {
+    //   setConcatQuotes(newQuotes.slice());
+    // }
+  }
+  function removeFinal() {
+    console.log('removeFinal');
+    setQuotes(leftQuotes);
+    setLeftQuotes([]);
+  }
+  // useEffect(() => {
+  //   console.log('useEffect concatQuotes', concatQuotes);
+  //   console.log('useEffect quotes', quotes);
+  //   for (let i = 0; i < concatQuotes.length; i++) {
+  //     let flag = false;
+  //     for (let j = 0; j < quotes.length; j++) {
+  //       if (concatQuotes[i].id === quotes[j].id) {
+  //         flag = true;
+  //       }
+  //     }
+  //     if (!flag) {
+  //       setTimeout(() => {
+  //         addQuotes(concatQuotes[i]);
+  //       }, 1000);
+  //       break;
+  //     }
+  //   }
+  // }, [concatQuotes, quotes]);
+  function addQuotes(item) {
+    //기존 검색어와 현재 검색어 비교
+    //다른 애들 비교
+    //추가된 것 ,  없어진것
+    setQuotes([...quotes, item]);
+  }
+
   return (
     <React.Fragment>
       <button onClick={deleteItem} style={{ padding: '100px' }}>
@@ -407,6 +514,8 @@ export default function DndContainer(props: Props) {
             quotes={quotes}
             quotesNext={quotesNext}
             quotesNextMap={quotesNextMap}
+            removeQuotes={removeQuotes}
+            removeFinal={removeFinal}
             canLift={!isDragging}
             isDragging={isControlDragging}
             lift={lift}

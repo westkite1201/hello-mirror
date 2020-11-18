@@ -55,28 +55,27 @@ export const authors: Author[] = [jake, BMO, finn, princess];
 export const quotes: Quote[] = [
   {
     id: '1',
-    content: 'Sometimes life is scary and dark',
+    content: '1',
     author: BMO,
   },
   {
     id: '2',
-    content:
-      'Sucking at something is the first step towards being sorta good at something.',
+    content: '2',
     author: jake,
   },
   {
     id: '3',
-    content: "You got to focus on what's real, man",
+    content: '3',
     author: jake,
   },
   {
     id: '4',
-    content: 'Is that where creativity comes from? From sad biz?',
+    content: '4',
     author: finn,
   },
   {
     id: '5',
-    content: 'Homies help homies. Always',
+    content: '5',
     author: finn,
   },
   // {
@@ -120,29 +119,28 @@ export const quotes: Quote[] = [
 export const quotesTemp: Quote[] = [
   {
     id: '2',
-    content:
-      'Sucking at something is the first step towards being sorta good at something.',
+    content: '2',
     author: jake,
   },
   {
     id: '3',
-    content: "You got to focus on what's real, man",
+    content: '3',
     author: jake,
   },
   {
     id: '1',
-    content: 'Sometimes life is scary and dark',
+    content: '1',
     author: BMO,
   },
 
   {
     id: '4',
-    content: 'Is that where creativity comes from? From sad biz?',
+    content: '4',
     author: finn,
   },
   {
     id: '5',
-    content: 'Homies help homies. Always',
+    content: '5',
     author: finn,
   },
   // {
@@ -182,6 +180,34 @@ export const quotesTemp: Quote[] = [
   //   author: princess,
   // },
 ];
+export const quotesTempNew: Quote[] = [
+  {
+    id: '7',
+    content: '7',
+    author: jake,
+  },
+  {
+    id: '3',
+    content: '3',
+    author: jake,
+  },
+  {
+    id: '1',
+    content: '1',
+    author: BMO,
+  },
+
+  {
+    id: '4',
+    content: '4',
+    author: finn,
+  },
+  {
+    id: '6',
+    content: '6',
+    author: finn,
+  },
+];
 
 // So we do not have any clashes with our hardcoded ones
 let idCount: number = quotes.length + 1;
@@ -200,8 +226,8 @@ export const getQuotesRandom = (count: number): Quote[] =>
 
 export const getQuotes = (count: number, isTemp: boolean): Quote[] =>
   Array.from({ length: count }, (v, k) => k).map((value, key) => {
-    const quote: Quote = isTemp ? quotesTemp[key] : quotes[key];
-
+    //const quote: Quote = isTemp ? quotesTemp[key] : quotes[key];
+    const quote: Quote = isTemp ? quotesTempNew[key] : quotes[key];
     const custom: Quote = {
       ...quote,
       id: `G${quote.id}`,
