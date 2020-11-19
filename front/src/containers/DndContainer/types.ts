@@ -22,6 +22,12 @@ export type Quote = {
   author: Author;
 };
 
+export type Terms = {
+  id: string;
+  content: string;
+  relatedSearchTerms: string;
+};
+
 export type Dragging = {
   id: DraggableId;
   location: DraggableLocation;

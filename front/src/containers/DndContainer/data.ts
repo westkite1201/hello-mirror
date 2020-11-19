@@ -1,6 +1,6 @@
 // @flow
 import { colors } from '@atlaskit/theme';
-import type { Author, Quote, QuoteMap } from './types';
+import type { Author, Quote, QuoteMap, Terms } from './types';
 import finnImg from './media/finn-min.png';
 import bmoImg from './media/bmo-min.png';
 import princessImg from './media/princess-min.png';
@@ -206,6 +206,112 @@ export const quotesTempNew: Quote[] = [
     id: '6',
     content: '6',
     author: finn,
+  },
+];
+
+export const realTiemSearchTerms: Terms[] = [
+  {
+    id: '뮤직브로',
+    content: '뮤직브로',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '헤드레스트',
+    content: '헤드레스트',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '이목원',
+    content: '이목원',
+    relatedSearchTerms: '',
+  },
+
+  {
+    id: '써니',
+    content: '써니',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '서경 대학교',
+    content: '서경 대학교',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '신촌 코로나',
+    content: '신촌 코로나',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '이인영',
+    content: '이인영',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '황우석',
+    content: '황우석',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '김포 조정지역 ',
+    content: '김포 조정지역',
+    relatedSearchTerms: '조정지역, 부동산 조정대상지역, 부산 조정지역',
+  },
+  {
+    id: '재재',
+    content: '재재',
+    relatedSearchTerms: '',
+  },
+];
+export const realTiemSearchTermsNew: Terms[] = [
+  {
+    id: '써니',
+    content: '써니',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '서경 대학교',
+    content: '서경 대학교',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '신촌 코로나',
+    content: '신촌 코로나',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '뮤직브로',
+    content: '뮤직브로',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '헤드레스트',
+    content: '헤드레스트',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '이목원',
+    content: '이목원',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '이인영',
+    content: '이인영',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '황우석',
+    content: '황우석',
+    relatedSearchTerms: '',
+  },
+  {
+    id: '김포 조정지역 ',
+    content: '김포 조정지역',
+    relatedSearchTerms: '조정지역, 부동산 조정대상지역, 부산 조정지역',
+  },
+  {
+    id: '재재',
+    content: '재재',
+    relatedSearchTerms: '',
   },
 ];
 

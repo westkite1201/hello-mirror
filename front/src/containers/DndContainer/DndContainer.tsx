@@ -98,13 +98,14 @@ const ActionButton = styled(Button)`
   height: 40px;
 `;
 
+const TIME_INTERVAL = 500;
 function Controls(props: ControlProps) {
   const {
     quotes,
     canLift,
     isDragging,
     lift,
-    quotesNext,
+    //quotesNext,
     removeQuotes,
     removeFinal,
     isAdded,
@@ -123,15 +124,15 @@ function Controls(props: ControlProps) {
       fn(actionsRef.current);
     }
   }
-
+  //시간 지연용
   function timeResist() {
     return new Promise(function (resolve, reject) {
       setTimeout(function () {
         resolve('time resist');
-      }, 300);
+      }, TIME_INTERVAL);
     });
   }
-
+  //Move
   async function moveItem(gap: number, isUp: boolean) {
     console.log('[seo] move itEM');
     for (let i = 0; i < gap; i++) {
@@ -146,7 +147,7 @@ function Controls(props: ControlProps) {
       callbacks.drop();
     });
   }
-
+  //정렬 함수
   async function moveToOrder(quoteItem) {
     console.log(quoteItem[0] + ' ' + quoteItem[1]);
     const presentQuoteId = quoteItem[0];
@@ -179,6 +180,7 @@ function Controls(props: ControlProps) {
     }
   }
   //리펙토링 필요
+  //다른지 비교
   function isDifferent() {
     const quoteMap = new Map<string, quotesMapObject>();
     for (let i = 0; i < quotes.length; i++) {
@@ -201,7 +203,7 @@ function Controls(props: ControlProps) {
     return false;
   }
 
-  async function programming2() {
+  async function setting() {
     const quoteMap = new Map<string, quotesMapObject>();
     for (let i = 0; i < quotes.length; i++) {
       quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
@@ -223,11 +225,9 @@ function Controls(props: ControlProps) {
   }
 
   async function removeItemsMoveToBottom() {
-    console.log('removeItemsMoveToBottom');
     //1. remove quotes 하단으로 이동
     for (let i = 0; i < removeQuotes.length; i++) {
       let targetIndex = 0;
-      console.log('[seo] removeItemsMoveToBottom', completeMoveArray.current);
       if (
         completeMoveArray.current &&
         !completeMoveArray.current.includes(removeQuotes[i].id)
@@ -236,7 +236,6 @@ function Controls(props: ControlProps) {
           if (removeQuotes[i].id === quotes[j].id) {
             targetIndex = j;
             actionsRef.current = lift(removeQuotes[i].id);
-            console.log('[seo] hello push');
             completeMoveArray.current.push(removeQuotes[i].id);
             break;
           }
@@ -246,9 +245,6 @@ function Controls(props: ControlProps) {
         break;
       }
     }
-
-    console.log('[seo] completeMoveArray.current', completeMoveArray.current);
-    console.log('[seo] removeQuotes.length.current', completeMoveArray.current);
     //2. removeItems 정렬이 완료되었으면 제거
     if (
       completeMoveArray.current &&
@@ -257,35 +253,31 @@ function Controls(props: ControlProps) {
       setTimeout(() => {
         removeFinal();
         completeMoveArray.current = [];
-      }, 500);
+      }, TIME_INTERVAL + 500);
     }
   }
   useEffect(() => {
-    if (removeQuotes && removeQuotes.length !== 0) {
-      console.log(
-        '[seo] completeMoveArray ',
-        completeMoveArray,
-        ' removeQuotes ',
-        removeQuotes,
-      );
+    if (!isRemoved && removeQuotes && removeQuotes.length !== 0) {
       removeItemsMoveToBottom();
     }
-    //두 배열이 다르고 소팅인덱스가 quotes.length가 아닐떄
     if (
       isRemoved &&
       isAdded &&
       isDifferent() &&
       sortingIndex !== quotes.length
     ) {
-      programming2();
+      console.log('[seo] setting hello');
+      //setTimeout(() => {
+      //setting();
+      //}, TIME_INTERVAL);
     } else {
-      setSortingIndex(1); //초기화
+      //setSortingIndex(1); //초기화
     }
-  }, [isRemoved, isAdded, removeQuotes, quotes, sortingIndex]);
+  }, [isRemoved, isAdded, removeQuotes, quotes]);
 
   return (
     <ControlBox>
-      <button onClick={programming2}>버튼 테스트 </button>
+      <button onClick={setting}>버튼 테스트 </button>
       <select disabled={!canLift} ref={selectRef}>
         {quotes.map((quote: Quote) => (
           <option key={quote.id} value={quote.id}>
@@ -373,9 +365,7 @@ export default function DndContainer(props: Props) {
   //const [quotes, setQuotes] = useState(props.initial);
   const [leftQuotes, setLeftQuotes] = useState<Quote[]>([]);
   const [removeQuotes, setRemoveQuotes] = useState<Quote[]>([]);
-  const [concatQuotesMap, setConcatQuotesMap] = useState(
-    new Map<string, Quote>(),
-  );
+  const [concatQuotes, setConcatQuotes] = useState<Quote[]>([]);
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
@@ -448,71 +438,83 @@ export default function DndContainer(props: Props) {
 
   function deleteItem() {
     const leftQuotes: Quote[] = [];
-    const concatQuotes = new Map<string, Quote>();
+    //const concatQuotes = new Map<string, Quote>();
+    //const concatQuotes: Quote[] = [];
     const quotesRemove = quotes.filter(item => {
       //중복 제거
       for (let i = 0; i < quotesNext.length; i++) {
         if (quotesNext[i].id === item.id) {
           leftQuotes.push(item); //남은 친구들
           return false;
-        } else {
-          concatQuotes.set(quotesNext[i].id, quotesNext[i]);
         }
       }
       return true;
     });
-    console.log('leftQuotes', leftQuotes);
-    console.log('quotesRemove', quotesRemove);
+
+    const concatQuotes = quotesNext.filter(item => {
+      //중복 제거
+      for (let i = 0; i < quotes.length; i++) {
+        if (quotes[i].id === item.id) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    console.log('[seo] leftQuotes', leftQuotes);
+    console.log('[seo] quotesRemove', quotesRemove);
+    console.log('[seo] concatQuotes', concatQuotes);
     setRemoveQuotes(quotesRemove); //제거할 애들
     setLeftQuotes(leftQuotes); //본 quetos에 서 남은 애들
-    setConcatQuotesMap(concatQuotes);
+    setConcatQuotes(concatQuotes);
+    //setConcatQuotesMap(concatQuotes);
     //remove 할 애들setConcatQuotes
     //quotes 움직이기
     //remove 하기
     //추가할 애들 추가
   }
   function removeFinal() {
-    console.log('removeFinal');
-    setQuotes(leftQuotes);
+    console.log('[seo] removeFinal');
     setIsRemoved(true); // remove 종료 flag 세팅
-    setLeftQuotes([]);
+    setQuotes(leftQuotes);
+
+    //setLeftQuotes([]);
   }
 
   useEffect(() => {
     //remove 종료시 concat 추가
     //add quotes
     if (isRemoved) {
-      for (const quoteItem of Array.from(concatQuotesMap)) {
+      //for (const quoteItem of Array.from(concatQuotesMap)) {
+      for (let i = 0; i < concatQuotes.length; i++) {
         let flag = false;
         for (let j = 0; j < quotes.length; j++) {
-          if (quoteItem[1].id === quotes[j].id) {
+          if (concatQuotes[i].id === quotes[j].id) {
             flag = true;
           }
         }
         if (!flag) {
           setTimeout(() => {
-            addQuotes(quoteItem[1]);
+            addQuotes(concatQuotes[i]);
             if (completeAddedArray && completeAddedArray.current) {
-              completeAddedArray.current.push(quoteItem[0]);
+              completeAddedArray.current.push(concatQuotes[i].id);
             }
-          }, 1000);
+          }, TIME_INTERVAL);
           break;
         }
       }
       //cheakAdded
       if (
         completeAddedArray.current &&
-        completeAddedArray.current.length === concatQuotesMap.size
+        completeAddedArray.current.length === concatQuotes.length
       ) {
+        //added 완료
         setIsAdded(true);
       }
     }
   }, [isRemoved, quotes]);
 
   function addQuotes(item) {
-    //기존 검색어와 현재 검색어 비교
-    //다른 애들 비교
-    //추가된 것 ,  없어진것
     setQuotes([...quotes, item]);
   }
 
