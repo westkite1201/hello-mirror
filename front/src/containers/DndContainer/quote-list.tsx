@@ -6,7 +6,7 @@ import { colors } from '@atlaskit/theme';
 import QuoteItem from './quote-item';
 import { grid } from './constants';
 import Title from './title';
-import type { Quote } from './types';
+import type { Terms } from './types';
 import {
   Droppable,
   Draggable,
@@ -74,7 +74,7 @@ const Container = styled.div``;
 type Props = {
   listId: string;
   listType?: string;
-  quotes: Quote[];
+  quotes: Terms[];
   title: string;
   internalScroll?: boolean;
   scrollContainerStyle?: any;
@@ -88,13 +88,13 @@ type Props = {
 };
 
 type QuoteListProps = {
-  quotes: Quote[];
+  quotes: Terms[];
 };
 
 const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
   return (
     quotes &&
-    quotes.map((quote: Quote, index: number) => (
+    quotes.map((quote: Terms, index: number) => (
       <Draggable key={quote.id} draggableId={quote.id} index={index}>
         {(
           dragProvided: DraggableProvided,
@@ -115,7 +115,7 @@ const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
 
 type InnerListProps = {
   dropProvided: DroppableProvided;
-  quotes: Quote[];
+  quotes: Terms[];
   title: string;
 };
 

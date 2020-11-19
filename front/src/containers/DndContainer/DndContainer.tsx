@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import styled from 'styled-components';
-import type { Quote } from './types';
+import type { Terms } from './types';
 // import type {
 //   DropResult,
 //   PreDragActions,
@@ -22,19 +22,19 @@ import {
   SensorAPI,
   DragDropContext,
 } from 'react-beautiful-dnd';
-import { getQuotes, getQuote } from './data';
+import { getQuotes, getQuote, getTerms, getTerm } from './data';
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
 interface quotesMapObject {
-  content: Quote;
+  content: Terms;
   order: number;
 }
 type ControlProps = {
-  quotes: Quote[];
-  quotesNext: Quote[];
+  quotes: Terms[];
+  quotesNext: Terms[];
   quotesNextMap: Map<string, quotesMapObject>;
-  removeQuotes: Quote[];
+  removeQuotes: Terms[];
   canLift: boolean;
   isDragging: boolean;
   isAdded: boolean;
@@ -291,7 +291,7 @@ function Controls(props: ControlProps) {
     <ControlBox>
       <button onClick={setting}>버튼 테스트 </button>
       <select disabled={!canLift} ref={selectRef}>
-        {quotes.map((quote: Quote) => (
+        {quotes.map((quote: Terms) => (
           <option key={quote.id} value={quote.id}>
             id: {quote.id}
           </option>
@@ -370,19 +370,19 @@ const Layout = styled.div`
 `;
 
 type Props = {
-  initial: Quote[];
+  initial: Terms[];
 };
 
 export default function DndContainer(props: Props) {
   //const [quotes, setQuotes] = useState(props.initial);
-  const [leftQuotes, setLeftQuotes] = useState<Quote[]>([]);
-  const [removeQuotes, setRemoveQuotes] = useState<Quote[]>([]);
-  const [concatQuotes, setConcatQuotes] = useState<Quote[]>([]);
+  const [leftQuotes, setLeftQuotes] = useState<Terms[]>([]);
+  const [removeQuotes, setRemoveQuotes] = useState<Terms[]>([]);
+  const [concatQuotes, setConcatQuotes] = useState<Terms[]>([]);
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
-  const [quotes, setQuotes] = useState(getQuotes(5, false));
-  const [quotesNext, setQuotesNext] = useState(getQuotes(5, true));
+  const [quotes, setQuotes] = useState(getTerms(5, false));
+  const [quotesNext, setQuotesNext] = useState(getTerms(5, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
     new Map<string, quotesMapObject>(),
   );
@@ -449,9 +449,9 @@ export default function DndContainer(props: Props) {
   // function manageQuotes() {}
 
   function deleteItem() {
-    const leftQuotes: Quote[] = [];
-    //const concatQuotes = new Map<string, Quote>();
-    //const concatQuotes: Quote[] = [];
+    const leftQuotes: Terms[] = [];
+    //const concatQuotes = new Map<string, Terms>();
+    //const concatQuotes: Terms[] = [];
     const quotesRemove = quotes.filter(item => {
       //중복 제거
       for (let i = 0; i < quotesNext.length; i++) {
@@ -550,7 +550,7 @@ export default function DndContainer(props: Props) {
       <button
         type="button"
         onClick={() => {
-          setQuotes([...quotes, getQuote()]);
+          setQuotes([...quotes, getTerm()]);
         }}
       >
         Add new item

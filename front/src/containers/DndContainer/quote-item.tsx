@@ -3,11 +3,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '@atlaskit/theme';
 import { borderRadius, grid } from './constants';
-import type { Quote, AuthorColors } from './types';
+import type { Terms, AuthorColors } from './types';
 import type { DraggableProvided } from 'react-beautiful-dnd';
 
 type Props = {
-  quote: Quote;
+  quote: Terms;
   isDragging: boolean;
   provided: DraggableProvided;
   isClone?: boolean;
@@ -19,10 +19,14 @@ type Props = {
 const getBackgroundColor = (
   isDragging: boolean,
   isGroupedOver?: boolean,
-  authorColors?: AuthorColors,
+  //authorColors?: AuthorColors,
 ) => {
+  // if (isDragging) {
+  //   return authorColors && authorColors.soft;
+  // }
+
   if (isDragging) {
-    return authorColors && authorColors.soft;
+    return colors.Y50;
   }
 
   if (isGroupedOver) {
@@ -32,8 +36,10 @@ const getBackgroundColor = (
   return colors.N0;
 };
 
-const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
-  isDragging ? authorColors.hard : 'transparent';
+// const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
+//   isDragging ? authorColors.hard : 'transparent';
+const getBorderColor = (isDragging: boolean) =>
+  isDragging ? colors.N400A : 'transparent';
 
 const imageSize = 40;
 
@@ -57,17 +63,16 @@ const CloneBadge = styled.div`
 
 interface ContainerSProps {
   isDragging: boolean;
-  colors: AuthorColors;
+  //colors: AuthorColors;
   isGroupedOver?: boolean;
   isClone?: boolean;
 }
 const Container = styled.a`
   border-radius: ${borderRadius}px;
   border: 2px solid transparent;
-  border-color: ${(props: ContainerSProps) =>
-    getBorderColor(props.isDragging, props.colors)};
+  border-color: ${(props: ContainerSProps) => getBorderColor(props.isDragging)};
   background-color: ${(props: ContainerSProps) =>
-    getBackgroundColor(props.isDragging, props.isGroupedOver, props.colors)};
+    getBackgroundColor(props.isDragging, props.isGroupedOver)};
   box-shadow: ${(props: ContainerSProps) =>
     props.isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
   box-sizing: border-box;
@@ -87,7 +92,7 @@ const Container = styled.a`
 
   &:focus {
     outline: none;
-    border-color: ${props => props.colors.hard};
+    border-color: ${colors.N400A}
     box-shadow: none;
   }
 
@@ -182,11 +187,11 @@ function QuoteItem(props: Props) {
 
   return (
     <Container
-      href={quote.author.url}
+      href={''}
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
       isClone={isClone}
-      colors={quote.author.colors}
+      //colors={quote.author.colors}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
@@ -194,9 +199,9 @@ function QuoteItem(props: Props) {
       data-is-dragging={isDragging}
       data-testid={quote.id}
       data-index={index}
-      aria-label={`${quote.author.name} quote ${quote.content}`}
+      aria-label={`quote ${quote.content}`}
     >
-      <Avatar src={quote.author.avatarUrl} alt={quote.author.name} />
+      {/*<Avatar src={quote.author.avatarUrl} alt={quote.author.name} />*/}
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
         <BlockQuote>{quote.content}</BlockQuote>

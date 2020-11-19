@@ -330,6 +330,30 @@ export const getQuotesRandom = (count: number): Quote[] =>
     return custom;
   });
 
+export const getTerms = (count: number, isTemp: boolean): Terms[] =>
+  Array.from({ length: count }, (v, k) => k).map((value, key) => {
+    //const quote: Quote = isTemp ? quotesTemp[key] : quotes[key];
+    const quote: Terms = isTemp
+      ? realTiemSearchTermsNew[key]
+      : realTiemSearchTerms[key];
+    const custom: Terms = {
+      ...quote,
+      id: `G${quote.id}`,
+    };
+
+    return custom;
+  });
+
+export const getTerm = (): Terms => {
+  const random: Terms =
+    realTiemSearchTerms[Math.floor(Math.random() * realTiemSearchTerms.length)];
+  const custom: Terms = {
+    ...random,
+    id: `G${random.id}`,
+  };
+  return custom;
+};
+
 export const getQuotes = (count: number, isTemp: boolean): Quote[] =>
   Array.from({ length: count }, (v, k) => k).map((value, key) => {
     //const quote: Quote = isTemp ? quotesTemp[key] : quotes[key];
