@@ -41,7 +41,7 @@ const getBackgroundColor = (
 const getBorderColor = (isDragging: boolean) =>
   isDragging ? colors.N400A : 'transparent';
 
-const imageSize = 40;
+const imageSize = 10;
 
 const CloneBadge = styled.div`
   background: ${colors.G100};
@@ -76,7 +76,7 @@ const Container = styled.a`
   box-shadow: ${(props: ContainerSProps) =>
     props.isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
   box-sizing: border-box;
-  padding: ${grid}px;
+  /*padding: ${grid}px;*/
   min-height: ${imageSize}px;
   margin-bottom: ${grid}px;
   user-select: none;
@@ -205,10 +205,12 @@ function QuoteItem(props: Props) {
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
         <BlockQuote>{quote.content}</BlockQuote>
+        {/*
         <Footer>
-          {/*<Author colors={quote.author.colors}>{quote.author.name}</Author>*/}
+          <Author colors={quote.author.colors}>{quote.author.name}</Author>
           <QuoteId>id:{quote.id}</QuoteId>
         </Footer>
+        */}
       </Content>
     </Container>
   );

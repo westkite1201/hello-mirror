@@ -98,7 +98,7 @@ const ActionButton = styled(Button)`
   height: 40px;
 `;
 
-const TIME_INTERVAL = 200;
+const TIME_INTERVAL = 50;
 function Controls(props: ControlProps) {
   const {
     quotes,
@@ -213,8 +213,17 @@ function Controls(props: ControlProps) {
 
   async function setting() {
     const quoteMap = new Map<string, quotesMapObject>();
-    for (let i = 0; i < quotes.length; i++) {
-      quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+    //다이나믹함을 위아래 랜덤으로 위아래
+    if (Math.floor(Math.random() * 2) % 2 === 0) {
+      console.log('[seo][setting] 위');
+      for (let i = 0; i < quotes.length; i++) {
+        quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+      }
+    } else {
+      console.log('[seo][setting] 아래');
+      for (let i = quotes.length - 1; i >= 0; i--) {
+        quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+      }
     }
 
     let selectQuotes;
@@ -381,8 +390,8 @@ export default function DndContainer(props: Props) {
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
-  const [quotes, setQuotes] = useState(getTerms(5, false));
-  const [quotesNext, setQuotesNext] = useState(getTerms(5, true));
+  const [quotes, setQuotes] = useState(getTerms(10, false));
+  const [quotesNext, setQuotesNext] = useState(getTerms(10, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
     new Map<string, quotesMapObject>(),
   );
@@ -472,7 +481,13 @@ export default function DndContainer(props: Props) {
       }
       return true;
     });
-
+    //삭제 될게 없다면
+    if (quotesRemove && quotesRemove.length === 0) {
+      setIsRemoved(true);
+    }
+    if (concatQuotes && concatQuotes.length === 0) {
+      setIsAdded(true);
+    }
     console.log('[seo] leftQuotes', leftQuotes);
     console.log('[seo] quotesRemove', quotesRemove);
     console.log('[seo] concatQuotes', concatQuotes);
@@ -544,7 +559,7 @@ export default function DndContainer(props: Props) {
 
   return (
     <React.Fragment>
-      <button onClick={deleteItem} style={{ padding: '100px' }}>
+      <button onClick={deleteItem} style={{ padding: '20px' }}>
         지우기
       </button>
       <button
