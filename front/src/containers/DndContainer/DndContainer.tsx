@@ -37,6 +37,8 @@ type ControlProps = {
   removeQuotes: Quote[];
   canLift: boolean;
   isDragging: boolean;
+  isAdded: boolean;
+  isRemoved: boolean;
   removeFinal: () => void;
   lift: (quoteId: string) => SnapDragActions | null;
 };
@@ -105,6 +107,8 @@ function Controls(props: ControlProps) {
     quotesNext,
     removeQuotes,
     removeFinal,
+    isAdded,
+    isRemoved,
     quotesNextMap,
   } = props;
 
@@ -242,6 +246,7 @@ function Controls(props: ControlProps) {
         break;
       }
     }
+
     console.log('[seo] completeMoveArray.current', completeMoveArray.current);
     console.log('[seo] removeQuotes.length.current', completeMoveArray.current);
     //2. removeItems 정렬이 완료되었으면 제거
@@ -249,8 +254,10 @@ function Controls(props: ControlProps) {
       completeMoveArray.current &&
       completeMoveArray.current.length === removeQuotes.length
     ) {
-      removeFinal();
-      completeMoveArray.current = [];
+      setTimeout(() => {
+        removeFinal();
+        completeMoveArray.current = [];
+      }, 500);
     }
   }
   useEffect(() => {
@@ -264,12 +271,17 @@ function Controls(props: ControlProps) {
       removeItemsMoveToBottom();
     }
     //두 배열이 다르고 소팅인덱스가 quotes.length가 아닐떄
-    // if (isDifferent() && sortingIndex !== quotes.length) {
-    //   programming2();
-    // } else {
-    //   setSortingIndex(1); //초기화
-    // }
-  }, [removeQuotes, quotes, sortingIndex]);
+    if (
+      isRemoved &&
+      isAdded &&
+      isDifferent() &&
+      sortingIndex !== quotes.length
+    ) {
+      programming2();
+    } else {
+      setSortingIndex(1); //초기화
+    }
+  }, [isRemoved, isAdded, removeQuotes, quotes, sortingIndex]);
 
   return (
     <ControlBox>
@@ -361,7 +373,12 @@ export default function DndContainer(props: Props) {
   //const [quotes, setQuotes] = useState(props.initial);
   const [leftQuotes, setLeftQuotes] = useState<Quote[]>([]);
   const [removeQuotes, setRemoveQuotes] = useState<Quote[]>([]);
-  const [concatQuotes, setConcatQuotes] = useState<Quote[]>([]);
+  const [concatQuotesMap, setConcatQuotesMap] = useState(
+    new Map<string, Quote>(),
+  );
+  const [isRemoved, setIsRemoved] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+  const completeAddedArray = useRef<string[] | null>([]);
   const [quotes, setQuotes] = useState(getQuotes(5, false));
   const [quotesNext, setQuotesNext] = useState(getQuotes(5, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
@@ -399,7 +416,7 @@ export default function DndContainer(props: Props) {
         result.source.index,
         result.destination.index,
       );
-      console.log('new Quotes!');
+
       setQuotes(newQuotes);
     },
     [quotes],
@@ -431,54 +448,67 @@ export default function DndContainer(props: Props) {
 
   function deleteItem() {
     const leftQuotes: Quote[] = [];
+    const concatQuotes = new Map<string, Quote>();
     const quotesRemove = quotes.filter(item => {
       //중복 제거
       for (let i = 0; i < quotesNext.length; i++) {
         if (quotesNext[i].id === item.id) {
           leftQuotes.push(item); //남은 친구들
           return false;
+        } else {
+          concatQuotes.set(quotesNext[i].id, quotesNext[i]);
         }
       }
       return true;
     });
     console.log('leftQuotes', leftQuotes);
     console.log('quotesRemove', quotesRemove);
-    setRemoveQuotes(quotesRemove);
-    setLeftQuotes(leftQuotes);
-    //remove 할 애들
+    setRemoveQuotes(quotesRemove); //제거할 애들
+    setLeftQuotes(leftQuotes); //본 quetos에 서 남은 애들
+    setConcatQuotesMap(concatQuotes);
+    //remove 할 애들setConcatQuotes
     //quotes 움직이기
     //remove 하기
     //추가할 애들 추가
-
-    // newQuotes.splice(0, 1);
-    //setQuotes(quotesLeft);
-    // if (newQuotes.length !== 0) {
-    //   setConcatQuotes(newQuotes.slice());
-    // }
   }
   function removeFinal() {
     console.log('removeFinal');
     setQuotes(leftQuotes);
+    setIsRemoved(true); // remove 종료 flag 세팅
     setLeftQuotes([]);
   }
-  // useEffect(() => {
-  //   console.log('useEffect concatQuotes', concatQuotes);
-  //   console.log('useEffect quotes', quotes);
-  //   for (let i = 0; i < concatQuotes.length; i++) {
-  //     let flag = false;
-  //     for (let j = 0; j < quotes.length; j++) {
-  //       if (concatQuotes[i].id === quotes[j].id) {
-  //         flag = true;
-  //       }
-  //     }
-  //     if (!flag) {
-  //       setTimeout(() => {
-  //         addQuotes(concatQuotes[i]);
-  //       }, 1000);
-  //       break;
-  //     }
-  //   }
-  // }, [concatQuotes, quotes]);
+
+  useEffect(() => {
+    //remove 종료시 concat 추가
+    //add quotes
+    if (isRemoved) {
+      for (const quoteItem of Array.from(concatQuotesMap)) {
+        let flag = false;
+        for (let j = 0; j < quotes.length; j++) {
+          if (quoteItem[1].id === quotes[j].id) {
+            flag = true;
+          }
+        }
+        if (!flag) {
+          setTimeout(() => {
+            addQuotes(quoteItem[1]);
+            if (completeAddedArray && completeAddedArray.current) {
+              completeAddedArray.current.push(quoteItem[0]);
+            }
+          }, 1000);
+          break;
+        }
+      }
+      //cheakAdded
+      if (
+        completeAddedArray.current &&
+        completeAddedArray.current.length === concatQuotesMap.size
+      ) {
+        setIsAdded(true);
+      }
+    }
+  }, [isRemoved, quotes]);
+
   function addQuotes(item) {
     //기존 검색어와 현재 검색어 비교
     //다른 애들 비교
@@ -518,6 +548,8 @@ export default function DndContainer(props: Props) {
             removeFinal={removeFinal}
             canLift={!isDragging}
             isDragging={isControlDragging}
+            isAdded={isAdded}
+            isRemoved={isRemoved}
             lift={lift}
           />
         </Layout>
