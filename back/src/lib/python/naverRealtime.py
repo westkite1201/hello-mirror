@@ -2,7 +2,6 @@ import requests
 import sys
 from datetime import datetime
 def getNaverRealtimeSearchWord(urlParam):
-    print("getNaverRealtimeSearchWord...")
     urlParam = {
         'age': 'all',
         'datetime': datetime.now().strftime('%Y-%m-%dT%H:%M:00'),
@@ -33,15 +32,15 @@ def getNaverRealtimeSearchWord(urlParam):
 
 
 if __name__ == "__main__":
-    param = {
-        'age': all,
-        'datetime': '2020 - 11 - 05T15 % 3A13 % 3A00',
-        'entertainment':2,
-        'groupingLevel': 4,
-        'marketing': 2,
-        'news': 2,
-        'sports': 2,
-    }
-    response = getNaverRealtimeSearchWord(param)
+    # param = {
+    #     'age': all,
+    #     'datetime': '2020 - 11 - 05T15 % 3A13 % 3A00',
+    #     'entertainment':2,
+    #     'groupingLevel': 4,
+    #     'marketing': 2,
+    #     'news': 2,
+    #     'sports': 2,
+    # }
+    # response = getNaverRealtimeSearchWord(param)
     print(response)
     sys.stdout.flush()

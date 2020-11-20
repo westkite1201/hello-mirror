@@ -46,6 +46,9 @@ let newdate = 0;
 //   }
 // });
 
+String.prototype.replaceAll = function (org, dest) {
+  return this.split(org).join(dest);
+};
 const FILE_ROOT_DIR = process.cwd();
 router.post('/getNaverRealtimeSearch', async (req, res) => {
   //console.log(req.body);
@@ -54,17 +57,23 @@ router.post('/getNaverRealtimeSearch', async (req, res) => {
   try {
     var util = require('util');
     var spawn = require('child_process').spawn;
-    var process = spawn('python', [
-      FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py',
-      number
-    ]);
+    console.log(FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py');
+    var process = spawn(
+      '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3',
+      [FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py', number],
+    );
     util.log('readingin');
     process.stdout.on('data', function (chunk) {
-      var textChunk = chunk.toString('utf-8'); // buffer to string
+      console.log('hello');
+      let textChunk = chunk.toString('utf-8'); // buffer to string
       //textChunk = a(textChunk);
       util.log(textChunk);
-      res.json(textChunk);
+      textChunk = textChunk.replaceAll("'", '"');
+      textChunk = textChunk.replaceAll('None', '"None"');
+      const obj = JSON.parse(textChunk);
+      res.json(obj);
     });
+    //replaceAll prototype 선언
   } catch (e) {
     console.error(e);
   }
@@ -81,7 +90,7 @@ router.post('/getPixabayImages', async (req, res) => {
     } else {
       return res.json({
         message: 'error',
-        statusCode: 400
+        statusCode: 400,
       });
     }
   } catch (e) {
@@ -97,10 +106,10 @@ router.post('/getAreaRiseSetInfo', async (req, res) => {
   try {
     let response = await CallSeverApiRiseSet.getAreaRiseSetInfo(
       location,
-      locdate
+      locdate,
     );
     isDayTimeYn = helpers.isDayTime(
-      response.data.response.body.items.item.sunset
+      response.data.response.body.items.item.sunset,
     );
     response.data.response.body.items.item.isDayTimeYn = isDayTimeYn;
     if (response.message !== 'error') {
@@ -195,7 +204,7 @@ router.post('/getWeatherDataMid', async (req, res) => {
       type,
       shortTermYn,
       shortTermLiveYn,
-      midYn
+      midYn,
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
@@ -235,7 +244,7 @@ router.post('/getWeatherDataPrivateMode', async (req, res) => {
       shortTermYn, //short
       false, //live
       false, //mid
-      numOfRows
+      numOfRows,
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
@@ -273,7 +282,7 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
       ny,
       type,
       shortTermYn,
-      shortTermLiveYn
+      shortTermLiveYn,
     );
     if (result.message !== 'error') {
       //온경우
