@@ -6,7 +6,8 @@ import { colors } from '@atlaskit/theme';
 import QuoteItem from './quote-item';
 import { grid } from './constants';
 import Title from './title';
-import type { Terms } from './types';
+//import type { Terms } from './types';
+import { Terms } from '../../lib/api/weather';
 import {
   Droppable,
   Draggable,
@@ -95,13 +96,13 @@ const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
   return (
     quotes &&
     quotes.map((quote: Terms, index: number) => (
-      <Draggable key={quote.id} draggableId={quote.id} index={index}>
+      <Draggable key={quote.keyword} draggableId={quote.keyword} index={index}>
         {(
           dragProvided: DraggableProvided,
           dragSnapshot: DraggableStateSnapshot,
         ) => (
           <QuoteItem
-            key={quote.id}
+            key={quote.keyword}
             quote={quote}
             isDragging={dragSnapshot.isDragging}
             isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}

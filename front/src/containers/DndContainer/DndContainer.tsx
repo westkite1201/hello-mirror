@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import styled from 'styled-components';
-import type { Terms } from './types';
+//import type { Terms } from './types';
 // import type {
 //   DropResult,
 //   PreDragActions,
@@ -28,6 +28,8 @@ import reorder from './reorder';
 import { grid, borderRadius } from './constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRealtimeTermsRequest } from '../../store/weather/reducer';
+import { Terms } from '../../lib/api/weather';
+
 interface quotesMapObject {
   content: Terms;
   order: number;
@@ -194,7 +196,7 @@ function Controls(props: ControlProps) {
   function isDifferent() {
     const quoteMap = new Map<string, quotesMapObject>();
     for (let i = 0; i < quotes.length; i++) {
-      quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+      quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
     }
     for (const quoteItem of Array.from(quoteMap)) {
       console.log(quoteItem[0] + ' ' + quoteItem[1]);
@@ -219,12 +221,12 @@ function Controls(props: ControlProps) {
     if (Math.floor(Math.random() * 2) % 2 === 0) {
       console.log('[seo][setting] 위');
       for (let i = 0; i < quotes.length; i++) {
-        quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+        quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
       }
     } else {
       console.log('[seo][setting] 아래');
       for (let i = quotes.length - 1; i >= 0; i--) {
-        quoteMap.set(quotes[i].id, { content: quotes[i], order: i });
+        quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
       }
     }
 
@@ -250,13 +252,13 @@ function Controls(props: ControlProps) {
       let targetIndex = 0;
       if (
         completeMoveArray.current &&
-        !completeMoveArray.current.includes(removeQuotes[i].id)
+        !completeMoveArray.current.includes(removeQuotes[i].keyword)
       ) {
         for (let j = 0; j < quotes.length; j++) {
-          if (removeQuotes[i].id === quotes[j].id) {
+          if (removeQuotes[i].keyword === quotes[j].keyword) {
             targetIndex = j;
-            actionsRef.current = lift(removeQuotes[i].id);
-            completeMoveArray.current.push(removeQuotes[i].id);
+            actionsRef.current = lift(removeQuotes[i].keyword);
+            completeMoveArray.current.push(removeQuotes[i].keyword);
             break;
           }
         }
@@ -303,8 +305,8 @@ function Controls(props: ControlProps) {
       <button onClick={setting}>버튼 테스트 </button>
       <select disabled={!canLift} ref={selectRef}>
         {quotes.map((quote: Terms) => (
-          <option key={quote.id} value={quote.id}>
-            id: {quote.id}
+          <option key={quote.keyword} value={quote.keyword}>
+            keyword: {quote.keyword}
           </option>
         ))}
       </select>
@@ -407,7 +409,10 @@ export default function DndContainer(props: Props) {
   useEffect(() => {
     const quoteNextMap = new Map<string, quotesMapObject>();
     for (let i = 0; i < quotesNext.length; i++) {
-      quoteNextMap.set(quotesNext[i].id, { content: quotesNext[i], order: i });
+      quoteNextMap.set(quotesNext[i].keyword, {
+        content: quotesNext[i],
+        order: i,
+      });
     }
     /* dispacth  */
     dispatch(getRealtimeTermsRequest());
@@ -470,7 +475,7 @@ export default function DndContainer(props: Props) {
     const quotesRemove = quotes.filter(item => {
       //중복 제거
       for (let i = 0; i < quotesNext.length; i++) {
-        if (quotesNext[i].id === item.id) {
+        if (quotesNext[i].keyword === item.keyword) {
           leftQuotes.push(Object.assign({}, item)); //남은 친구들
           return false;
         }
@@ -481,7 +486,7 @@ export default function DndContainer(props: Props) {
     const concatQuotes = quotesNext.filter(item => {
       //중복 제거
       for (let i = 0; i < quotes.length; i++) {
-        if (quotes[i].id === item.id) {
+        if (quotes[i].keyword === item.keyword) {
           return false;
         }
       }
@@ -524,7 +529,7 @@ export default function DndContainer(props: Props) {
       for (let i = 0; i < concatQuotes.length; i++) {
         let flag = false;
         for (let j = 0; j < quotes.length; j++) {
-          if (concatQuotes[i].id === quotes[j].id) {
+          if (concatQuotes[i].keyword === quotes[j].keyword) {
             flag = true;
           }
         }
@@ -532,7 +537,7 @@ export default function DndContainer(props: Props) {
           setTimeout(() => {
             addQuotes(concatQuotes[i]);
             if (completeAddedArray && completeAddedArray.current) {
-              completeAddedArray.current.push(concatQuotes[i].id);
+              completeAddedArray.current.push(concatQuotes[i].keyword);
             }
           }, TIME_INTERVAL);
           console.log('[seo] return');

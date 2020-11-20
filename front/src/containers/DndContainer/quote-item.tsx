@@ -3,7 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '@atlaskit/theme';
 import { borderRadius, grid } from './constants';
-import type { Terms, AuthorColors } from './types';
+import type { AuthorColors } from './types';
+import { Terms } from '../../lib/api/weather';
 import type { DraggableProvided } from 'react-beautiful-dnd';
 
 type Props = {
@@ -197,14 +198,14 @@ function QuoteItem(props: Props) {
       {...provided.dragHandleProps}
       style={getStyle(provided, style)}
       data-is-dragging={isDragging}
-      data-testid={quote.id}
+      data-testid={quote.keyword}
       data-index={index}
-      aria-label={`quote ${quote.content}`}
+      aria-label={`quote ${quote.keyword}`}
     >
       {/*<Avatar src={quote.author.avatarUrl} alt={quote.author.name} />*/}
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
-        <BlockQuote>{quote.content}</BlockQuote>
+        <BlockQuote>{quote.keyword}</BlockQuote>
         {/*
         <Footer>
           <Author colors={quote.author.colors}>{quote.author.name}</Author>
