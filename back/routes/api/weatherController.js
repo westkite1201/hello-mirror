@@ -57,14 +57,12 @@ router.post('/getNaverRealtimeSearch', async (req, res) => {
   try {
     var util = require('util');
     var spawn = require('child_process').spawn;
-    console.log(FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py');
-    var process = spawn(
-      '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3',
-      [FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py', number],
-    );
+    var process = spawn('python3', [
+      FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py',
+      number,
+    ]);
     util.log('readingin');
     process.stdout.on('data', function (chunk) {
-      console.log('hello');
       let textChunk = chunk.toString('utf-8'); // buffer to string
       //textChunk = a(textChunk);
       util.log(textChunk);
