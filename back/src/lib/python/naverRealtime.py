@@ -33,13 +33,13 @@ def getNaverRealtimeSearchWord(urlParam):
 
 if __name__ == "__main__":
     param = {
-        'age': all,
-        'datetime': '2020 - 11 - 05T15 % 3A13 % 3A00',
-        'entertainment':2,
-        'groupingLevel': 4,
-        'marketing': 2,
-        'news': 2,
-        'sports': 2,
+        # 'age': all,
+        # 'datetime': '2020 - 11 - 05T15 % 3A13 % 3A00',
+        # 'entertainment':2,
+        # 'groupingLevel': 4,
+        # 'marketing': 2,
+        # 'news': 2,
+        # 'sports': 2,
     }
     response = getNaverRealtimeSearchWord(param)
     print(response)

@@ -12,6 +12,8 @@ import {
   getWeatherSuccess,
   getWeatherShortTermLiveSuccess,
   getWeatherDataShortTermLive,
+  getRealtimeTermsRequest,
+  getRealtimeTermsSuccess,
 } from './reducer';
 import {
   getWeatherDataPrivateMode,
@@ -19,6 +21,8 @@ import {
   WeatherRes,
   WeatherShortItem,
   WeatherItem,
+  getRealtimeTerms,
+  RealtimeTermsRes,
 } from '../../lib/api/weather';
 type payloadA = {
   nx: string;
@@ -62,9 +66,19 @@ function* getWeatherShortTerm(action) {
     // });
   }
 }
+function* getRealtimeTermsToApi(action) {
+  try {
+    const termsRes: RealtimeTermsRes = yield call(getRealtimeTerms);
+    console.log('termsRes', termsRes);
+    yield put(getRealtimeTermsSuccess(termsRes.ranks));
+  } catch (e) {
+    console.log('error');
+  }
+}
 
 export function* weatherSaga() {
   yield takeEvery('INCREMENT_ASYNC', incrementAsync);
   yield takeLatest(getWeatherDataShortTermLive, getWeatherShortTerm);
   yield takeLatest(getWeatherRequest, getWeather);
+  yield takeLatest(getRealtimeTermsRequest, getRealtimeTermsToApi);
 }

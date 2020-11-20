@@ -26,6 +26,8 @@ import { getQuotes, getQuote, getTerms, getTerm } from './data';
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
+import { useSelector, useDispatch } from 'react-redux';
+import { getRealtimeTermsRequest } from '../../store/weather/reducer';
 interface quotesMapObject {
   content: Terms;
   order: number;
@@ -391,7 +393,7 @@ export default function DndContainer(props: Props) {
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
   const [quotes, setQuotes] = useState(getTerms(10, false));
-  const [quotesNext, setQuotesNext] = useState(getTerms(10, true));
+  const [quotesNext, setQuotesNext] = useState(getTerms(0, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
     new Map<string, quotesMapObject>(),
   );
@@ -399,6 +401,7 @@ export default function DndContainer(props: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
+  const dispatch = useDispatch();
 
   //다음 변경될 quotes 세팅
   useEffect(() => {
@@ -406,6 +409,9 @@ export default function DndContainer(props: Props) {
     for (let i = 0; i < quotesNext.length; i++) {
       quoteNextMap.set(quotesNext[i].id, { content: quotesNext[i], order: i });
     }
+    /* dispacth  */
+    dispatch(getRealtimeTermsRequest());
+
     setQuotesNextMap(quoteNextMap);
   }, []);
 

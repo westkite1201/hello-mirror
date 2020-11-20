@@ -50,7 +50,7 @@ String.prototype.replaceAll = function (org, dest) {
   return this.split(org).join(dest);
 };
 const FILE_ROOT_DIR = process.cwd();
-router.post('/getNaverRealtimeSearch', async (req, res) => {
+router.post('/getRealtimeTerms', async (req, res) => {
   //console.log(req.body);
   let number = req.body.backjoonNumber;
   //console.log(number);

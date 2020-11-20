@@ -3,6 +3,8 @@ import {
   WeatherItem,
   WeatherShortItem,
   WeatherRequestPayloadType,
+  Ranks,
+  Terms,
 } from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
 import _ from 'lodash';
@@ -28,6 +30,7 @@ type CurrentDisplayState = {
   shortWeatherInfo?: WeatherShortInfoData;
   isFetchingShort: boolean;
   loading: boolean;
+  realtimeTerms: Ranks;
 };
 
 const initialState: CurrentDisplayState = {
@@ -36,6 +39,7 @@ const initialState: CurrentDisplayState = {
   shortWeatherInfo: undefined,
   isFetchingShort: false,
   loading: false,
+  realtimeTerms: { ts: '', sm: '', data: [], message: '' },
 };
 
 // createAction으로 액션 생성 함수를 만들 수 있다.
@@ -198,6 +202,13 @@ const countSlice = createSlice({
       state.shortWeatherInfo = shortWeatherInfoTemp;
       state.isFetchingShort = false;
     },
+    getRealtimeTermsRequest(state) {
+      state.loading = true;
+    },
+    getRealtimeTermsSuccess(state, { payload }: PayloadAction<Ranks>) {
+      state.realtimeTerms = payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -210,6 +221,8 @@ export const {
   getWeatherShortTermLive,
   getWeatherShortTermLiveRequest,
   getWeatherShortTermLiveSuccess,
+  getRealtimeTermsRequest,
+  getRealtimeTermsSuccess,
 } = countSlice.actions;
 
 export default countSlice.reducer;

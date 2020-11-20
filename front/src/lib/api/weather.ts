@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { clientConfig } from '../../configuration/clientConfig';
+
 export interface Quote {
   font_color: string;
   thumbnail_user_image: string;
@@ -64,6 +65,41 @@ export interface WeatherRequestPayloadType {
   nx: string;
   ny: string;
   isShortTeamYn: boolean;
+}
+export interface Terms {
+  keyword: string;
+  rank: number;
+  keywordSynonyms: string[];
+}
+
+export interface Ranks {
+  ts: string;
+  sm: string;
+  data: Terms[];
+  message: string;
+}
+
+export interface Weights {
+  marketingCode: string;
+  newsCode: string;
+  entertainmentCode: string;
+  sportsCode: string;
+}
+export interface RealtimeTermsRes {
+  datetime: Date;
+  weights: Weights;
+  ranks: Ranks;
+  statusCode: number;
+  returnCode: number;
+  message: string;
+  ageCode: string;
+  groupingLevelCode: string;
+}
+export async function getRealtimeTerms() {
+  const res = await axios.post<RealtimeTermsRes>(
+    clientConfig.endpoint.api + '/weather/getRealtimeTerms',
+  );
+  return res.data;
 }
 
 /* api 이용 */
