@@ -1,6 +1,7 @@
 // @flow
 import { colors } from '@atlaskit/theme';
 import type { Author, Quote, QuoteMap, Terms } from './types';
+
 import finnImg from './media/finn-min.png';
 import bmoImg from './media/bmo-min.png';
 import princessImg from './media/princess-min.png';

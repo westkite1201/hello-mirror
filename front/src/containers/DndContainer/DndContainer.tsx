@@ -8,13 +8,6 @@ import React, {
   useEffect,
 } from 'react';
 import styled from 'styled-components';
-//import type { Terms } from './types';
-// import type {
-//   DropResult,
-//   PreDragActions,
-//   SnapDragActions,
-//   SensorAPI,
-// } from 'react-beautiful-dnd';
 import {
   DropResult,
   PreDragActions,
@@ -22,14 +15,14 @@ import {
   SensorAPI,
   DragDropContext,
 } from 'react-beautiful-dnd';
-import { getQuotes, getQuote, getTerms, getTerm } from './data';
+import { getTerms, getTerm } from './data2';
 import QuoteList from './quote-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRealtimeTermsRequest } from '../../store/weather/reducer';
 import { Terms } from '../../lib/api/weather';
-
+import { RootState } from '../../store/rootReducer';
 interface quotesMapObject {
   content: Terms;
   order: number;
@@ -102,7 +95,7 @@ const ActionButton = styled(Button)`
   height: 40px;
 `;
 
-const TIME_INTERVAL = 50;
+const TIME_INTERVAL = 200;
 function Controls(props: ControlProps) {
   const {
     quotes,
@@ -395,11 +388,11 @@ export default function DndContainer(props: Props) {
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
   const [quotes, setQuotes] = useState(getTerms(10, false));
-  const [quotesNext, setQuotesNext] = useState(getTerms(0, true));
+  const [quotesNext, setQuotesNext] = useState(getTerms(10, true));
   const [quotesNextMap, setQuotesNextMap] = useState(
     new Map<string, quotesMapObject>(),
   );
-
+  const { realtimeTerms } = useSelector((state: RootState) => state.weather);
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
@@ -544,20 +537,6 @@ export default function DndContainer(props: Props) {
           return;
         }
       }
-      // // console.log('[seo] cheak aDDED');
-      // // cheakAdded
-      // console.log(
-      //   '[seo] cheakAdded completeAddedArray.current= ',
-      //   completeAddedArray.current,
-      //   ' concatQuotes.length= ',
-      //   concatQuotes,
-      // );
-      // if (
-      //   completeAddedArray.current &&
-      //   completeAddedArray.current.length === concatQuotes.length
-      // ) {
-      //   //added 완료
-      //   console.log('[seo] cheakAdded  true');
       setIsAdded(true);
       //}
     }
