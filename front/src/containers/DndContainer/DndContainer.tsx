@@ -32,6 +32,7 @@ type ControlProps = {
   isDragging: boolean;
   isAdded: boolean;
   isRemoved: boolean;
+  setInit: () => void;
   removeFinal: () => void;
   lift: (quoteId: string) => SnapDragActions | null;
 };
@@ -91,7 +92,7 @@ const ControlBox = styled.div`
 //   height: 40px;
 // `;
 
-const TIME_INTERVAL = 200;
+const TIME_INTERVAL = 500;
 function Controls(props: ControlProps) {
   const {
     terms,
@@ -103,6 +104,7 @@ function Controls(props: ControlProps) {
     removeFinal,
     isAdded,
     isRemoved,
+    setInit,
   } = props;
 
   const completeMoveArray = useRef<string[] | null>([]);
@@ -149,19 +151,24 @@ function Controls(props: ControlProps) {
   }
   //정렬 함수
   async function moveToOrder(selectTerms, gap) {
-    const presentTermsKeyword = selectTerms.keyword;
-    console.log('[seo] keyword', presentTermsKeyword, gap);
-    actionsRef.current = lift(presentTermsKeyword);
-    if (gap > 0) {
-      await moveItem(gap, true);
-      return true;
+    if (selectTerms) {
+      const presentTermsKeyword = selectTerms.keyword;
+      console.log('[seo] keyword', presentTermsKeyword, gap);
+      actionsRef.current = lift(presentTermsKeyword);
+      if (gap > 0) {
+        await moveItem(gap, true);
+        return true;
+      } else {
+        await moveItem(Math.abs(gap), false);
+        return true;
+      }
     } else {
-      await moveItem(Math.abs(gap), false);
-      return true;
+      return false;
     }
   }
 
   async function settingLocationTerms() {
+    console.log('[seo] settingLocationTerms ');
     let selectTerms;
     let maxGap = 0;
     //1. 가장 많이 움직이는 terms 선택
@@ -176,8 +183,10 @@ function Controls(props: ControlProps) {
         }
       }
     }
+    console.log('[seo] find! selectTerms ', selectTerms);
     //1.가장 큰 갭을 보인 친구를 먼저 움직임
-    moveToOrder(selectTerms, maxGap);
+    const isMove = await moveToOrder(selectTerms, maxGap);
+    console.log('[seo] ismove', isMove);
     return;
   }
 
@@ -209,21 +218,27 @@ function Controls(props: ControlProps) {
       completeMoveArray.current &&
       completeMoveArray.current.length === removeTerms.length
     ) {
-      //setTimeout(() => {
-      removeFinal();
-      completeMoveArray.current = [];
-      //}, TIME_INTERVAL + 500);
+      setTimeout(() => {
+        removeFinal();
+        completeMoveArray.current = [];
+      }, TIME_INTERVAL + 500);
     }
   }
 
   useEffect(() => {
+    console.log('[seo] isRemoved', isRemoved, ' isAdded ', isAdded);
     if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
       removeItemsMoveToBottom();
     }
-    if (isRemoved && isAdded && isDifferent()) {
-      setTimeout(() => {
-        settingLocationTerms();
-      }, TIME_INTERVAL);
+    if (isRemoved && isAdded) {
+      if (isDifferent()) {
+        setTimeout(() => {
+          settingLocationTerms();
+        }, TIME_INTERVAL);
+      } else {
+        //바뀐게 없으면 초기화
+        setInit();
+      }
     }
   }, [isRemoved, isAdded, removeTerms, terms]);
 
@@ -337,20 +352,34 @@ export default function DndContainer(props: Props) {
   const sensorAPIRef = useRef<SensorAPI | null>(null);
   const dispatch = useDispatch();
 
-  //다음 변경될 terms 세팅
-  useEffect(() => {
-    /* dispacth  */
-    dispatch(getRealtimeTermsRequest());
-  }, []);
+  function setInit() {
+    console.log('[seo] setInit');
+    // setIsRemoved(false);
+    // setIsAdded(false);
+  }
+  // function dispatchTerms() {
+  //   //dispatch(getRealtimeTermsRequest());
+  // }
+  // //다음 변경될 terms 세팅
+  // useEffect(() => {
+  //   dispatchTerms();
+  //   /* dispacth  */
+  //   setInterval(dispatchTerms, 1000 * 10);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (realtimeTerms) {
+  //     setTerms(realtimeTerms.data);
+  //   }
+  //   if (realtimeTermsNext) {
+  //     setTermsNext(realtimeTermsNext.data);
+  //   }
+  // }, [realtimeTerms, realtimeTermsNext]);
 
   useEffect(() => {
-    if (realtimeTerms) {
-      setTerms(realtimeTerms.data);
-    }
-    if (realtimeTermsNext) {
-      setTermsNext(realtimeTermsNext.data);
-    }
-  }, [realtimeTerms, realtimeTermsNext]);
+    if (terms && terms.length !== 0 && termsNext && termsNext.length !== 0)
+      deleteItem();
+  }, [terms, termsNext]);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
@@ -451,11 +480,11 @@ export default function DndContainer(props: Props) {
     console.log('[seo] removeFinal leftTerms ', leftTerms);
     setTerms(leftTerms);
     setIsRemoved(true); // remove 종료 flag 세팅
-    //setLeftTerms([]);
+    setLeftTerms([]);
   }
 
   useEffect(() => {
-    console.log('[seo] useEffect terms!!!', terms);
+    console.log('[seo] useEffect terms!!!', terms, ' termsnext ', termsNext);
     //remove 종료시 concat 추가
     //add terms
     if (isRemoved && !isAdded) {
@@ -480,7 +509,7 @@ export default function DndContainer(props: Props) {
       setIsAdded(true);
       //}
     }
-  }, [concatTerms, isRemoved, isAdded, terms]);
+  }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
   function addTerms(item) {
     console.log('[seo] addQuotes!');
@@ -520,6 +549,7 @@ export default function DndContainer(props: Props) {
             isDragging={isControlDragging}
             isAdded={isAdded}
             isRemoved={isRemoved}
+            setInit={setInit}
             lift={lift}
           />
         </Layout>

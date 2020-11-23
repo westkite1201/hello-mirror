@@ -206,12 +206,17 @@ function TermsItem(props: Props) {
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
         <BlockQuote>{terms.keyword}</BlockQuote>
-        {/*
+
         <Footer>
-          <Author colors={terms.author.colors}>{terms.author.name}</Author>
-          <QuoteId>id:{terms.id}</QuoteId>
+          {/*<Author colors={terms.author.colors}>{terms.author.name}</Author>*/}
+          <QuoteId>
+            id:
+            {terms.keywordSynonyms &&
+              terms.keywordSynonyms.map(item => {
+                <span>{item}</span>;
+              })}
+          </QuoteId>
         </Footer>
-        */}
       </Content>
     </Container>
   );
