@@ -8,7 +8,7 @@ import { Terms } from '../../lib/api/weather';
 import type { DraggableProvided } from 'react-beautiful-dnd';
 
 type Props = {
-  quote: Terms;
+  terms: Terms;
   isDragging: boolean;
   provided: DraggableProvided;
   isClone?: boolean;
@@ -125,10 +125,10 @@ const Content = styled.div`
 
 const BlockQuote = styled.div`
   &::before {
-    content: open-quote;
+    content: open-terms;
   }
   &::after {
-    content: close-quote;
+    content: close-terms;
   }
 `;
 
@@ -175,9 +175,9 @@ function getStyle(provided: DraggableProvided, style: any) {
 // Need to be super sure we are not relying on PureComponent here for
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
-function QuoteItem(props: Props) {
+function TermsItem(props: Props) {
   const {
-    quote,
+    terms,
     isDragging,
     isGroupedOver,
     provided,
@@ -192,24 +192,24 @@ function QuoteItem(props: Props) {
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
       isClone={isClone}
-      //colors={quote.author.colors}
+      //colors={terms.author.colors}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       style={getStyle(provided, style)}
       data-is-dragging={isDragging}
-      data-testid={quote.keyword}
+      data-testid={terms.keyword}
       data-index={index}
-      aria-label={`quote ${quote.keyword}`}
+      aria-label={`terms ${terms.keyword}`}
     >
-      {/*<Avatar src={quote.author.avatarUrl} alt={quote.author.name} />*/}
+      {/*<Avatar src={terms.author.avatarUrl} alt={terms.author.name} />*/}
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
-        <BlockQuote>{quote.keyword}</BlockQuote>
+        <BlockQuote>{terms.keyword}</BlockQuote>
         {/*
         <Footer>
-          <Author colors={quote.author.colors}>{quote.author.name}</Author>
-          <QuoteId>id:{quote.id}</QuoteId>
+          <Author colors={terms.author.colors}>{terms.author.name}</Author>
+          <QuoteId>id:{terms.id}</QuoteId>
         </Footer>
         */}
       </Content>
@@ -217,4 +217,4 @@ function QuoteItem(props: Props) {
   );
 }
 
-export default React.memo<Props>(QuoteItem);
+export default React.memo<Props>(TermsItem);

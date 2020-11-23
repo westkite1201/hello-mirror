@@ -8,6 +8,7 @@ import {
 } from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
 import _ from 'lodash';
+import { realTiemSearchTermsNew } from '../../containers/DndContainer/data2';
 
 export type WeatherShortInfoData = {
   baseDate: string;
@@ -31,6 +32,7 @@ type CurrentDisplayState = {
   isFetchingShort: boolean;
   loading: boolean;
   realtimeTerms: Ranks;
+  realtimeTermsNext: Ranks;
 };
 
 const initialState: CurrentDisplayState = {
@@ -40,6 +42,7 @@ const initialState: CurrentDisplayState = {
   isFetchingShort: false,
   loading: false,
   realtimeTerms: { ts: '', sm: '', data: [], message: '' },
+  realtimeTermsNext: { ts: '', sm: '', data: [], message: '' },
 };
 
 // createAction으로 액션 생성 함수를 만들 수 있다.
@@ -206,7 +209,19 @@ const countSlice = createSlice({
       state.loading = true;
     },
     getRealtimeTermsSuccess(state, { payload }: PayloadAction<Ranks>) {
-      state.realtimeTerms = payload;
+      //첫번째 인경우
+      if (
+        state.realtimeTerms.data.length === 0 &&
+        state.realtimeTermsNext.data.length === 0
+      ) {
+        state.realtimeTerms = payload;
+        state.realtimeTermsNext = payload;
+      }
+      //setting 이 되어있으면
+      else if (state.realtimeTermsNext.data.length !== 0) {
+        state.realtimeTerms = state.realtimeTermsNext;
+        state.realtimeTermsNext = payload;
+      }
       state.loading = false;
     },
   },

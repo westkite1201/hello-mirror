@@ -16,22 +16,18 @@ import {
   DragDropContext,
 } from 'react-beautiful-dnd';
 import { getTerms, getTerm } from './data2';
-import QuoteList from './quote-list';
+import QuoteList from './terms-list';
 import reorder from './reorder';
 import { grid, borderRadius } from './constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRealtimeTermsRequest } from '../../store/weather/reducer';
 import { Terms } from '../../lib/api/weather';
 import { RootState } from '../../store/rootReducer';
-interface quotesMapObject {
-  content: Terms;
-  order: number;
-}
+
 type ControlProps = {
-  quotes: Terms[];
-  quotesNext: Terms[];
-  quotesNextMap: Map<string, quotesMapObject>;
-  removeQuotes: Terms[];
+  removeTerms: Terms[];
+  terms: Terms[];
+  termsNext: Terms[];
   canLift: boolean;
   isDragging: boolean;
   isAdded: boolean;
@@ -49,71 +45,68 @@ const ControlBox = styled.div`
   flex-direction: column;
 `;
 
-const ArrowBox = styled.div`
-  margin-top: ${grid * 4}px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+// const ArrowBox = styled.div`
+//   margin-top: ${grid * 4}px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// `;
 
-const Button = styled.button`
-  --off-white: hsla(60, 100%, 98%, 1);
-  --dark-off-white: #efefe3;
-  --darker-off-white: #d6d6cb;
-  --border-width: 4px;
-  background: var(--off-white);
-  border-radius: ${borderRadius}px;
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-  font-size: 16px;
-  position: relative;
-  box-sizing: border-box;
-  border: var(--border-width) solid var(--dark-off-white);
-  box-shadow: 0 0 0 1px var(--darker-off-white);
-  margin: 2px;
-  ::before {
-    position: absolute;
-    content: ' ';
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border: 1px solid var(--dark-off-white);
-  }
-  :active {
-    border-width: 3px;
-  }
-`;
+// const Button = styled.button`
+//   --off-white: hsla(60, 100%, 98%, 1);
+//   --dark-off-white: #efefe3;
+//   --darker-off-white: #d6d6cb;
+//   --border-width: 4px;
+//   background: var(--off-white);
+//   border-radius: ${borderRadius}px;
+//   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+//   font-size: 16px;
+//   position: relative;
+//   box-sizing: border-box;
+//   border: var(--border-width) solid var(--dark-off-white);
+//   box-shadow: 0 0 0 1px var(--darker-off-white);
+//   margin: 2px;
+//   ::before {
+//     position: absolute;
+//     content: ' ';
+//     top: 0;
+//     right: 0;
+//     bottom: 0;
+//     left: 0;
+//     border: 1px solid var(--dark-off-white);
+//   }
+//   :active {
+//     border-width: 3px;
+//   }
+// `;
 
-const ArrowButton = styled(Button)`
-  width: 40px;
-  height: 40px;
-`;
+// const ArrowButton = styled(Button)`
+//   width: 40px;
+//   height: 40px;
+// `;
 
 // locking the height so that the border width change
 // does not change the size of the button
-const ActionButton = styled(Button)`
-  height: 40px;
-`;
+// const ActionButton = styled(Button)`
+//   height: 40px;
+// `;
 
 const TIME_INTERVAL = 200;
 function Controls(props: ControlProps) {
   const {
-    quotes,
+    terms,
     canLift,
     isDragging,
     lift,
-    //quotesNext,
-    removeQuotes,
+    termsNext,
+    removeTerms,
     removeFinal,
     isAdded,
     isRemoved,
-    quotesNextMap,
   } = props;
 
-  const [sortingIndex, setSortingIndex] = useState(1);
   const completeMoveArray = useRef<string[] | null>([]);
   const actionsRef = useRef<SnapDragActions | null>();
-
   const selectRef = createRef<HTMLSelectElement>();
 
   function maybe(fn: (callbacks: SnapDragActions) => void) {
@@ -144,118 +137,68 @@ function Controls(props: ControlProps) {
       callbacks.drop();
     });
   }
-  //정렬 함수
-  async function moveToOrder(quoteItem) {
-    console.log('[seo] movetoOrder ', quoteItem[0] + ' ' + quoteItem[1]);
-    const presentQuoteId = quoteItem[0];
-    const presentQuoteOrder = quoteItem[1].order;
-    const nextQuoteItem = quotesNextMap.get(presentQuoteId);
-    console.log(
-      '[seo] presentQuoteId ',
-      presentQuoteId,
-      ' presentQuoteOrder = ',
-      presentQuoteOrder,
-      ' nextQuoteItem ',
-      nextQuoteItem,
-    );
-    if (nextQuoteItem) {
-      const nextQuoteOrder = nextQuoteItem.order;
-      //다른 경우 gap 만큼 이동
-      if (presentQuoteOrder !== nextQuoteOrder) {
-        //pre 1 next 3
-        //gap 1 - 3 = ( -2 )
-        const gap = presentQuoteOrder - nextQuoteOrder;
-        console.log('[SEO] GAP ', gap);
-        actionsRef.current = lift(presentQuoteId);
-        if (gap > 0) {
-          await moveItem(gap, true);
-          return true;
-        } else {
-          await moveItem(Math.abs(gap), false);
-          return true;
-        }
-      } else {
-        //같은 경우 이동 할 필요 없음
-        maybe((callbacks: SnapDragActions) => {
-          actionsRef.current = null;
-          callbacks.drop();
-        });
-        return false;
-      }
-    }
-  }
-  //리펙토링 필요
+
   //다른지 비교
   function isDifferent() {
-    const quoteMap = new Map<string, quotesMapObject>();
-    for (let i = 0; i < quotes.length; i++) {
-      quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
-    }
-    for (const quoteItem of Array.from(quoteMap)) {
-      console.log(quoteItem[0] + ' ' + quoteItem[1]);
-      const presentQuoteId = quoteItem[0];
-      const presentQuoteOrder = quoteItem[1].order;
-      const nextQuoteItem = quotesNextMap.get(presentQuoteId);
-      if (nextQuoteItem) {
-        const nextQuoteOrder = nextQuoteItem.order;
-        if (presentQuoteOrder === nextQuoteOrder) {
-          continue;
-        } else {
-          return true;
-        }
+    for (let i = 0; i < terms.length; i++) {
+      if (terms[i].keyword !== termsNext[i].keyword) {
+        return true;
       }
     }
     return false;
   }
-
-  async function setting() {
-    const quoteMap = new Map<string, quotesMapObject>();
-    //다이나믹함을 위아래 랜덤으로 위아래
-    if (Math.floor(Math.random() * 2) % 2 === 0) {
-      console.log('[seo][setting] 위');
-      for (let i = 0; i < quotes.length; i++) {
-        quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
-      }
+  //정렬 함수
+  async function moveToOrder(selectTerms, gap) {
+    const presentTermsKeyword = selectTerms.keyword;
+    console.log('[seo] keyword', presentTermsKeyword, gap);
+    actionsRef.current = lift(presentTermsKeyword);
+    if (gap > 0) {
+      await moveItem(gap, true);
+      return true;
     } else {
-      console.log('[seo][setting] 아래');
-      for (let i = quotes.length - 1; i >= 0; i--) {
-        quoteMap.set(quotes[i].keyword, { content: quotes[i], order: i });
-      }
+      await moveItem(Math.abs(gap), false);
+      return true;
     }
+  }
 
-    let selectQuotes;
-    for (const quoteItem of Array.from(quoteMap)) {
-      if (quoteItem[1].order === sortingIndex) {
-        selectQuotes = quoteItem;
-        break;
+  async function settingLocationTerms() {
+    let selectTerms;
+    let maxGap = 0;
+    //1. 가장 많이 움직이는 terms 선택
+    for (let i = 0; i < terms.length; i++) {
+      for (let j = 0; j < termsNext.length; j++) {
+        if (terms[i].keyword === termsNext[j].keyword) {
+          const gap = terms[i].rank - termsNext[j].rank;
+          if (maxGap < gap) {
+            maxGap = gap;
+            selectTerms = terms[i];
+          }
+        }
       }
     }
-    console.log('[seo] selectQuotes] ', selectQuotes);
-    const isMoving = await moveToOrder(selectQuotes);
-    if (!isMoving) {
-      //움직이지 않았으면 소팅인덱스를 1씩 증가시킴
-      setSortingIndex(prev => prev + 1);
-    }
+    //1.가장 큰 갭을 보인 친구를 먼저 움직임
+    moveToOrder(selectTerms, maxGap);
+    return;
   }
 
   async function removeItemsMoveToBottom() {
     console.log('[seo] removeItemsMoveToBottom');
-    //1. remove quotes 하단으로 이동
-    for (let i = 0; i < removeQuotes.length; i++) {
+    //1. remove terms 하단으로 이동
+    for (let i = 0; i < removeTerms.length; i++) {
       let targetIndex = 0;
       if (
         completeMoveArray.current &&
-        !completeMoveArray.current.includes(removeQuotes[i].keyword)
+        !completeMoveArray.current.includes(removeTerms[i].keyword)
       ) {
-        for (let j = 0; j < quotes.length; j++) {
-          if (removeQuotes[i].keyword === quotes[j].keyword) {
+        for (let j = 0; j < terms.length; j++) {
+          if (removeTerms[i].keyword === terms[j].keyword) {
             targetIndex = j;
-            actionsRef.current = lift(removeQuotes[i].keyword);
-            completeMoveArray.current.push(removeQuotes[i].keyword);
+            actionsRef.current = lift(removeTerms[i].keyword);
+            completeMoveArray.current.push(removeTerms[i].keyword);
             break;
           }
         }
-        const gap = quotes.length - targetIndex;
+        const gap = terms.length - targetIndex;
         await moveItem(gap, false);
         //break;
         return;
@@ -264,7 +207,7 @@ function Controls(props: ControlProps) {
     //2. removeItems 정렬이 완료되었으면 제거
     if (
       completeMoveArray.current &&
-      completeMoveArray.current.length === removeQuotes.length
+      completeMoveArray.current.length === removeTerms.length
     ) {
       //setTimeout(() => {
       removeFinal();
@@ -272,32 +215,24 @@ function Controls(props: ControlProps) {
       //}, TIME_INTERVAL + 500);
     }
   }
+
   useEffect(() => {
-    if (!isRemoved && !isAdded && removeQuotes && removeQuotes.length !== 0) {
+    if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
       removeItemsMoveToBottom();
     }
-    console.log('[seo] isRemoved', isRemoved);
-    console.log('[seo] isAdded', isAdded);
-    if (
-      isRemoved &&
-      isAdded &&
-      isDifferent() &&
-      sortingIndex !== quotes.length
-    ) {
-      console.log('[seo] setting hello');
+    if (isRemoved && isAdded && isDifferent()) {
       setTimeout(() => {
-        setting();
+        settingLocationTerms();
       }, TIME_INTERVAL);
-    } else {
-      setSortingIndex(1); //초기화
     }
-  }, [isRemoved, isAdded, removeQuotes, quotes, sortingIndex]);
+  }, [isRemoved, isAdded, removeTerms, terms]);
 
   return (
     <ControlBox>
-      <button onClick={setting}>버튼 테스트 </button>
+      <button onClick={settingLocationTerms}>버튼 테스트 </button>
+      {/*}
       <select disabled={!canLift} ref={selectRef}>
-        {quotes.map((quote: Terms) => (
+        {terms.map((quote: Terms) => (
           <option key={quote.keyword} value={quote.keyword}>
             keyword: {quote.keyword}
           </option>
@@ -362,6 +297,7 @@ function Controls(props: ControlProps) {
           </ArrowButton>
         </div>
       </ArrowBox>
+          */}
     </ControlBox>
   );
 }
@@ -380,38 +316,41 @@ type Props = {
 };
 
 export default function DndContainer(props: Props) {
-  //const [quotes, setQuotes] = useState(props.initial);
-  const [leftQuotes, setLeftQuotes] = useState<Terms[]>([]);
-  const [removeQuotes, setRemoveQuotes] = useState<Terms[]>([]);
-  const [concatQuotes, setConcatQuotes] = useState<Terms[]>([]);
+  //const [terms, setTerms] = useState(props.initial);
+  const [leftTerms, setLeftTerms] = useState<Terms[]>([]);
+  const [removeTerms, setRemoveTerms] = useState<Terms[]>([]);
+  const [concatTerms, setConcatTerms] = useState<Terms[]>([]);
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedArray = useRef<string[] | null>([]);
-  const [quotes, setQuotes] = useState(getTerms(10, false));
-  const [quotesNext, setQuotesNext] = useState(getTerms(10, true));
-  const [quotesNextMap, setQuotesNextMap] = useState(
-    new Map<string, quotesMapObject>(),
+  //const [terms, setTerms] = useState(getTerms(10, false));
+  const [termsNext, setTermsNext] = useState(getTerms(10, true));
+  const [terms, setTerms] = useState(getTerms(10, false));
+  // const [termsNextMap, setTernsNextMap] = useState(
+  //   new Map<string, quotesMapObject>(),
+  // );
+  const { realtimeTerms, realtimeTermsNext } = useSelector(
+    (state: RootState) => state.weather,
   );
-  const { realtimeTerms } = useSelector((state: RootState) => state.weather);
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
   const dispatch = useDispatch();
 
-  //다음 변경될 quotes 세팅
+  //다음 변경될 terms 세팅
   useEffect(() => {
-    const quoteNextMap = new Map<string, quotesMapObject>();
-    for (let i = 0; i < quotesNext.length; i++) {
-      quoteNextMap.set(quotesNext[i].keyword, {
-        content: quotesNext[i],
-        order: i,
-      });
-    }
     /* dispacth  */
     dispatch(getRealtimeTermsRequest());
-
-    setQuotesNextMap(quoteNextMap);
   }, []);
+
+  useEffect(() => {
+    if (realtimeTerms) {
+      setTerms(realtimeTerms.data);
+    }
+    if (realtimeTermsNext) {
+      setTermsNext(realtimeTermsNext.data);
+    }
+  }, [realtimeTerms, realtimeTermsNext]);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
@@ -426,15 +365,21 @@ export default function DndContainer(props: Props) {
         return;
       }
 
-      const newQuotes = reorder(
-        quotes,
+      let newTerms = reorder(
+        terms,
         result.source.index,
         result.destination.index,
       );
-
-      setQuotes(newQuotes);
+      console.log('[seo] newTerms', newTerms);
+      newTerms = newTerms.map((item, index) => {
+        return {
+          ...item,
+          rank: index + 1,
+        };
+      });
+      setTerms(newTerms);
     },
-    [quotes],
+    [terms],
   );
 
   function lift(quoteId: string) {
@@ -462,75 +407,70 @@ export default function DndContainer(props: Props) {
   // function manageQuotes() {}
 
   function deleteItem() {
-    const leftQuotes: Terms[] = [];
-    //const concatQuotes = new Map<string, Terms>();
-    //const concatQuotes: Terms[] = [];
-    const quotesRemove = quotes.filter(item => {
+    const leftTerms: Terms[] = [];
+    const termsRemove = terms.filter(item => {
       //중복 제거
-      for (let i = 0; i < quotesNext.length; i++) {
-        if (quotesNext[i].keyword === item.keyword) {
-          leftQuotes.push(Object.assign({}, item)); //남은 친구들
+      for (let i = 0; i < termsNext.length; i++) {
+        if (termsNext[i].keyword === item.keyword) {
+          leftTerms.push(Object.assign({}, item)); //남은 친구들
           return false;
         }
       }
       return true;
     });
 
-    const concatQuotes = quotesNext.filter(item => {
+    const concatTerms = termsNext.filter(item => {
       //중복 제거
-      for (let i = 0; i < quotes.length; i++) {
-        if (quotes[i].keyword === item.keyword) {
+      for (let i = 0; i < terms.length; i++) {
+        if (terms[i].keyword === item.keyword) {
           return false;
         }
       }
       return true;
     });
     //삭제 될게 없다면
-    if (quotesRemove && quotesRemove.length === 0) {
+    if (termsRemove && termsRemove.length === 0) {
       setIsRemoved(true);
     }
-    if (concatQuotes && concatQuotes.length === 0) {
+    if (concatTerms && concatTerms.length === 0) {
       setIsAdded(true);
     }
-    console.log('[seo] leftQuotes', leftQuotes);
-    console.log('[seo] quotesRemove', quotesRemove);
-    console.log('[seo] concatQuotes', concatQuotes);
-    setRemoveQuotes(quotesRemove); //제거할 애들
-    setLeftQuotes(leftQuotes.slice()); //본 quetos에 서 남은 애들
-    setConcatQuotes(concatQuotes);
-    //setConcatQuotesMap(concatQuotes);
+    console.log('[seo] leftTerms', leftTerms);
+    console.log('[seo] termsRemove', termsRemove);
+    console.log('[seo] concatTerms', concatTerms);
+    setRemoveTerms(termsRemove); //제거할 애들
+    setLeftTerms(leftTerms.slice()); //본 quetos에 서 남은 애들
+    setConcatTerms(concatTerms);
+    //setConcatQuotesMap(concatTerms);
     //remove 할 애들setConcatQuotes
-    //quotes 움직이기
+    //terms 움직이기
     //remove 하기
     //추가할 애들 추가
   }
   function removeFinal() {
-    console.log('[seo] removeFinal leftQuotes ', leftQuotes);
-    setQuotes(leftQuotes);
+    console.log('[seo] removeFinal leftTerms ', leftTerms);
+    setTerms(leftTerms);
     setIsRemoved(true); // remove 종료 flag 세팅
-    //setLeftQuotes([]);
+    //setLeftTerms([]);
   }
 
   useEffect(() => {
-    console.log('[seo] useEffect quotes!!!', quotes);
+    console.log('[seo] useEffect terms!!!', terms);
     //remove 종료시 concat 추가
-    //add quotes
+    //add terms
     if (isRemoved && !isAdded) {
-      //for (const quoteItem of Array.from(concatQuotesMap)) {
-      // console.log('[seo] concatQuotes', concatQuotes);
-      // console.log('[seo] quotes', quotes);
-      for (let i = 0; i < concatQuotes.length; i++) {
+      for (let i = 0; i < concatTerms.length; i++) {
         let flag = false;
-        for (let j = 0; j < quotes.length; j++) {
-          if (concatQuotes[i].keyword === quotes[j].keyword) {
+        for (let j = 0; j < terms.length; j++) {
+          if (concatTerms[i].keyword === terms[j].keyword) {
             flag = true;
           }
         }
         if (!flag) {
           setTimeout(() => {
-            addQuotes(concatQuotes[i]);
+            addTerms(concatTerms[i]);
             if (completeAddedArray && completeAddedArray.current) {
-              completeAddedArray.current.push(concatQuotes[i].keyword);
+              completeAddedArray.current.push(concatTerms[i].keyword);
             }
           }, TIME_INTERVAL);
           console.log('[seo] return');
@@ -540,11 +480,11 @@ export default function DndContainer(props: Props) {
       setIsAdded(true);
       //}
     }
-  }, [concatQuotes, isRemoved, isAdded, quotes]);
+  }, [concatTerms, isRemoved, isAdded, terms]);
 
-  function addQuotes(item) {
+  function addTerms(item) {
     console.log('[seo] addQuotes!');
-    setQuotes([...quotes, item]);
+    setTerms([...terms, item]);
   }
 
   return (
@@ -555,7 +495,7 @@ export default function DndContainer(props: Props) {
       <button
         type="button"
         onClick={() => {
-          setQuotes([...quotes, getTerm()]);
+          setTerms([...terms, getTerm()]);
         }}
       >
         Add new item
@@ -570,12 +510,11 @@ export default function DndContainer(props: Props) {
         ]}
       >
         <Layout>
-          <QuoteList listId="list" quotes={quotes} title="hello" />
+          <QuoteList listId="list" terms={terms} title="실시간 검색어" />
           <Controls
-            quotes={quotes}
-            quotesNext={quotesNext}
-            quotesNextMap={quotesNextMap}
-            removeQuotes={removeQuotes}
+            terms={terms}
+            termsNext={termsNext}
+            removeTerms={removeTerms}
             removeFinal={removeFinal}
             canLift={!isDragging}
             isDragging={isControlDragging}

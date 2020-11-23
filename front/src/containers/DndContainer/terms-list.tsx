@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '@atlaskit/theme';
 //import { Droppable, Draggable } from 'react-beautiful-dnd';
-import QuoteItem from './quote-item';
+import TermsItem from './terms-item';
 import { grid } from './constants';
 import Title from './title';
 //import type { Terms } from './types';
@@ -75,7 +75,7 @@ const Container = styled.div``;
 type Props = {
   listId: string;
   listType?: string;
-  quotes: Terms[];
+  terms: Terms[];
   title: string;
   internalScroll?: boolean;
   scrollContainerStyle?: any;
@@ -89,21 +89,21 @@ type Props = {
 };
 
 type QuoteListProps = {
-  quotes: Terms[];
+  terms: Terms[];
 };
 
-const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
+const InnerQuoteList: any = ({ terms }: QuoteListProps) => {
   return (
-    quotes &&
-    quotes.map((quote: Terms, index: number) => (
-      <Draggable key={quote.keyword} draggableId={quote.keyword} index={index}>
+    terms &&
+    terms.map((terms: Terms, index: number) => (
+      <Draggable key={terms.keyword} draggableId={terms.keyword} index={index}>
         {(
           dragProvided: DraggableProvided,
           dragSnapshot: DraggableStateSnapshot,
         ) => (
-          <QuoteItem
-            key={quote.keyword}
-            quote={quote}
+          <TermsItem
+            key={terms.keyword}
+            terms={terms}
             isDragging={dragSnapshot.isDragging}
             isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
             provided={dragProvided}
@@ -116,12 +116,12 @@ const InnerQuoteList: any = ({ quotes }: QuoteListProps) => {
 
 type InnerListProps = {
   dropProvided: DroppableProvided;
-  quotes: Terms[];
+  terms: Terms[];
   title: string;
 };
 
 function InnerList(props: InnerListProps) {
-  const { quotes, dropProvided } = props;
+  const { terms, dropProvided } = props;
   const title = props.title ? (
     <div>
       <Title>{props.title} </Title>
@@ -132,7 +132,7 @@ function InnerList(props: InnerListProps) {
     <Container>
       {title}
       <DropZone ref={dropProvided.innerRef}>
-        <InnerQuoteList quotes={quotes} />
+        <InnerQuoteList terms={terms} />
         {dropProvided.placeholder}
       </DropZone>
     </Container>
@@ -149,7 +149,7 @@ export default function QuoteList(props: Props) {
     listId = 'LIST',
     listType,
     style,
-    quotes,
+    terms,
     title,
     useClone,
   } = props;
@@ -164,8 +164,8 @@ export default function QuoteList(props: Props) {
       renderClone={
         useClone
           ? (provided, snapshot, rubric) => (
-              <QuoteItem
-                quote={quotes[rubric.source.index]}
+              <TermsItem
+                terms={terms[rubric.source.index]}
                 provided={provided}
                 isDragging={snapshot.isDragging}
                 isClone
@@ -188,14 +188,14 @@ export default function QuoteList(props: Props) {
           {internalScroll ? (
             <ScrollContainer style={scrollContainerStyle}>
               <InnerList
-                quotes={quotes}
+                terms={terms}
                 title={title}
                 dropProvided={dropProvided}
               />
             </ScrollContainer>
           ) : (
             <InnerList
-              quotes={quotes}
+              terms={terms}
               title={title}
               dropProvided={dropProvided}
             />
