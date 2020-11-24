@@ -214,11 +214,13 @@ const countSlice = createSlice({
         state.realtimeTerms.data.length === 0 &&
         state.realtimeTermsNext.data.length === 0
       ) {
+        console.log('[seo] reducer firstSetting ');
         state.realtimeTerms = payload;
         state.realtimeTermsNext = payload;
       }
       //setting 이 되어있으면
       else if (state.realtimeTermsNext.data.length !== 0) {
+        console.log('[seo] reducer isSetting ');
         state.realtimeTerms = state.realtimeTermsNext;
         state.realtimeTermsNext = payload;
       }

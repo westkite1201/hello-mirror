@@ -84,7 +84,7 @@ type Props = {
   style?: any;
   // may not be provided - and might be null
   ignoreContainerClipping?: boolean;
-
+  sm: string;
   useClone?: boolean;
 };
 
@@ -96,7 +96,11 @@ const InnerQuoteList: any = ({ terms }: QuoteListProps) => {
   return (
     terms &&
     terms.map((terms: Terms, index: number) => (
-      <Draggable key={terms.keyword} draggableId={terms.keyword} index={index}>
+      <Draggable
+        key={terms.keyword + '_' + index}
+        draggableId={terms.keyword}
+        index={index}
+      >
         {(
           dragProvided: DraggableProvided,
           dragSnapshot: DraggableStateSnapshot,
@@ -118,10 +122,11 @@ type InnerListProps = {
   dropProvided: DroppableProvided;
   terms: Terms[];
   title: string;
+  sm: string;
 };
 
 function InnerList(props: InnerListProps) {
-  const { terms, dropProvided } = props;
+  const { terms, dropProvided, sm } = props;
   const title = props.title ? (
     <div>
       <Title>{props.title} </Title>
@@ -131,6 +136,7 @@ function InnerList(props: InnerListProps) {
   return (
     <Container>
       {title}
+      {sm}
       <DropZone ref={dropProvided.innerRef}>
         <InnerQuoteList terms={terms} />
         {dropProvided.placeholder}
@@ -139,7 +145,7 @@ function InnerList(props: InnerListProps) {
   );
 }
 
-export default function QuoteList(props: Props) {
+export default function TermsList(props: Props) {
   const {
     ignoreContainerClipping,
     internalScroll,
@@ -152,6 +158,7 @@ export default function QuoteList(props: Props) {
     terms,
     title,
     useClone,
+    sm,
   } = props;
 
   return (
@@ -191,6 +198,7 @@ export default function QuoteList(props: Props) {
                 terms={terms}
                 title={title}
                 dropProvided={dropProvided}
+                sm={sm}
               />
             </ScrollContainer>
           ) : (
@@ -198,6 +206,7 @@ export default function QuoteList(props: Props) {
               terms={terms}
               title={title}
               dropProvided={dropProvided}
+              sm={sm}
             />
           )}
         </Wrapper>

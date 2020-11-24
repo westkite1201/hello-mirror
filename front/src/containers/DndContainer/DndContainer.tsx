@@ -16,8 +16,8 @@ import {
   DragDropContext,
 } from 'react-beautiful-dnd';
 import { getTerms, getTerm } from './data2';
-import QuoteList from './terms-list';
-import reorder from './reorder';
+import TermsList from './terms-list';
+import reorder from './reorder2';
 import { grid, borderRadius } from './constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRealtimeTermsRequest } from '../../store/weather/reducer';
@@ -46,53 +46,7 @@ const ControlBox = styled.div`
   flex-direction: column;
 `;
 
-// const ArrowBox = styled.div`
-//   margin-top: ${grid * 4}px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-// `;
-
-// const Button = styled.button`
-//   --off-white: hsla(60, 100%, 98%, 1);
-//   --dark-off-white: #efefe3;
-//   --darker-off-white: #d6d6cb;
-//   --border-width: 4px;
-//   background: var(--off-white);
-//   border-radius: ${borderRadius}px;
-//   cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
-//   font-size: 16px;
-//   position: relative;
-//   box-sizing: border-box;
-//   border: var(--border-width) solid var(--dark-off-white);
-//   box-shadow: 0 0 0 1px var(--darker-off-white);
-//   margin: 2px;
-//   ::before {
-//     position: absolute;
-//     content: ' ';
-//     top: 0;
-//     right: 0;
-//     bottom: 0;
-//     left: 0;
-//     border: 1px solid var(--dark-off-white);
-//   }
-//   :active {
-//     border-width: 3px;
-//   }
-// `;
-
-// const ArrowButton = styled(Button)`
-//   width: 40px;
-//   height: 40px;
-// `;
-
-// locking the height so that the border width change
-// does not change the size of the button
-// const ActionButton = styled(Button)`
-//   height: 40px;
-// `;
-
-const TIME_INTERVAL = 500;
+const TIME_INTERVAL = 200;
 function Controls(props: ControlProps) {
   const {
     terms,
@@ -110,6 +64,7 @@ function Controls(props: ControlProps) {
   const completeMoveArray = useRef<string[] | null>([]);
   const actionsRef = useRef<SnapDragActions | null>();
   const selectRef = createRef<HTMLSelectElement>();
+  const isMoving = useRef(false);
 
   function maybe(fn: (callbacks: SnapDragActions) => void) {
     if (actionsRef.current) {
@@ -126,7 +81,8 @@ function Controls(props: ControlProps) {
   }
   //Move
   async function moveItem(gap: number, isUp: boolean) {
-    console.log('[seo] move itEM');
+    isMoving.current = true;
+    console.log('[seo] move item ', gap, isUp);
     for (let i = 0; i < gap; i++) {
       await timeResist();
       maybe((callbacks: SnapDragActions) =>
@@ -134,23 +90,30 @@ function Controls(props: ControlProps) {
       );
     }
     await timeResist();
+
     maybe((callbacks: SnapDragActions) => {
+      console.log('[seo] moveItem drag drop');
       actionsRef.current = null;
       callbacks.drop();
     });
+    isMoving.current = false;
+    //await timeResist();
   }
 
   //다른지 비교
   function isDifferent() {
     for (let i = 0; i < terms.length; i++) {
       if (terms[i].keyword !== termsNext[i].keyword) {
+        console.log('[seo] isDifferent true');
         return true;
       }
     }
+    console.log('[seo] isNotDiffrent');
     return false;
   }
   //정렬 함수
   async function moveToOrder(selectTerms, gap) {
+    console.log('[seo] moveToOrder');
     if (selectTerms) {
       const presentTermsKeyword = selectTerms.keyword;
       console.log('[seo] keyword', presentTermsKeyword, gap);
@@ -163,12 +126,22 @@ function Controls(props: ControlProps) {
         return true;
       }
     } else {
+      console.log('[seo] moveToOrder drag drop');
+      maybe((callbacks: SnapDragActions) => {
+        actionsRef.current = null;
+        callbacks.drop();
+      });
       return false;
     }
   }
 
   async function settingLocationTerms() {
-    console.log('[seo] settingLocationTerms ');
+    console.log(
+      '[seo] settingLocationTerms terms',
+      terms,
+      ' termsNext ',
+      termsNext,
+    );
     let selectTerms;
     let maxGap = 0;
     //1. 가장 많이 움직이는 terms 선택
@@ -186,42 +159,64 @@ function Controls(props: ControlProps) {
     console.log('[seo] find! selectTerms ', selectTerms);
     //1.가장 큰 갭을 보인 친구를 먼저 움직임
     const isMove = await moveToOrder(selectTerms, maxGap);
+
     console.log('[seo] ismove', isMove);
     return;
   }
 
   async function removeItemsMoveToBottom() {
-    console.log('[seo] removeItemsMoveToBottom');
+    console.log(
+      '[seo] removeItemsMoveToBottom completeMoveArray',
+      completeMoveArray.current,
+      ' removeTerms ',
+      removeTerms,
+    );
     //1. remove terms 하단으로 이동
-    for (let i = 0; i < removeTerms.length; i++) {
-      let targetIndex = 0;
-      if (
-        completeMoveArray.current &&
-        !completeMoveArray.current.includes(removeTerms[i].keyword)
-      ) {
-        for (let j = 0; j < terms.length; j++) {
-          if (removeTerms[i].keyword === terms[j].keyword) {
-            targetIndex = j;
-            actionsRef.current = lift(removeTerms[i].keyword);
-            completeMoveArray.current.push(removeTerms[i].keyword);
-            break;
+    if (!isRemoved) {
+      for (let i = 0; i < removeTerms.length; i++) {
+        let targetIndex = 0;
+        if (
+          completeMoveArray.current &&
+          !completeMoveArray.current.includes(removeTerms[i].keyword)
+        ) {
+          for (let j = 0; j < terms.length; j++) {
+            if (removeTerms[i].keyword === terms[j].keyword) {
+              targetIndex = j;
+              actionsRef.current = lift(removeTerms[i].keyword);
+              completeMoveArray.current.push(removeTerms[i].keyword);
+              break;
+            }
           }
+          console.log('[seo] targetindex', targetIndex);
+          const gap = terms.length - targetIndex;
+          await moveItem(gap, false);
+          //break;
+          return;
         }
-        const gap = terms.length - targetIndex;
-        await moveItem(gap, false);
-        //break;
-        return;
       }
     }
+
+    if (completeMoveArray.current) {
+      console.log(
+        '[seo] completeMoveArray.current.length  ',
+        completeMoveArray.current.length,
+        ' removeTerms.length  ',
+        removeTerms.length,
+      );
+    }
+
     //2. removeItems 정렬이 완료되었으면 제거
     if (
       completeMoveArray.current &&
-      completeMoveArray.current.length === removeTerms.length
+      completeMoveArray.current.length === removeTerms.length &&
+      !isRemoved &&
+      !isMoving.current
     ) {
+      console.log('[seo]  2. removeItems 정렬이 완료되었으면 제거 ');
       setTimeout(() => {
         removeFinal();
         completeMoveArray.current = [];
-      }, TIME_INTERVAL + 500);
+      }, TIME_INTERVAL);
     }
   }
 
@@ -229,92 +224,17 @@ function Controls(props: ControlProps) {
     console.log('[seo] isRemoved', isRemoved, ' isAdded ', isAdded);
     if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
       removeItemsMoveToBottom();
-    }
-    if (isRemoved && isAdded) {
+    } else if (isRemoved && isAdded) {
       if (isDifferent()) {
-        setTimeout(() => {
-          settingLocationTerms();
-        }, TIME_INTERVAL);
+        settingLocationTerms();
       } else {
         //바뀐게 없으면 초기화
         setInit();
       }
     }
-  }, [isRemoved, isAdded, removeTerms, terms]);
+  }, [isRemoved, isAdded, removeTerms, terms, termsNext]);
 
-  return (
-    <ControlBox>
-      <button onClick={settingLocationTerms}>버튼 테스트 </button>
-      {/*}
-      <select disabled={!canLift} ref={selectRef}>
-        {terms.map((quote: Terms) => (
-          <option key={quote.keyword} value={quote.keyword}>
-            keyword: {quote.keyword}
-          </option>
-        ))}
-      </select>
-      <ActionButton
-        type="button"
-        disabled={!canLift}
-        onClick={() => {
-          const select = selectRef.current;
-          if (!select) {
-            return;
-          }
-          actionsRef.current = lift(select.value);
-        }}
-      >
-        Lift
-        <span role="img" aria-label="lift">
-          🏋️‍♀️
-        </span>
-      </ActionButton>
-      <ActionButton
-        type="button"
-        onClick={() =>
-          maybe((callbacks: SnapDragActions) => {
-            actionsRef.current = null;
-            callbacks.drop();
-          })
-        }
-        disabled={!isDragging}
-      >
-        Drop{' '}
-        <span role="img" aria-label="drop">
-          🤾‍♂️
-        </span>
-      </ActionButton>
-      <ArrowBox>
-        <ArrowButton
-          type="button"
-          onClick={() =>
-            maybe((callbacks: SnapDragActions) => callbacks.moveUp())
-          }
-          disabled={!isDragging}
-        >
-          ↑
-        </ArrowButton>
-        <div>
-          <ArrowButton type="button" disabled={!isDragging}>
-            ←
-          </ArrowButton>
-          <ArrowButton
-            type="button"
-            onClick={() =>
-              maybe((callbacks: SnapDragActions) => callbacks.moveDown())
-            }
-            disabled={!isDragging} //label="down"
-          >
-            ↓
-          </ArrowButton>
-          <ArrowButton type="button" disabled={!isDragging}>
-            →
-          </ArrowButton>
-        </div>
-      </ArrowBox>
-          */}
-    </ControlBox>
-  );
+  return <ControlBox></ControlBox>;
 }
 
 const Layout = styled.div`
@@ -337,52 +257,65 @@ export default function DndContainer(props: Props) {
   const [concatTerms, setConcatTerms] = useState<Terms[]>([]);
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
-  const completeAddedArray = useRef<string[] | null>([]);
-  //const [terms, setTerms] = useState(getTerms(10, false));
+  const completeAddedSet = useRef(new Set<string>());
   const [termsNext, setTermsNext] = useState(getTerms(10, true));
   const [terms, setTerms] = useState(getTerms(10, false));
-  // const [termsNextMap, setTernsNextMap] = useState(
-  //   new Map<string, quotesMapObject>(),
-  // );
   const { realtimeTerms, realtimeTermsNext } = useSelector(
     (state: RootState) => state.weather,
   );
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
+  const isEnd = useRef(false);
   const dispatch = useDispatch();
 
   function setInit() {
     console.log('[seo] setInit');
-    // setIsRemoved(false);
-    // setIsAdded(false);
+    setIsRemoved(false);
+    setIsAdded(false);
+    setLeftTerms([]);
+    setRemoveTerms([]);
+    setConcatTerms([]);
+    isEnd.current = true;
+    completeAddedSet.current.clear();
   }
-  // function dispatchTerms() {
-  //   //dispatch(getRealtimeTermsRequest());
-  // }
-  // //다음 변경될 terms 세팅
-  // useEffect(() => {
-  //   dispatchTerms();
-  //   /* dispacth  */
-  //   setInterval(dispatchTerms, 1000 * 10);
-  // }, []);
 
-  // useEffect(() => {
-  //   if (realtimeTerms) {
-  //     setTerms(realtimeTerms.data);
-  //   }
-  //   if (realtimeTermsNext) {
-  //     setTermsNext(realtimeTermsNext.data);
-  //   }
-  // }, [realtimeTerms, realtimeTermsNext]);
+  //다음 변경될 terms 세팅
+  useEffect(() => {
+    function dispatchTerms() {
+      dispatch(getRealtimeTermsRequest());
+      isEnd.current = false;
+    }
+    /* dispacth  */
+    setInterval(dispatchTerms, 1000 * 60);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (terms && terms.length !== 0 && termsNext && termsNext.length !== 0)
+    if (realtimeTerms) {
+      setTerms(realtimeTerms.data);
+    }
+    if (realtimeTermsNext) {
+      setTermsNext(realtimeTermsNext.data);
+    }
+  }, [realtimeTerms, realtimeTermsNext]);
+
+  useEffect(() => {
+    if (
+      terms &&
+      terms.length !== 0 &&
+      termsNext &&
+      termsNext.length !== 0 &&
+      !isRemoved &&
+      !isAdded &&
+      !isEnd.current
+    ) {
       deleteItem();
-  }, [terms, termsNext]);
+    }
+  }, [terms, termsNext, isRemoved, isAdded, isEnd.current]);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
+      console.log('[seo] onDragEnd');
       setIsDragging(false);
       setIsControlDragging(false);
       // dropped outside the list
@@ -495,11 +428,13 @@ export default function DndContainer(props: Props) {
             flag = true;
           }
         }
+        //추가될 concat일떄
         if (!flag) {
           setTimeout(() => {
-            addTerms(concatTerms[i]);
-            if (completeAddedArray && completeAddedArray.current) {
-              completeAddedArray.current.push(concatTerms[i].keyword);
+            //추가된 terms가 아니면 추가
+            if (!completeAddedSet.current.has(concatTerms[i].keyword)) {
+              addTerms(concatTerms[i]);
+              completeAddedSet.current.add(concatTerms[i].keyword);
             }
           }, TIME_INTERVAL);
           console.log('[seo] return');
@@ -507,28 +442,23 @@ export default function DndContainer(props: Props) {
         }
       }
       setIsAdded(true);
-      //}
     }
+    //}
   }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
   function addTerms(item) {
-    console.log('[seo] addQuotes!');
-    setTerms([...terms, item]);
+    console.log('[seo] addQuotes! ', item);
+    const newTerms = terms.map((item, index) => {
+      return {
+        ...item,
+        rank: index + 1,
+      };
+    });
+    setTerms([...newTerms, item]);
   }
 
   return (
     <React.Fragment>
-      <button onClick={deleteItem} style={{ padding: '20px' }}>
-        지우기
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setTerms([...terms, getTerm()]);
-        }}
-      >
-        Add new item
-      </button>
       <DragDropContext
         onDragStart={() => setIsDragging(true)}
         onDragEnd={onDragEnd}
@@ -539,7 +469,12 @@ export default function DndContainer(props: Props) {
         ]}
       >
         <Layout>
-          <QuoteList listId="list" terms={terms} title="실시간 검색어" />
+          <TermsList
+            listId="list"
+            terms={terms}
+            title="실시간 검색어"
+            sm={realtimeTermsNext.ts}
+          />
           <Controls
             terms={terms}
             termsNext={termsNext}

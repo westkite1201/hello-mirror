@@ -205,12 +205,12 @@ function TermsItem(props: Props) {
       {/*<Avatar src={terms.author.avatarUrl} alt={terms.author.name} />*/}
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
-        <BlockQuote>{terms.keyword}</BlockQuote>
+        <BlockQuote>{`${terms.rank}. ${terms.keyword}`}</BlockQuote>
 
         <Footer>
           {/*<Author colors={terms.author.colors}>{terms.author.name}</Author>*/}
           <QuoteId>
-            id:
+            연관 검색어
             {terms.keywordSynonyms &&
               terms.keywordSynonyms.map(item => {
                 <span>{item}</span>;
