@@ -66,6 +66,12 @@ export interface WeatherRequestPayloadType {
   ny: string;
   isShortTeamYn: boolean;
 }
+export interface TermsRank {
+  keyword: string;
+  rank: number;
+  rankChange: number;
+  keywordSynonyms: string[];
+}
 export interface Terms {
   keyword: string;
   rank: number;

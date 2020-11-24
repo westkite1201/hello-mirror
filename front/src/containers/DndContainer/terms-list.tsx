@@ -136,7 +136,7 @@ function InnerList(props: InnerListProps) {
   return (
     <Container>
       {title}
-      {sm}
+      <span style={{ color: 'black' }}>{sm}</span>
       <DropZone ref={dropProvided.innerRef}>
         <InnerQuoteList terms={terms} />
         {dropProvided.placeholder}

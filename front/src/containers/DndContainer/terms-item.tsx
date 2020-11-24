@@ -209,13 +209,14 @@ function TermsItem(props: Props) {
 
         <Footer>
           {/*<Author colors={terms.author.colors}>{terms.author.name}</Author>*/}
-          <QuoteId>
-            연관 검색어
-            {terms.keywordSynonyms &&
-              terms.keywordSynonyms.map(item => {
-                <span>{item}</span>;
+          {terms.keywordSynonyms && terms.keywordSynonyms.length !== 0 && (
+            <QuoteId>
+              연관 검색어 :
+              {terms.keywordSynonyms.map((item, index) => {
+                return <span key={item + ' ' + index}> {item},</span>;
               })}
-          </QuoteId>
+            </QuoteId>
+          )}
         </Footer>
       </Content>
     </Container>

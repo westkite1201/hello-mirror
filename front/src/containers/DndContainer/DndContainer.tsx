@@ -46,7 +46,7 @@ const ControlBox = styled.div`
   flex-direction: column;
 `;
 
-const TIME_INTERVAL = 200;
+const TIME_INTERVAL = 500;
 function Controls(props: ControlProps) {
   const {
     terms,
@@ -195,16 +195,6 @@ function Controls(props: ControlProps) {
         }
       }
     }
-
-    if (completeMoveArray.current) {
-      console.log(
-        '[seo] completeMoveArray.current.length  ',
-        completeMoveArray.current.length,
-        ' removeTerms.length  ',
-        removeTerms.length,
-      );
-    }
-
     //2. removeItems 정렬이 완료되었으면 제거
     if (
       completeMoveArray.current &&
@@ -221,7 +211,17 @@ function Controls(props: ControlProps) {
   }
 
   useEffect(() => {
-    console.log('[seo] isRemoved', isRemoved, ' isAdded ', isAdded);
+    console.log(
+      '[seo] isRemoved',
+      isRemoved,
+      ' isAdded ',
+      isAdded,
+      'terms ',
+      terms,
+      ' termsNext ',
+      'termsNext ',
+      termsNext,
+    );
     if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
       removeItemsMoveToBottom();
     } else if (isRemoved && isAdded) {
@@ -269,6 +269,14 @@ export default function DndContainer(props: Props) {
   const isEnd = useRef(false);
   const dispatch = useDispatch();
 
+  function getRankChange() {
+    for (let i = 0; i < terms.length; i++) {
+      for (let j = 0; j < termsNext.length; j++) {
+        if (terms[i].keyword === termsNext[j].keyword) {
+        }
+      }
+    }
+  }
   function setInit() {
     console.log('[seo] setInit');
     setIsRemoved(false);
@@ -282,6 +290,7 @@ export default function DndContainer(props: Props) {
 
   //다음 변경될 terms 세팅
   useEffect(() => {
+    dispatch(getRealtimeTermsRequest());
     function dispatchTerms() {
       dispatch(getRealtimeTermsRequest());
       isEnd.current = false;
@@ -443,6 +452,7 @@ export default function DndContainer(props: Props) {
       }
       setIsAdded(true);
     }
+
     //}
   }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
