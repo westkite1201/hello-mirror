@@ -6,6 +6,11 @@ import { borderRadius, grid } from './constants';
 import type { AuthorColors } from './types';
 import { Terms } from '../../lib/api/weather';
 import type { DraggableProvided } from 'react-beautiful-dnd';
+import {
+  CaretUpOutlined,
+  CaretDownOutlined,
+  MinusOutlined,
+} from '@ant-design/icons';
 
 type Props = {
   terms: Terms;
@@ -27,14 +32,14 @@ const getBackgroundColor = (
   // }
 
   if (isDragging) {
-    return colors.Y50;
+    return colors.P300;
   }
 
   if (isGroupedOver) {
     return colors.N30;
   }
 
-  return colors.N0;
+  return colors.DN10;
 };
 
 // const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
@@ -45,7 +50,7 @@ const getBorderColor = (isDragging: boolean) =>
 const imageSize = 10;
 
 const CloneBadge = styled.div`
-  background: ${colors.G100};
+  background: ${colors.DN10};
   bottom: ${grid / 2}px;
   border: 2px solid ${colors.G200};
   border-radius: 50%;
@@ -83,11 +88,11 @@ const Container = styled.a`
   user-select: none;
 
   /* anchor overrides */
-  color: ${colors.N900};
+  color: ${colors.N0};
 
   &:hover,
   &:active {
-    color: ${colors.N900};
+    color: ${colors.N10};
     text-decoration: none;
   }
 
@@ -127,6 +132,8 @@ interface gapSProps {
   gap: number;
 }
 const BlockQuote = styled.div`
+  display: flex;
+  justify-content: space-between;
   &::before {
     content: open-terms;
   }
@@ -134,15 +141,17 @@ const BlockQuote = styled.div`
     content: close-terms;
   }
 `;
-const BlockQuote2 = styled.div`
-  background-color: ${(props: gapSProps) => (props.gap > 0 ? 'red' : 'blue')};
-
-  &::before {
-    content: open-terms;
+function getColor(gap: number) {
+  if (gap > 0) {
+    return '#f03e3e';
+  } else if (gap < 0) {
+    return '#4263eb';
+  } else {
+    return '#ced4da';
   }
-  &::after {
-    content: close-terms;
-  }
+}
+const GapView = styled.div`
+  color: ${(props: gapSProps) => getColor(props.gap)};
 `;
 
 const Footer = styled.div`
@@ -199,6 +208,23 @@ function TermsItem(props: Props) {
     index,
   } = props;
 
+  function displayGap(gap: number) {
+    function returnIcon(gap: number) {
+      if (gap > 0) {
+        return <CaretUpOutlined />;
+      } else if (gap < 0) {
+        return <CaretDownOutlined />;
+      } else {
+        return <MinusOutlined />;
+      }
+    }
+    return (
+      <React.Fragment>
+        <span>{returnIcon(gap)}</span>
+        <span>{Math.abs(gap)}</span>
+      </React.Fragment>
+    );
+  }
   return (
     <Container
       href={''}
@@ -218,10 +244,14 @@ function TermsItem(props: Props) {
       {/*<Avatar src={terms.author.avatarUrl} alt={terms.author.name} />*/}
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
-        <BlockQuote>{`${terms.rank}. ${terms.keyword}`}</BlockQuote>
-        <BlockQuote2 gap={terms.gap ? terms.gap : 0}>{`${
-          terms.gap ? terms.gap : '-'
-        }`}</BlockQuote2>
+        <BlockQuote>
+          <div>{`${terms.rank}. ${terms.keyword}`}</div>
+
+          <GapView gap={terms.gap ? terms.gap : 0}>
+            {displayGap(terms.gap ? terms.gap : 0)}
+          </GapView>
+        </BlockQuote>
+
         <Footer>
           {/*<Author colors={terms.author.colors}>{terms.author.name}</Author>*/}
           {terms.keywordSynonyms && terms.keywordSynonyms.length !== 0 && (

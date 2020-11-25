@@ -22,12 +22,12 @@ export const getBackgroundColor = (
   isDraggingFrom: boolean,
 ): string => {
   if (isDraggingOver) {
-    return colors.R50;
+    return colors.N700A;
   }
   if (isDraggingFrom) {
     return colors.T50;
   }
-  return colors.N30;
+  return colors.DN40A;
 };
 
 interface WrapperSProps {
@@ -136,7 +136,7 @@ function InnerList(props: InnerListProps) {
   return (
     <Container>
       {title}
-      <span style={{ color: 'black' }}>{sm}</span>
+      <h4 style={{ color: 'white' }}>{sm}</h4>
       <DropZone ref={dropProvided.innerRef}>
         <InnerQuoteList terms={terms} />
         {dropProvided.placeholder}

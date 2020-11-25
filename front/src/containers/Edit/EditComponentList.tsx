@@ -3,12 +3,20 @@ import ClockContainer from '../Clock/ClockContainer';
 import Info from '../Info/InfoContainer';
 import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
 import WeatherInfoOverview from '../Weather/WeatherInfoOverview';
+import DndContainer from '../DndContainer/DndContainer';
 import { setComponentList } from '../../store/edit/reducer';
 import { useDispatch } from 'react-redux';
+
 const EditComponentList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const componentList = [
+      {
+        component: DndContainer,
+        name: 'DndContainer',
+        category: 'weather',
+        pageView: 'seoPage',
+      },
       {
         component: ClockContainer,
         name: 'clock',

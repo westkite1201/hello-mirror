@@ -19,7 +19,7 @@ function App() {
 }
 // 스타일드-컴포넌트 정의
 const Container = styled.div`
-  height: 100vh;
+  //height: 100vh;
   background-color: ${props => props.theme.light.mainBackground};
   color: ${props => props.theme.dark.primaryText};
   overflow: hidden;

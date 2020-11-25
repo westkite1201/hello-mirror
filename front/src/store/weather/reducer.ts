@@ -242,8 +242,8 @@ const countSlice = createSlice({
       else if (state.realtimeTermsNext.data.length !== 0) {
         console.log('[seo] reducer isSetting ');
         state.realtimeTerms = state.realtimeTermsNext;
-
-        payload.data = shuffleArray(payload.data);
+        //test 용
+        //payload.data = shuffleArray(payload.data);
         state.realtimeTermsNext = payload;
       }
 
