@@ -4,11 +4,11 @@ import {
   WeatherShortItem,
   WeatherRequestPayloadType,
   Ranks,
+  RealtimeTermsPayload,
   Terms,
 } from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
 import _ from 'lodash';
-import { realTiemSearchTermsNew } from '../../containers/DndContainer/data2';
 
 export type WeatherShortInfoData = {
   baseDate: string;
@@ -33,6 +33,7 @@ type CurrentDisplayState = {
   loading: boolean;
   realtimeTerms: Ranks;
   realtimeTermsNext: Ranks;
+  realtimeLoading: boolean;
 };
 
 const initialState: CurrentDisplayState = {
@@ -43,6 +44,7 @@ const initialState: CurrentDisplayState = {
   loading: false,
   realtimeTerms: { ts: '', sm: '', data: [], message: '' },
   realtimeTermsNext: { ts: '', sm: '', data: [], message: '' },
+  realtimeLoading: false,
 };
 
 // createAction으로 액션 생성 함수를 만들 수 있다.
@@ -54,7 +56,22 @@ export const getWeatherDataShortTermLive = createAction(
     return { payload: param };
   },
 );
-
+function shuffleArray(a: Terms[]) {
+  let j, x, i;
+  for (i = a.length; i; i -= 1) {
+    j = Math.floor(Math.random() * i);
+    x = a[i - 1];
+    a[i - 1] = a[j];
+    a[j] = x;
+  }
+  a = a.map((item, index) => {
+    return {
+      ...item,
+      rank: index + 1,
+    };
+  });
+  return a;
+}
 const countSlice = createSlice({
   name: 'count',
   initialState,
@@ -205,8 +222,11 @@ const countSlice = createSlice({
       state.shortWeatherInfo = shortWeatherInfoTemp;
       state.isFetchingShort = false;
     },
-    getRealtimeTermsRequest(state) {
-      state.loading = true;
+    getRealtimeTermsRequest(
+      state,
+      { payload }: PayloadAction<RealtimeTermsPayload>,
+    ) {
+      state.realtimeLoading = true;
     },
     getRealtimeTermsSuccess(state, { payload }: PayloadAction<Ranks>) {
       //첫번째 인경우
@@ -222,9 +242,12 @@ const countSlice = createSlice({
       else if (state.realtimeTermsNext.data.length !== 0) {
         console.log('[seo] reducer isSetting ');
         state.realtimeTerms = state.realtimeTermsNext;
+
+        payload.data = shuffleArray(payload.data);
         state.realtimeTermsNext = payload;
       }
-      state.loading = false;
+
+      state.realtimeLoading = false;
     },
   },
 });

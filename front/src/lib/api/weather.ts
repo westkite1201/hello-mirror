@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { clientConfig } from '../../configuration/clientConfig';
-
+//import { realTiemSearchTermsConcatRemove_Real } from '../../containers/DndContainer/data2';
 export interface Quote {
   font_color: string;
   thumbnail_user_image: string;
@@ -76,6 +76,7 @@ export interface Terms {
   keyword: string;
   rank: number;
   keywordSynonyms: string[];
+  gap?: number;
 }
 
 export interface Ranks {
@@ -101,11 +102,26 @@ export interface RealtimeTermsRes {
   ageCode: string;
   groupingLevelCode: string;
 }
-export async function getRealtimeTerms() {
+export interface RealtimeTermsPayload {
+  isUsingTemp: boolean;
+}
+
+export async function getRealtimeTerms(payload: RealtimeTermsPayload) {
+  // if (payload.isUsingTemp) {
+  //   return {
+  //     ranks: {
+  //       ts: 'test',
+  //       sm: 'test',
+  //       data: realTiemSearchTermsConcatRemove_Real,
+  //       message: 'test',
+  //     },
+  //   };
+  // } else {
   const res = await axios.post<RealtimeTermsRes>(
     clientConfig.endpoint.api + '/weather/getRealtimeTerms',
   );
   return res.data;
+  //}
 }
 
 /* api 이용 */

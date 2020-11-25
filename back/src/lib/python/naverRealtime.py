@@ -5,11 +5,11 @@ def getNaverRealtimeSearchWord(urlParam):
     urlParam = {
         'age': 'all',
         'datetime': datetime.now().strftime('%Y-%m-%dT%H:%M:00'),
-        'entertainment':2,
-        'groupingLevel': 4,
-        'marketing': 2,
-        'news': 2,
-        'sports': 2,
+        'entertainment':0,
+        'groupingLevel': 0,
+        'marketing': 0,
+        'news': 0,
+        'sports': 0,
     }
     url = 'https://m.datalab.naver.com/rankSnapshotV3/data.naver?'
     for key in urlParam.keys():

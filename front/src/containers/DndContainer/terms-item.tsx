@@ -123,7 +123,20 @@ const Content = styled.div`
   flex-direction: column;
 `;
 
+interface gapSProps {
+  gap: number;
+}
 const BlockQuote = styled.div`
+  &::before {
+    content: open-terms;
+  }
+  &::after {
+    content: close-terms;
+  }
+`;
+const BlockQuote2 = styled.div`
+  background-color: ${(props: gapSProps) => (props.gap > 0 ? 'red' : 'blue')};
+
   &::before {
     content: open-terms;
   }
@@ -206,7 +219,9 @@ function TermsItem(props: Props) {
       {isClone ? <CloneBadge>Clone</CloneBadge> : null}
       <Content>
         <BlockQuote>{`${terms.rank}. ${terms.keyword}`}</BlockQuote>
-
+        <BlockQuote2 gap={terms.gap ? terms.gap : 0}>{`${
+          terms.gap ? terms.gap : '-'
+        }`}</BlockQuote2>
         <Footer>
           {/*<Author colors={terms.author.colors}>{terms.author.name}</Author>*/}
           {terms.keywordSynonyms && terms.keywordSynonyms.length !== 0 && (

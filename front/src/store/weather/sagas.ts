@@ -68,8 +68,12 @@ function* getWeatherShortTerm(action) {
 }
 function* getRealtimeTermsToApi(action) {
   try {
-    const termsRes: RealtimeTermsRes = yield call(getRealtimeTerms);
+    const termsRes: RealtimeTermsRes = yield call(
+      getRealtimeTerms,
+      action.payload,
+    );
     console.log('termsRes', termsRes);
+
     yield put(getRealtimeTermsSuccess(termsRes.ranks));
   } catch (e) {
     console.log('error');

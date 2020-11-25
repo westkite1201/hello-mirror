@@ -15,7 +15,7 @@ import {
   SensorAPI,
   DragDropContext,
 } from 'react-beautiful-dnd';
-import { getTerms, getTerm } from './data2';
+//import { getTerms, getTerm } from './data2';
 import TermsList from './terms-list';
 import reorder from './reorder2';
 import { grid, borderRadius } from './constants';
@@ -35,6 +35,7 @@ type ControlProps = {
   setInit: () => void;
   removeFinal: () => void;
   lift: (quoteId: string) => SnapDragActions | null;
+  getRankChange: () => void;
 };
 
 function noop() {
@@ -46,7 +47,7 @@ const ControlBox = styled.div`
   flex-direction: column;
 `;
 
-const TIME_INTERVAL = 500;
+const TIME_INTERVAL = 200;
 function Controls(props: ControlProps) {
   const {
     terms,
@@ -59,6 +60,7 @@ function Controls(props: ControlProps) {
     isAdded,
     isRemoved,
     setInit,
+    getRankChange,
   } = props;
 
   const completeMoveArray = useRef<string[] | null>([]);
@@ -165,49 +167,49 @@ function Controls(props: ControlProps) {
   }
 
   async function removeItemsMoveToBottom() {
-    console.log(
-      '[seo] removeItemsMoveToBottom completeMoveArray',
-      completeMoveArray.current,
-      ' removeTerms ',
-      removeTerms,
-    );
-    //1. remove terms 하단으로 이동
-    if (!isRemoved) {
-      for (let i = 0; i < removeTerms.length; i++) {
-        let targetIndex = 0;
-        if (
-          completeMoveArray.current &&
-          !completeMoveArray.current.includes(removeTerms[i].keyword)
-        ) {
-          for (let j = 0; j < terms.length; j++) {
-            if (removeTerms[i].keyword === terms[j].keyword) {
-              targetIndex = j;
-              actionsRef.current = lift(removeTerms[i].keyword);
-              completeMoveArray.current.push(removeTerms[i].keyword);
-              break;
-            }
-          }
-          console.log('[seo] targetindex', targetIndex);
-          const gap = terms.length - targetIndex;
-          await moveItem(gap, false);
-          //break;
-          return;
-        }
-      }
-    }
-    //2. removeItems 정렬이 완료되었으면 제거
-    if (
-      completeMoveArray.current &&
-      completeMoveArray.current.length === removeTerms.length &&
-      !isRemoved &&
-      !isMoving.current
-    ) {
-      console.log('[seo]  2. removeItems 정렬이 완료되었으면 제거 ');
-      setTimeout(() => {
-        removeFinal();
-        completeMoveArray.current = [];
-      }, TIME_INTERVAL);
-    }
+    // console.log(
+    //   '[seo] removeItemsMoveToBottom completeMoveArray',
+    //   completeMoveArray.current,
+    //   ' removeTerms ',
+    //   removeTerms,
+    // );
+    // //1. remove terms 하단으로 이동
+    // if (!isRemoved) {
+    //   for (let i = 0; i < removeTerms.length; i++) {
+    //     let targetIndex = 0;
+    //     if (
+    //       completeMoveArray.current &&
+    //       !completeMoveArray.current.includes(removeTerms[i].keyword)
+    //     ) {
+    //       for (let j = 0; j < terms.length; j++) {
+    //         if (removeTerms[i].keyword === terms[j].keyword) {
+    //           targetIndex = j;
+    //           actionsRef.current = lift(removeTerms[i].keyword);
+    //           completeMoveArray.current.push(removeTerms[i].keyword);
+    //           break;
+    //         }
+    //       }
+    //       console.log('[seo] targetindex', targetIndex);
+    //       const gap = terms.length - targetIndex;
+    //       await moveItem(gap, false);
+    //       //break;
+    //       return;
+    //     }
+    //   }
+    // }
+    // //2. removeItems 정렬이 완료되었으면 제거
+    // if (
+    //   completeMoveArray.current &&
+    //   completeMoveArray.current.length === removeTerms.length &&
+    //   !isRemoved &&
+    //   !isMoving.current
+    // ) {
+    //   console.log('[seo]  2. removeItems 정렬이 완료되었으면 제거 ');
+    //   setTimeout(() => {
+    //     removeFinal();
+    //     completeMoveArray.current = [];
+    //   }, TIME_INTERVAL);
+    // }
   }
 
   useEffect(() => {
@@ -223,9 +225,10 @@ function Controls(props: ControlProps) {
       termsNext,
     );
     if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
-      removeItemsMoveToBottom();
+      //removeItemsMoveToBottom();
     } else if (isRemoved && isAdded) {
       if (isDifferent()) {
+        getRankChange();
         settingLocationTerms();
       } else {
         //바뀐게 없으면 초기화
@@ -252,75 +255,104 @@ type Props = {
 
 export default function DndContainer(props: Props) {
   //const [terms, setTerms] = useState(props.initial);
+  const [isReady, setIsReady] = useState(false);
   const [leftTerms, setLeftTerms] = useState<Terms[]>([]);
   const [removeTerms, setRemoveTerms] = useState<Terms[]>([]);
   const [concatTerms, setConcatTerms] = useState<Terms[]>([]);
   const [isRemoved, setIsRemoved] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const completeAddedSet = useRef(new Set<string>());
-  const [termsNext, setTermsNext] = useState(getTerms(10, true));
-  const [terms, setTerms] = useState(getTerms(10, false));
-  const { realtimeTerms, realtimeTermsNext } = useSelector(
+  const completeDeletedSet = useRef(new Set<string>());
+  const [termsNext, setTermsNext] = useState<Terms[]>([]);
+  const [terms, setTerms] = useState<Terms[]>([]);
+  // const [termsNext, setTermsNext] = useState<Terms[]>(getTerms(10, true));
+  // const [terms, setTerms] = useState<Terms[]>(getTerms(10, false));
+  const { realtimeTerms, realtimeTermsNext, realtimeLoading } = useSelector(
     (state: RootState) => state.weather,
   );
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
-  const isEnd = useRef(false);
+  const isEnd = useRef(true);
+  const rankMap = useRef(new Map<string, number>());
+  const isRankMapSetComplete = useRef(false);
   const dispatch = useDispatch();
 
-  function getRankChange() {
-    for (let i = 0; i < terms.length; i++) {
-      for (let j = 0; j < termsNext.length; j++) {
-        if (terms[i].keyword === termsNext[j].keyword) {
-        }
-      }
-    }
+  //랭크 세팅
+  function setRankTerms() {
+    const newTerms = terms.map((item, index) => {
+      return {
+        ...item,
+        rank: index + 1,
+        gap: rankMap.current.get(item.keyword),
+      };
+    });
+    setTerms(newTerms);
   }
   function setInit() {
-    console.log('[seo] setInit');
+    setRankTerms();
+    console.log(
+      '[seo] --------$$$$$$$-------------------------------setInit!!',
+    );
     setIsRemoved(false);
     setIsAdded(false);
     setLeftTerms([]);
     setRemoveTerms([]);
     setConcatTerms([]);
+    setIsReady(false);
     isEnd.current = true;
     completeAddedSet.current.clear();
+    completeDeletedSet.current.clear();
+    rankMap.current.clear();
+    isRankMapSetComplete.current = false;
   }
 
   //다음 변경될 terms 세팅
   useEffect(() => {
-    dispatch(getRealtimeTermsRequest());
     function dispatchTerms() {
-      dispatch(getRealtimeTermsRequest());
-      isEnd.current = false;
+      //loading 이 끝낫거나 정렬이 끝난경우
+      if (!realtimeLoading && isEnd.current) {
+        const isUsingTemp = false;
+        dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+      }
     }
+    dispatchTerms();
     /* dispacth  */
     setInterval(dispatchTerms, 1000 * 60);
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
+    console.log('[seo] useEffect ', realtimeTerms, realtimeTermsNext);
     if (realtimeTerms) {
-      setTerms(realtimeTerms.data);
+      setTerms(realtimeTerms.data.slice(0, 10));
     }
     if (realtimeTermsNext) {
-      setTermsNext(realtimeTermsNext.data);
+      setTermsNext(realtimeTermsNext.data.slice(0, 10));
     }
+    setIsReady(true);
+    isEnd.current = false;
   }, [realtimeTerms, realtimeTermsNext]);
 
   useEffect(() => {
-    if (
-      terms &&
-      terms.length !== 0 &&
-      termsNext &&
-      termsNext.length !== 0 &&
-      !isRemoved &&
-      !isAdded &&
-      !isEnd.current
-    ) {
-      deleteItem();
+    console.log('[seo]--------------useEffect delete item');
+    console.log(
+      '[seo]--------------',
+      terms,
+      termsNext,
+      'isRemoved= ',
+      isRemoved,
+      'isAdded= ',
+      isAdded,
+      'isEnd.current= ',
+      isEnd.current,
+      'isReady= ',
+      isReady,
+    );
+    if (!isRemoved && !isAdded && !isEnd.current && isReady) {
+      //deleteItem();
+      manageDelete();
     }
-  }, [terms, termsNext, isRemoved, isAdded, isEnd.current]);
+  }, [terms, termsNext, isRemoved, isAdded, isEnd.current, isReady]);
 
   const onDragEnd = useCallback(
     function onDragEnd(result: DropResult) {
@@ -377,8 +409,9 @@ export default function DndContainer(props: Props) {
 
   // function manageQuotes() {}
 
-  function deleteItem() {
+  function manageDelete() {
     const leftTerms: Terms[] = [];
+    console.log('[seo] manageDelete ', terms);
     const termsRemove = terms.filter(item => {
       //중복 제거
       for (let i = 0; i < termsNext.length; i++) {
@@ -389,7 +422,33 @@ export default function DndContainer(props: Props) {
       }
       return true;
     });
+    console.log('[seo] terms Remove ', termsRemove);
 
+    //DELETE ITEM
+    for (let i = 0; i < termsRemove.length; i++) {
+      const termsRemoveItem = termsRemove[i];
+      const newTerms = [...terms]; // make a separate copy of the array
+      let targetIndex = -1;
+      for (let j = 0; j < newTerms.length; j++) {
+        if (termsRemoveItem.keyword === newTerms[j].keyword) {
+          targetIndex = j;
+          break;
+        }
+      }
+      if (targetIndex !== -1) {
+        setTimeout(() => {
+          if (!completeDeletedSet.current.has(termsRemoveItem.keyword)) {
+            completeDeletedSet.current.add(termsRemoveItem.keyword);
+            newTerms.splice(targetIndex, 1);
+            setTerms(newTerms);
+          }
+        }, TIME_INTERVAL);
+        return;
+      }
+    }
+    //alert('hello');
+    setIsRemoved(true);
+    completeDeletedSet.current.clear();
     const concatTerms = termsNext.filter(item => {
       //중복 제거
       for (let i = 0; i < terms.length; i++) {
@@ -399,37 +458,17 @@ export default function DndContainer(props: Props) {
       }
       return true;
     });
-    //삭제 될게 없다면
-    if (termsRemove && termsRemove.length === 0) {
-      setIsRemoved(true);
-    }
-    if (concatTerms && concatTerms.length === 0) {
+    console.log('[seo]--------------concatTerms', concatTerms);
+    setConcatTerms(concatTerms);
+    if (concatTerms.length === 0) {
       setIsAdded(true);
     }
-    console.log('[seo] leftTerms', leftTerms);
-    console.log('[seo] termsRemove', termsRemove);
-    console.log('[seo] concatTerms', concatTerms);
-    setRemoveTerms(termsRemove); //제거할 애들
-    setLeftTerms(leftTerms.slice()); //본 quetos에 서 남은 애들
-    setConcatTerms(concatTerms);
-    //setConcatQuotesMap(concatTerms);
-    //remove 할 애들setConcatQuotes
-    //terms 움직이기
-    //remove 하기
-    //추가할 애들 추가
   }
-  function removeFinal() {
-    console.log('[seo] removeFinal leftTerms ', leftTerms);
-    setTerms(leftTerms);
-    setIsRemoved(true); // remove 종료 flag 세팅
-    setLeftTerms([]);
-  }
-
   useEffect(() => {
     console.log('[seo] useEffect terms!!!', terms, ' termsnext ', termsNext);
-    //remove 종료시 concat 추가
-    //add terms
-    if (isRemoved && !isAdded) {
+    // remove 종료시 concat 추가
+    // add terms
+    if (concatTerms && concatTerms.length !== 0 && isRemoved && !isAdded) {
       for (let i = 0; i < concatTerms.length; i++) {
         let flag = false;
         for (let j = 0; j < terms.length; j++) {
@@ -452,8 +491,6 @@ export default function DndContainer(props: Props) {
       }
       setIsAdded(true);
     }
-
-    //}
   }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
   function addTerms(item) {
@@ -466,9 +503,115 @@ export default function DndContainer(props: Props) {
     });
     setTerms([...newTerms, item]);
   }
+  function getRankChange() {
+    if (!isRankMapSetComplete.current) {
+      for (let i = 0; i < terms.length; i++) {
+        for (let j = 0; j < termsNext.length; j++) {
+          if (terms[i].keyword === termsNext[j].keyword) {
+            const gap = terms[i].rank - termsNext[j].rank;
+            rankMap.current.set(terms[i].keyword, gap);
+            break;
+          }
+        }
+      }
+      console.log('[seo] rankmap', rankMap.current.entries());
+    }
+    isRankMapSetComplete.current = true;
+  }
 
+  // function deleteTerms(termsRemoveItem: Terms) {
+  //   const newTerms = [...terms]; // make a separate copy of the array
+  //   let targetIndex = -1;
+  //   for (let j = 0; j < newTerms.length; j++) {
+  //     if (termsRemoveItem.keyword === newTerms[j].keyword) {
+  //       targetIndex = j;
+  //     }
+  //   }
+  //   if (targetIndex !== -1) {
+  //     if (!completeDeletedSet.current.has(termsRemoveItem.keyword)) {
+  //       completeDeletedSet.current.add(termsRemoveItem.keyword);
+  //       newTerms.splice(targetIndex, 1);
+  //       setTerms(newTerms);
+  //     }
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  function deleteItem() {
+    // console.log(
+    //   '[seo] deleteItem========== terms!!!',
+    //   terms,
+    //   'termsNext',
+    //   termsNext,
+    // );
+    // const leftTerms: Terms[] = [];
+    // const termsRemove = terms.filter(item => {
+    //   //중복 제거
+    //   for (let i = 0; i < termsNext.length; i++) {
+    //     if (termsNext[i].keyword === item.keyword) {
+    //       leftTerms.push(Object.assign({}, item)); //남은 친구들
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // });
+    // const concatTerms = termsNext.filter(item => {
+    //   //중복 제거
+    //   for (let i = 0; i < terms.length; i++) {
+    //     if (terms[i].keyword === item.keyword) {
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // });
+    // //삭제 될게 없다면
+    // if (termsRemove && termsRemove.length === 0) {
+    //   setIsRemoved(true);
+    // }
+    // if (concatTerms && concatTerms.length === 0) {
+    //   setIsAdded(true);
+    // }
+    // console.log('[seo] leftTerms', leftTerms);
+    // console.log('[seo] termsRemove', termsRemove);
+    // console.log('[seo] concatTerms', concatTerms);
+    // setRemoveTerms(termsRemove); //제거할 애들
+    // setLeftTerms(leftTerms.slice()); //본 quetos에 서 남은 애들
+    // setConcatTerms(concatTerms);
+    //setConcatQuotesMap(concatTerms);
+    //remove 할 애들setConcatQuotes
+    //terms 움직이기
+    //remove 하기
+    //추가할 애들 추가
+  }
+
+  function removeFinal() {
+    // console.log('[seo] removeFinal leftTerms ', leftTerms);
+    // setTerms(leftTerms);
+    // setIsRemoved(true); // remove 종료 flag 세팅
+    // setLeftTerms([]);
+  }
+
+  function testUseTemp() {
+    console.log('[seo] realtimeLoading ', realtimeLoading);
+    if (!realtimeLoading) {
+      const isUsingTemp = true;
+      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+    }
+  }
+  function testGeneral() {
+    console.log('[seo] realtimeLoading ', realtimeLoading);
+    if (!realtimeLoading) {
+      const isUsingTemp = false;
+      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+    }
+  }
   return (
     <React.Fragment>
+      <div style={{ padding: '50px' }}></div>
+      <button onClick={testUseTemp}>디스패치</button>
+      <button onClick={testGeneral}>디스패치2</button>
+      <button onClick={setInit}>초기화</button>
       <DragDropContext
         onDragStart={() => setIsDragging(true)}
         onDragEnd={onDragEnd}
@@ -496,6 +639,7 @@ export default function DndContainer(props: Props) {
             isRemoved={isRemoved}
             setInit={setInit}
             lift={lift}
+            getRankChange={getRankChange}
           />
         </Layout>
       </DragDropContext>
