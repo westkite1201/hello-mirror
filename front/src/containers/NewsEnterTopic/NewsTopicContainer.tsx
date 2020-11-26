@@ -16,11 +16,11 @@ import {
   DragDropContext,
 } from 'react-beautiful-dnd';
 //import { getTerms, getTerm } from './data2';
-import TermsList from './terms-list';
-import reorder from './reorder2';
-import { grid, borderRadius } from './constants';
+import TermsList from '../../components/keyword/terms-list';
+import reorder from '../../components/keyword/reorder';
+import { grid } from '../../components/keyword/constants';
 import { useSelector, useDispatch } from 'react-redux';
-import { getRealtimeTermsRequest } from '../../store/weather/reducer';
+import { getNewsEnterTopicRequest } from '../../store/weather/reducer';
 import { Terms } from '../../lib/api/weather';
 import { RootState } from '../../store/rootReducer';
 
@@ -63,9 +63,7 @@ function Controls(props: ControlProps) {
     getRankChange,
   } = props;
 
-  const completeMoveArray = useRef<string[] | null>([]);
   const actionsRef = useRef<SnapDragActions | null>();
-  const selectRef = createRef<HTMLSelectElement>();
   const isMoving = useRef(false);
 
   function maybe(fn: (callbacks: SnapDragActions) => void) {
@@ -167,49 +165,7 @@ function Controls(props: ControlProps) {
   }
 
   async function removeItemsMoveToBottom() {
-    // console.log(
-    //   '[seo] removeItemsMoveToBottom completeMoveArray',
-    //   completeMoveArray.current,
-    //   ' removeTerms ',
-    //   removeTerms,
-    // );
-    // //1. remove terms 하단으로 이동
-    // if (!isRemoved) {
-    //   for (let i = 0; i < removeTerms.length; i++) {
-    //     let targetIndex = 0;
-    //     if (
-    //       completeMoveArray.current &&
-    //       !completeMoveArray.current.includes(removeTerms[i].keyword)
-    //     ) {
-    //       for (let j = 0; j < terms.length; j++) {
-    //         if (removeTerms[i].keyword === terms[j].keyword) {
-    //           targetIndex = j;
-    //           actionsRef.current = lift(removeTerms[i].keyword);
-    //           completeMoveArray.current.push(removeTerms[i].keyword);
-    //           break;
-    //         }
-    //       }
-    //       console.log('[seo] targetindex', targetIndex);
-    //       const gap = terms.length - targetIndex;
-    //       await moveItem(gap, false);
-    //       //break;
-    //       return;
-    //     }
-    //   }
-    // }
-    // //2. removeItems 정렬이 완료되었으면 제거
-    // if (
-    //   completeMoveArray.current &&
-    //   completeMoveArray.current.length === removeTerms.length &&
-    //   !isRemoved &&
-    //   !isMoving.current
-    // ) {
-    //   console.log('[seo]  2. removeItems 정렬이 완료되었으면 제거 ');
-    //   setTimeout(() => {
-    //     removeFinal();
-    //     completeMoveArray.current = [];
-    //   }, TIME_INTERVAL);
-    // }
+    //pass
   }
 
   useEffect(() => {
@@ -253,7 +209,7 @@ type Props = {
   initial: Terms[];
 };
 
-export default function DndContainer(props: Props) {
+export default function NewsTopicContainer(props: Props) {
   //const [terms, setTerms] = useState(props.initial);
   const [isReady, setIsReady] = useState(false);
   const [leftTerms, setLeftTerms] = useState<Terms[]>([]);
@@ -267,9 +223,11 @@ export default function DndContainer(props: Props) {
   const [terms, setTerms] = useState<Terms[]>([]);
   // const [termsNext, setTermsNext] = useState<Terms[]>(getTerms(10, true));
   // const [terms, setTerms] = useState<Terms[]>(getTerms(10, false));
-  const { realtimeTerms, realtimeTermsNext, realtimeLoading } = useSelector(
-    (state: RootState) => state.weather,
-  );
+  const {
+    newsTopicTerms,
+    newsTopicTermsNext,
+    newsEnterTopicLoading,
+  } = useSelector((state: RootState) => state.weather);
   const [isDragging, setIsDragging] = useState(false);
   const [isControlDragging, setIsControlDragging] = useState(false);
   const sensorAPIRef = useRef<SensorAPI | null>(null);
@@ -311,9 +269,9 @@ export default function DndContainer(props: Props) {
   useEffect(() => {
     function dispatchTerms() {
       //loading 이 끝낫거나 정렬이 끝난경우
-      if (!realtimeLoading && isEnd.current) {
+      if (!newsEnterTopicLoading && isEnd.current) {
         const isUsingTemp = false;
-        dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+        dispatch(getNewsEnterTopicRequest({ isUsingTemp }));
       }
     }
     dispatchTerms();
@@ -322,16 +280,16 @@ export default function DndContainer(props: Props) {
   }, []);
 
   useEffect(() => {
-    console.log('[seo] useEffect ', realtimeTerms, realtimeTermsNext);
-    if (realtimeTerms) {
-      setTerms(realtimeTerms.data.slice(0, 10));
+    console.log('[seo] useEffect ');
+    if (newsTopicTerms) {
+      setTerms(newsTopicTerms.data.slice(0, 10));
     }
-    if (realtimeTermsNext) {
-      setTermsNext(realtimeTermsNext.data.slice(0, 10));
+    if (newsTopicTermsNext) {
+      setTermsNext(newsTopicTermsNext.data.slice(0, 10));
     }
     setIsReady(true);
     isEnd.current = false;
-  }, [realtimeTerms, realtimeTermsNext]);
+  }, [newsTopicTerms, newsTopicTermsNext]);
 
   useEffect(() => {
     console.log('[seo]--------------useEffect delete item');
@@ -519,91 +477,22 @@ export default function DndContainer(props: Props) {
     isRankMapSetComplete.current = true;
   }
 
-  // function deleteTerms(termsRemoveItem: Terms) {
-  //   const newTerms = [...terms]; // make a separate copy of the array
-  //   let targetIndex = -1;
-  //   for (let j = 0; j < newTerms.length; j++) {
-  //     if (termsRemoveItem.keyword === newTerms[j].keyword) {
-  //       targetIndex = j;
-  //     }
-  //   }
-  //   if (targetIndex !== -1) {
-  //     if (!completeDeletedSet.current.has(termsRemoveItem.keyword)) {
-  //       completeDeletedSet.current.add(termsRemoveItem.keyword);
-  //       newTerms.splice(targetIndex, 1);
-  //       setTerms(newTerms);
-  //     }
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  function deleteItem() {
-    // console.log(
-    //   '[seo] deleteItem========== terms!!!',
-    //   terms,
-    //   'termsNext',
-    //   termsNext,
-    // );
-    // const leftTerms: Terms[] = [];
-    // const termsRemove = terms.filter(item => {
-    //   //중복 제거
-    //   for (let i = 0; i < termsNext.length; i++) {
-    //     if (termsNext[i].keyword === item.keyword) {
-    //       leftTerms.push(Object.assign({}, item)); //남은 친구들
-    //       return false;
-    //     }
-    //   }
-    //   return true;
-    // });
-    // const concatTerms = termsNext.filter(item => {
-    //   //중복 제거
-    //   for (let i = 0; i < terms.length; i++) {
-    //     if (terms[i].keyword === item.keyword) {
-    //       return false;
-    //     }
-    //   }
-    //   return true;
-    // });
-    // //삭제 될게 없다면
-    // if (termsRemove && termsRemove.length === 0) {
-    //   setIsRemoved(true);
-    // }
-    // if (concatTerms && concatTerms.length === 0) {
-    //   setIsAdded(true);
-    // }
-    // console.log('[seo] leftTerms', leftTerms);
-    // console.log('[seo] termsRemove', termsRemove);
-    // console.log('[seo] concatTerms', concatTerms);
-    // setRemoveTerms(termsRemove); //제거할 애들
-    // setLeftTerms(leftTerms.slice()); //본 quetos에 서 남은 애들
-    // setConcatTerms(concatTerms);
-    //setConcatQuotesMap(concatTerms);
-    //remove 할 애들setConcatQuotes
-    //terms 움직이기
-    //remove 하기
-    //추가할 애들 추가
-  }
-
   function removeFinal() {
-    // console.log('[seo] removeFinal leftTerms ', leftTerms);
-    // setTerms(leftTerms);
-    // setIsRemoved(true); // remove 종료 flag 세팅
-    // setLeftTerms([]);
+    //
   }
 
   function testUseTemp() {
-    console.log('[seo] realtimeLoading ', realtimeLoading);
-    if (!realtimeLoading) {
+    console.log('[seo] newsEnterTopicLoading ', newsEnterTopicLoading);
+    if (!newsEnterTopicLoading) {
       const isUsingTemp = true;
-      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+      dispatch(getNewsEnterTopicRequest({ isUsingTemp }));
     }
   }
   function testGeneral() {
-    console.log('[seo] realtimeLoading ', realtimeLoading);
-    if (!realtimeLoading) {
+    console.log('[seo] newsEnterTopicLoading ', newsEnterTopicLoading);
+    if (!newsEnterTopicLoading) {
       const isUsingTemp = false;
-      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+      dispatch(getNewsEnterTopicRequest({ isUsingTemp }));
     }
   }
   return (
@@ -626,8 +515,8 @@ export default function DndContainer(props: Props) {
           <TermsList
             listId="list"
             terms={terms}
-            title="실시간 검색어"
-            sm={realtimeTermsNext.ts}
+            title="뉴스토픽"
+            sm={newsTopicTermsNext.sm}
           />
           <Controls
             terms={terms}

@@ -3,6 +3,10 @@ import React from 'react';
 import Admin from './containers/Admin/Admin';
 import MainContainer from './containers/MainContainer/MainContainer';
 import DndContainer from './containers/DndContainer/DndContainer';
+import {
+  NewsTopicContainer,
+  EnterTopicContainer,
+} from './containers/NewsEnterTopic';
 const SubRotues = ({}) => {
   return (
     <div>
@@ -11,7 +15,13 @@ const SubRotues = ({}) => {
       <Route
         exact
         path="/DndContainer"
-        component={DndContainer}
+        component={NewsTopicContainer}
+        history={history}
+      />
+      <Route
+        exact
+        path="/EnterTopicContainer"
+        component={EnterTopicContainer}
         history={history}
       />
     </div>

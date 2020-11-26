@@ -85,7 +85,13 @@ export interface Ranks {
   data: Terms[];
   message: string;
 }
-
+export interface NewsEnterRanks {
+  newsTopic: Terms[];
+  enterTopic: Terms[];
+  sm: string;
+  ts: string;
+  message: string;
+}
 export interface Weights {
   marketingCode: string;
   newsCode: string;
@@ -102,21 +108,23 @@ export interface RealtimeTermsRes {
   ageCode: string;
   groupingLevelCode: string;
 }
+export interface NewsEnterTermsRes {
+  ranks: NewsEnterRanks;
+  statusCode: number;
+  message: string;
+}
 export interface RealtimeTermsPayload {
   isUsingTemp: boolean;
 }
+export async function getNewsEnterTerms() {
+  const res = await axios.post<NewsEnterTermsRes>(
+    clientConfig.endpoint.api + '/weather/getNewsEnterTopic',
+  );
+  return res.data;
+  //}
+}
 
 export async function getRealtimeTerms(payload: RealtimeTermsPayload) {
-  // if (payload.isUsingTemp) {
-  //   return {
-  //     ranks: {
-  //       ts: 'test',
-  //       sm: 'test',
-  //       data: realTiemSearchTermsConcatRemove_Real,
-  //       message: 'test',
-  //     },
-  //   };
-  // } else {
   const res = await axios.post<RealtimeTermsRes>(
     clientConfig.endpoint.api + '/weather/getRealtimeTerms',
   );

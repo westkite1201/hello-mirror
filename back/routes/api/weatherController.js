@@ -76,6 +76,34 @@ router.post('/getRealtimeTerms', async (req, res) => {
     console.error(e);
   }
 });
+
+router.post('/getNewsEnterTopic', async (req, res) => {
+  //console.log(req.body);
+  let number = req.body.backjoonNumber;
+  //console.log(number);
+  try {
+    var util = require('util');
+    var spawn = require('child_process').spawn;
+    var process = spawn('python3', [
+      FILE_ROOT_DIR + '/src/lib/python/topic.py',
+      number,
+    ]);
+    util.log('readingin');
+    process.stdout.on('data', function (chunk) {
+      let textChunk = chunk.toString('utf-8'); // buffer to string
+      //textChunk = a(textChunk);
+      util.log(textChunk);
+      textChunk = textChunk.replaceAll("'", '"');
+      textChunk = textChunk.replaceAll('None', '"None"');
+      const obj = JSON.parse(textChunk);
+      res.json(obj);
+    });
+    //replaceAll prototype 선언
+  } catch (e) {
+    console.error(e);
+  }
+});
+
 router.post('/getPixabayImages', async (req, res) => {
   let query = req.body.query;
   let imageType = req.body.imageType;

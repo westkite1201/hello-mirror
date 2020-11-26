@@ -53,7 +53,7 @@ function MainContainer() {
       <Info infoString={'오늘 정말 멋지십니다'} />
       <WeatherInfoContainer />
       */}
-      {<WeatherInfoOverview />}
+      {/*<WeatherInfoOverview />*/}
       <EditView />
     </div>
   );

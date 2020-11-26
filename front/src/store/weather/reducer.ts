@@ -6,6 +6,7 @@ import {
   Ranks,
   RealtimeTermsPayload,
   Terms,
+  NewsEnterRanks,
 } from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
 import _ from 'lodash';
@@ -31,9 +32,17 @@ type CurrentDisplayState = {
   shortWeatherInfo?: WeatherShortInfoData;
   isFetchingShort: boolean;
   loading: boolean;
+
   realtimeTerms: Ranks;
   realtimeTermsNext: Ranks;
   realtimeLoading: boolean;
+
+  newsTopicTerms: Ranks;
+  newsTopicTermsNext: Ranks;
+  enterTopicTerms: Ranks;
+  enterTopicTermsNext: Ranks;
+
+  newsEnterTopicLoading: boolean;
 };
 
 const initialState: CurrentDisplayState = {
@@ -45,6 +54,13 @@ const initialState: CurrentDisplayState = {
   realtimeTerms: { ts: '', sm: '', data: [], message: '' },
   realtimeTermsNext: { ts: '', sm: '', data: [], message: '' },
   realtimeLoading: false,
+
+  newsTopicTerms: { ts: '', sm: '', data: [], message: '' },
+  newsTopicTermsNext: { ts: '', sm: '', data: [], message: '' },
+  newsEnterTopicLoading: false,
+
+  enterTopicTerms: { ts: '', sm: '', data: [], message: '' },
+  enterTopicTermsNext: { ts: '', sm: '', data: [], message: '' },
 };
 
 // createAction으로 액션 생성 함수를 만들 수 있다.
@@ -249,6 +265,70 @@ const countSlice = createSlice({
 
       state.realtimeLoading = false;
     },
+    getNewsEnterTopicRequest(
+      state,
+      { payload }: PayloadAction<RealtimeTermsPayload>,
+    ) {
+      state.newsEnterTopicLoading = true;
+    },
+    getNewsEnterTopicSuccess(
+      state,
+      { payload }: PayloadAction<NewsEnterRanks>,
+    ) {
+      //첫번째 인경우
+      //newTopic
+      if (
+        state.newsTopicTerms.data.length === 0 &&
+        state.newsTopicTermsNext.data.length === 0
+      ) {
+        state.newsTopicTerms.sm = payload.sm;
+        state.newsTopicTerms.ts = payload.ts;
+        state.newsTopicTerms.data = payload.newsTopic;
+        state.newsTopicTerms.message = payload.message;
+        /*set Next */
+        state.newsTopicTermsNext.sm = payload.sm;
+        state.newsTopicTermsNext.ts = payload.ts;
+        state.newsTopicTermsNext.data = payload.newsTopic;
+        state.newsTopicTermsNext.message = payload.message;
+      }
+      //setting 이 되어있으면
+      else if (state.newsTopicTermsNext.data.length !== 0) {
+        state.newsTopicTerms = state.newsTopicTermsNext;
+        //test 용
+        //payload.data = shuffleArray(payload.data);
+        /*set Next */
+        state.newsTopicTermsNext.sm = payload.sm;
+        state.newsTopicTermsNext.ts = payload.ts;
+        state.newsTopicTermsNext.data = payload.newsTopic;
+        state.newsTopicTermsNext.message = payload.message;
+      }
+      //enterTopic
+      if (
+        state.enterTopicTerms.data.length === 0 &&
+        state.enterTopicTermsNext.data.length === 0
+      ) {
+        state.enterTopicTerms.sm = payload.sm;
+        state.enterTopicTerms.ts = payload.ts;
+        state.enterTopicTerms.data = payload.enterTopic;
+        state.enterTopicTerms.message = payload.message;
+        /*set Next */
+        state.enterTopicTermsNext.sm = payload.sm;
+        state.enterTopicTermsNext.ts = payload.ts;
+        state.enterTopicTermsNext.data = payload.enterTopic;
+        state.enterTopicTermsNext.message = payload.message;
+      }
+      //setting 이 되어있으면
+      else if (state.enterTopicTermsNext.data.length !== 0) {
+        state.enterTopicTerms = state.enterTopicTermsNext;
+        //test 용
+        //payload.data = shuffleArray(payload.data);
+        state.enterTopicTermsNext.sm = payload.sm;
+        state.enterTopicTermsNext.ts = payload.ts;
+        state.enterTopicTermsNext.data = shuffleArray(payload.enterTopic);
+        state.enterTopicTermsNext.message = payload.message;
+      }
+      state.newsEnterTopicLoading = false;
+    },
   },
 });
 
@@ -263,6 +343,8 @@ export const {
   getWeatherShortTermLiveSuccess,
   getRealtimeTermsRequest,
   getRealtimeTermsSuccess,
+  getNewsEnterTopicRequest,
+  getNewsEnterTopicSuccess,
 } = countSlice.actions;
 
 export default countSlice.reducer;
