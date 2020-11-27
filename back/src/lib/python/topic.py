@@ -42,7 +42,7 @@ def getTopic():
                     enterTopic.append({'rank': index + 1, 'keyword': liTag.text, 'keywordSynonyms': []})
 
         topic = {
-            'newTopic': newsTopic,
+            'newsTopic': newsTopic,
             'enterTopic': enterTopic,
             'sm': time,
             'ts': '',
