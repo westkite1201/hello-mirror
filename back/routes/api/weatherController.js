@@ -51,15 +51,11 @@ String.prototype.replaceAll = function (org, dest) {
 };
 const FILE_ROOT_DIR = process.cwd();
 router.post('/getRealtimeTerms', async (req, res) => {
-  //console.log(req.body);
-  let number = req.body.backjoonNumber;
-  //console.log(number);
   try {
     var util = require('util');
     var spawn = require('child_process').spawn;
     var process = spawn('python3', [
       FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py',
-      number,
     ]);
     util.log('readingin');
     process.stdout.on('data', function (chunk) {

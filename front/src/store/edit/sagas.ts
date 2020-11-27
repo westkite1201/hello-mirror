@@ -49,7 +49,7 @@ function* getWeatherShortTerm(action) {
   }
 }
 
-export function* weatherSaga() {
+export function* editSaga() {
   // yield takeEvery('INCREMENT_ASYNC', incrementAsync);
   // yield takeEvery(getWeatherDataShortTermLive, getWeatherShortTerm);
   //yield takeEvery(getWeatherDataShortTermLive, getWeatherShortTerm);

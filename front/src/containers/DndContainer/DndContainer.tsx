@@ -608,11 +608,12 @@ export default function DndContainer(props: Props) {
   }
   return (
     <React.Fragment>
+      {/*
       <div style={{ padding: '50px' }}></div>
       <button onClick={testUseTemp}>디스패치</button>
       <button onClick={testGeneral}>디스패치2</button>
       <button onClick={setInit}>초기화</button>
-
+      */}
       <DragDropContext
         onDragStart={() => setIsDragging(true)}
         onDragEnd={onDragEnd}

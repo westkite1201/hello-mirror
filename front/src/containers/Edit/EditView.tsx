@@ -10,7 +10,11 @@ import {
   searchComponentByName,
   handleDispatchEventResize,
 } from '../../lib/helpers';
-import { removeItem, onLayoutChange } from '../../store/edit/reducer';
+import {
+  removeItem,
+  onLayoutChange,
+  getLoadPage,
+} from '../../store/edit/reducer';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const EditView = () => {
   const dispatch = useDispatch();
@@ -18,6 +22,9 @@ const EditView = () => {
     (state: RootState) => state.edit,
   );
 
+  React.useEffect(() => {
+    dispatch(getLoadPage());
+  }, []);
   console.log('layout', layout);
   const onRemoveItem = (i: string) => {
     dispatch(removeItem(i));

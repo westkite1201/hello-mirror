@@ -1,23 +1,17 @@
 .dropLayout {
-	width: calc(80%- 190px);
-	height: 100%;
-	display: inline-block;
-	vertical-align: top;
+  width: calc(80%- 190px);
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
 }
-.rglContainer{
-	height: 100%;
-    background-size: cover;
-    background-attachment: fixed;
-    background-color: white;
-	/*background-image: url('./milky-way-1030765_1920.jpg');*/
-	
+.rglContainer {
+  height: 100%;
+  background-size: cover;
+  background-attachment: fixed;
+  background-color: white;
+  /*background-image: url('./milky-way-1030765_1920.jpg');*/
 }
-.componentContainer {
-	background-color: white;
-	border: 1px solid gray;
-	box-shadow: 3px 3px 3px 3px #999;
-	height: 100%;
-}
-.react_diable_resizing{
-	display: none
+
+.react_diable_resizing {
+  display: none;
 }

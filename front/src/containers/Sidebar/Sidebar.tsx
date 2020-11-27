@@ -41,6 +41,7 @@ const Sidebar = () => {
   }
 
   const addSelectedComponent = (componentName: string) => {
+    console.log('[seo] componentName ', componentName);
     dispatch(addComponent(componentName));
   };
   return (

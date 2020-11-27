@@ -24,6 +24,7 @@ export type ComponentItem = {
 
 type CurrentDisplayState = {
   layout: RGLItem[];
+  layoutTemp: string;
   componentList: ComponentItem[];
   isEdit: boolean;
   isSidebarOpen: boolean;
@@ -31,6 +32,7 @@ type CurrentDisplayState = {
 
 const initialState: CurrentDisplayState = {
   layout: [],
+  layoutTemp: '',
   componentList: [],
   isEdit: true,
   isSidebarOpen: true,
@@ -58,9 +60,8 @@ const editSlice = createSlice({
         };
       });
     },
-    addComponent(state, action: PayloadAction<string>) {
-      console.log('addComponent');
-      const tag = searchComponentByName(state.componentList, action.payload);
+    addComponent(state, { payload }: PayloadAction<string>) {
+      const tag = searchComponentByName(state.componentList, payload);
       const timeStamp = new Date().getTime();
       const data = {
         i: 'n' + timeStamp,
@@ -69,9 +70,11 @@ const editSlice = createSlice({
         w: 3,
         h: 2,
         item: tag,
-        name: action.payload,
+        name: payload,
       };
-      state.layout.push(data);
+
+      console.log('[seo][reducer] addComponent ', payload, data);
+      state.layout.push(Object.assign({}, data));
     },
 
     setComponentList(state, action: PayloadAction<ComponentItem[]>) {
@@ -86,21 +89,33 @@ const editSlice = createSlice({
       state.isEdit = !state.isEdit;
     },
     onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
-      const layoutTemp = action.payload;
+      const layout = action.payload;
 
-      layoutTemp.map((item, i) => {
+      const layoutTemp = layout.map((item, i) => {
         return {
           ...item,
-          item: layoutTemp[i].item,
-          name: layoutTemp[i].name,
+          item: layout[i].item,
+          name: layout[i].name,
         };
       });
-      layoutTemporaryStorage = JSON.stringify({ ['layout']: layoutTemp });
-      localStorage.setItem('layout', layoutTemporaryStorage);
+      const layoutTemporaryStorage = JSON.stringify({ ['layout']: layoutTemp });
+      state.layoutTemp = layoutTemporaryStorage;
+      console.log('[seo] layoutTemp', layoutTemporaryStorage);
+      //localStorage.setItem('layout', layoutTemporaryStorage);
     },
     saveLayout(state) {
-      localStorage.setItem('layout', JSON.stringify(state.layout));
+      localStorage.setItem('layout', state.layoutTemp);
       //localStorageMode
+    },
+
+    getLoadPage(state) {
+      const layout = localStorage.getItem('layout');
+      console.log('[seo] layout ', layout);
+      if (layout) {
+        state.layout = JSON.parse(layout).layout;
+      } else {
+        state.layout = [];
+      }
     },
   },
 });
@@ -113,6 +128,7 @@ export const {
   editHandle,
   onLayoutChange,
   saveLayout,
+  getLoadPage,
 } = editSlice.actions;
 
 export default editSlice.reducer;
