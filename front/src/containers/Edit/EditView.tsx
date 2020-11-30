@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+//import { Responsive } from 'react-grid-layout';
 import EditComponentList from './EditComponentList';
 import classnames from 'classnames';
 import _ from 'lodash';
@@ -15,7 +15,10 @@ import {
   onLayoutChange,
   getLoadPage,
 } from '../../store/edit/reducer';
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
+const ResponsiveReactGridLayout = WidthProvider(ReactGridLayout);
+
+//const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const EditView = () => {
   const dispatch = useDispatch();
   const { layout, componentList, isEdit } = useSelector(
@@ -76,10 +79,11 @@ const EditView = () => {
   // };
 
   return (
-    <div>
+    <div className="dropLayout" style={{ width: '100%' }}>
       <ResponsiveReactGridLayout
         className="layout"
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        cols={36}
+        //cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={1}
         //onResize={handleResizeChildComponent}
         //measureBeforeMount={true}
