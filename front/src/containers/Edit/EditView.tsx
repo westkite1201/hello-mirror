@@ -99,9 +99,7 @@ const EditView = () => {
         verticalCompact={false}
         onLayoutChange={handleLayoutChange}
       >
-        {layout &&
-          layout.length !== 0 &&
-          layout.map((el, index) => createElement(el, index))}
+        {layout.map((el, index) => createElement(el, index))}
       </ResponsiveReactGridLayout>
       <EditComponentList />
     </div>

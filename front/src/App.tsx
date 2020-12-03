@@ -47,6 +47,7 @@ const Component = () => {
     <Container>
       <TopRowContainer handleEdit={handleEdit} saveLayout={handleSaveLayout} />
       <Sidebar />
+      <div id="portal"></div>
       <div style={isEdit ? openStyle : closeStyle}>
         <Router>
           <Routes />

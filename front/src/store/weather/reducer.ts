@@ -244,6 +244,7 @@ const countSlice = createSlice({
     ) {
       state.realtimeLoading = true;
     },
+
     getRealtimeTermsSuccess(state, { payload }: PayloadAction<Ranks>) {
       //첫번째 인경우
       if (
@@ -259,12 +260,19 @@ const countSlice = createSlice({
         console.log('[seo] reducer isSetting ');
         state.realtimeTerms = state.realtimeTermsNext;
         //test 용
-        //payload.data = shuffleArray(payload.data);
+        payload.data = shuffleArray(payload.data);
         state.realtimeTermsNext = payload;
       }
 
       state.realtimeLoading = false;
     },
+    getRealtimeTermsFailure(
+      state,
+      { payload }: PayloadAction<RealtimeTermsPayload>,
+    ) {
+      state.realtimeLoading = false;
+    },
+
     getNewsEnterTopicRequest(
       state,
       { payload }: PayloadAction<RealtimeTermsPayload>,
@@ -343,6 +351,7 @@ export const {
   getWeatherShortTermLiveSuccess,
   getRealtimeTermsRequest,
   getRealtimeTermsSuccess,
+  getRealtimeTermsFailure,
   getNewsEnterTopicRequest,
   getNewsEnterTopicSuccess,
 } = countSlice.actions;
