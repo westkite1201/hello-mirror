@@ -5,9 +5,9 @@ export const handleDispatchEventResize = () => {
     bubbles: false,
   });
   window.dispatchEvent(event);
-  // setTimeout(() => {
-  //   window.dispatchEvent(event);
-  // }, 10);
+  setTimeout(() => {
+    window.dispatchEvent(event);
+  }, 10);
 };
 export const searchComponentByName = (
   componentList: ComponentItem[],
