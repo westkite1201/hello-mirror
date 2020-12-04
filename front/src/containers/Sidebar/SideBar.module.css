@@ -10,6 +10,7 @@
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;
+  color: black;
 }
 .sidenav a {
   padding: 8px 8px 8px 2px;

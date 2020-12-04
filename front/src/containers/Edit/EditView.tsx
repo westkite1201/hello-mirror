@@ -14,7 +14,6 @@ import {
   removeItem,
   onLayoutChange,
   getLoadPage,
-  RGLItem,
 } from '../../store/edit/reducer';
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
 const ResponsiveReactGridLayout = WidthProvider(ReactGridLayout);
@@ -29,14 +28,14 @@ const EditView = () => {
   React.useEffect(() => {
     dispatch(getLoadPage());
   }, []);
-  console.log('[seo] edit view layout', layout);
+
+  console.log('layout', layout);
   const onRemoveItem = (i: string) => {
     dispatch(removeItem(i));
   };
   const createElement = (el, key) => {
-    console.log('[sep] createElement el', el);
     const removeStyle: CSS.Properties = {
-      color: 'white',
+      color: 'black',
       position: 'absolute',
       right: '2px',
       top: 0,
@@ -70,20 +69,19 @@ const EditView = () => {
   const handleLayoutChange = layout => {
     dispatch(onLayoutChange(layout));
   };
-  const handleResizeChildComponent = (allChild, target) => {
-    console.log('[seo] onResize ', allChild, target);
-    if (target && target.i) {
-      const id = target.i;
-      const rect = document.getElementById(id)?.getBoundingClientRect();
-      //const rect = document.getElementById('id').getBoundingClientRect();
-      const targetDiv = document.getElementById(id + '_c');
-      if (targetDiv) {
-        targetDiv.style.width = String(rect && rect.width);
-        targetDiv.style.height = String(rect && rect.height);
-      }
-    }
-  };
+  // const handleResizeChildComponent = (allChild, target) => {
+  //   console.log('[seo] onResize ', allChild, target);
+  //   // let rect = document.getElementById(target.i).getBoundingClientRect();
+  //   // let targetDiv = document.getElementById(target.i + '_c');
+  //   // if (!helpers.isEmpty(targetDiv)) {
+  //   //   targetDiv.style.width = rect.width;
+  //   //   targetDiv.style.height = rect.height;
+  //   // }
+  // };
 
+  function a() {
+    return layout;
+  }
   return (
     <div className="dropLayout" style={{ width: '100%' }}>
       <ResponsiveReactGridLayout
@@ -92,10 +90,12 @@ const EditView = () => {
         cols={36}
         //cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={1}
-        onResize={handleResizeChildComponent}
-        measureBeforeMount={true}
+        //onResize={handleResizeChildComponent}
+        //measureBeforeMount={true}
         //   breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        //   cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         draggableHandle=".dragHandle"
+        margin={[25, 25]}
         verticalCompact={false}
         onLayoutChange={handleLayoutChange}
       >

@@ -65,17 +65,21 @@ const editSlice = createSlice({
       const data = {
         i: 'n' + timeStamp,
         x: (state.layout.length * 2) % (18 || 12),
-        y: Infinity, // puts it at the bottom
+        y: 1,
         w: 6,
         h: 4,
         item: tag,
         name: payload,
       };
 
-      console.log('[seo][reducer] addComponent payload ', payload);
-      console.log('[seo][reducer] addComponent data ', data);
-      state.layout.push(data);
-      //state.layout.push(Object.assign({}, data));
+      const layoutTemp = state.layout.slice();
+      layoutTemp.push(data);
+
+      state.layout = layoutTemp.slice();
+      // console.log('[seo][reducer] addComponent payload ', payload);
+      // console.log('[seo][reducer] addComponent data ', data);
+      // //state.layout.push(());
+      // state.layout.push(Object.assign({}, data));
     },
 
     setComponentList(state, action: PayloadAction<ComponentItem[]>) {
@@ -91,6 +95,14 @@ const editSlice = createSlice({
     },
     onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
       const layoutLocal = action.payload;
+      state.layout = layoutLocal.map((item, i) => {
+        console.log('[seo] layout item ', item);
+        return {
+          ...item,
+          item: state.layout[i].item,
+          name: state.layout[i].name,
+        };
+      });
       const layoutTemp = layoutLocal.map((item, i) => {
         console.log('[seo] layout item ', item);
         return {
@@ -102,6 +114,7 @@ const editSlice = createSlice({
       console.log('[seo] onLayoutChange  layoutTemp', layoutTemp);
       const layoutTemporaryStorage = JSON.stringify({ ['layout']: layoutTemp });
       state.layoutTemp = layoutTemporaryStorage;
+
       console.log(
         '[seo] onLayoutChange  layoutTemporaryStorage',
         layoutTemporaryStorage,

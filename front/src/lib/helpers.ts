@@ -5,9 +5,9 @@ export const handleDispatchEventResize = () => {
     bubbles: false,
   });
   window.dispatchEvent(event);
-  setTimeout(() => {
-    window.dispatchEvent(event);
-  }, 10);
+  // setTimeout(() => {
+  //   window.dispatchEvent(event);
+  // }, 10);
 };
 export const searchComponentByName = (
   componentList: ComponentItem[],
@@ -19,6 +19,7 @@ export const searchComponentByName = (
   // console.log(tag);
   return tag;
 };
+
 export const getWeatherClassName = (skyInfoStr: string, dayTimeYn: boolean) => {
   let className = '';
   let weatherInfoName = '';
