@@ -55,7 +55,7 @@ router.post('/getRealtimeTerms', async (req, res) => {
     var util = require('util');
     var spawn = require('child_process').spawn;
     var process = spawn('python3', [
-      FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py'
+      FILE_ROOT_DIR + '/src/lib/python/naverRealtime.py',
     ]);
     util.log('readingin');
     process.stdout.on('data', function (chunk) {
@@ -80,9 +80,9 @@ router.post('/getNewsEnterTopic', async (req, res) => {
   try {
     var util = require('util');
     var spawn = require('child_process').spawn;
-    var process = spawn('python', [
+    var process = spawn('python3', [
       FILE_ROOT_DIR + '/src/lib/python/topic.py',
-      number
+      number,
     ]);
     util.log('readingin');
     process.stdout.on('data', function (chunk) {
@@ -112,7 +112,7 @@ router.post('/getPixabayImages', async (req, res) => {
     } else {
       return res.json({
         message: 'error',
-        statusCode: 400
+        statusCode: 400,
       });
     }
   } catch (e) {
@@ -128,10 +128,10 @@ router.post('/getAreaRiseSetInfo', async (req, res) => {
   try {
     let response = await CallSeverApiRiseSet.getAreaRiseSetInfo(
       location,
-      locdate
+      locdate,
     );
     isDayTimeYn = helpers.isDayTime(
-      response.data.response.body.items.item.sunset
+      response.data.response.body.items.item.sunset,
     );
     response.data.response.body.items.item.isDayTimeYn = isDayTimeYn;
     if (response.message !== 'error') {
@@ -226,7 +226,7 @@ router.post('/getWeatherDataMid', async (req, res) => {
       type,
       shortTermYn,
       shortTermLiveYn,
-      midYn
+      midYn,
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
@@ -266,7 +266,7 @@ router.post('/getWeatherDataPrivateMode', async (req, res) => {
       shortTermYn, //short
       false, //live
       false, //mid
-      numOfRows
+      numOfRows,
     );
     //console.log('resposne ', response);
     if (response.message !== 'error' && response.message === 'success') {
@@ -304,7 +304,7 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
       ny,
       type,
       shortTermYn,
-      shortTermLiveYn
+      shortTermLiveYn,
     );
     if (result.message !== 'error') {
       //온경우

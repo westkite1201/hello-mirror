@@ -5,7 +5,7 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let bodyParser = require('body-parser');
 let cors = require('cors')();
-let busRouter = require('./routes/api/busController');
+//let busRouter = require('./routes/api/busController');
 let weatherApi = require('./routes/api/weatherController');
 let quotesRotuer = require('./routes/api/quotesController');
 
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '100mb' }));
 
 app.use('/api/weather', weatherApi);
-app.use('/api/bus', busRouter);
+//app.use('/api/bus', busRouter);
 app.use('/api/quotes', quotesRotuer);
 require('dotenv').config();
 
