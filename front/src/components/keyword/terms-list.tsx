@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Fragment, Component } from 'react';
 import styled from 'styled-components';
 import { colors } from '@atlaskit/theme';
 //import { Droppable, Draggable } from 'react-beautiful-dnd';
@@ -7,6 +7,7 @@ import TermsItem from './terms-item';
 import { grid } from './constants';
 import Title from './title';
 //import type { Terms } from './types';
+import ReactDOM from 'react-dom';
 import { Terms } from '../../lib/api/weather';
 import {
   Droppable,
@@ -92,6 +93,84 @@ type QuoteListProps = {
   terms: Terms[];
 };
 
+type ItemProps = {
+  provided: DraggableProvided;
+  snapshot: DraggableStateSnapshot;
+  terms: Terms;
+  isDragging: boolean;
+  isGroupedOver: boolean;
+};
+
+interface PortalSProps {
+  inPortal: boolean;
+}
+const SimpleQuote = styled.div`
+  padding: ${grid}px;
+  margin-bottom: ${grid}px;
+  background-color: ${colors.B50};
+  border: 1px solid ${colors.B200};
+  /* used for positioning the after content */
+  position: relative;
+  /* stylelint-disable  comment-empty-line-before */
+  /* add little portal indicator when in a portal */
+  ${(props: PortalSProps) =>
+    props.inPortal
+      ? `
+    ::after {
+      position: absolute;
+      background: lightgreen;
+      padding: ${grid}px;
+      bottom: 0;
+      right: 0;
+      content: "in portal";
+    }
+  `
+      : ''}/* stylelint-enable */;
+`;
+/* 포탈 사용  */
+class PortalAwareItem extends Component<ItemProps> {
+  render() {
+    const provided: DraggableProvided = this.props.provided;
+    const snapshot: DraggableStateSnapshot = this.props.snapshot;
+    const terms: Terms = this.props.terms;
+
+    const isDragging = this.props.isDragging;
+    const isGroupedOver = this.props.isGroupedOver;
+    const usePortal: boolean = snapshot.isDragging;
+
+    const child = (
+      <Fragment>
+        <TermsItem
+          key={terms.keyword}
+          terms={terms}
+          isDragging={isDragging}
+          isGroupedOver={isGroupedOver}
+          provided={provided}
+        />
+        {/*
+      <SimpleQuote
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        inPortal={usePortal}
+      >
+        {terms.keyword}
+      </SimpleQuote>
+      */}
+      </Fragment>
+    );
+
+    if (!usePortal) {
+      return child;
+    }
+    let portal;
+    if (document) {
+      portal = document.getElementById('portal');
+    }
+    // if dragging - put the item in a portal
+    return ReactDOM.createPortal(child, portal);
+  }
+}
 const InnerQuoteList: any = ({ terms }: QuoteListProps) => {
   return (
     terms &&
@@ -105,6 +184,15 @@ const InnerQuoteList: any = ({ terms }: QuoteListProps) => {
           dragProvided: DraggableProvided,
           dragSnapshot: DraggableStateSnapshot,
         ) => (
+          <Fragment>
+            <PortalAwareItem
+              terms={terms}
+              provided={dragProvided}
+              snapshot={dragSnapshot}
+              isDragging={dragSnapshot.isDragging}
+              isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
+            />
+            {/*
           <TermsItem
             key={terms.keyword}
             terms={terms}
@@ -112,6 +200,8 @@ const InnerQuoteList: any = ({ terms }: QuoteListProps) => {
             isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
             provided={dragProvided}
           />
+                      */}
+          </Fragment>
         )}
       </Draggable>
     ))

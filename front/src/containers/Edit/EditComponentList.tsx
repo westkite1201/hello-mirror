@@ -3,8 +3,12 @@ import ClockContainer from '../Clock/ClockContainer';
 import Info from '../Info/InfoContainer';
 import WeatherInfoContainer from '../Weather/WeatherInfoContainer';
 import WeatherInfoOverview from '../Weather/WeatherInfoOverview';
-import DndContainer from '../DndContainer/DndContainer';
 import { setComponentList } from '../../store/edit/reducer';
+import {
+  EnterTopicContainer,
+  NewsTopicContainer,
+  RealtimeTermsContainer,
+} from '../Terms';
 import { useDispatch } from 'react-redux';
 
 const EditComponentList = () => {
@@ -12,8 +16,20 @@ const EditComponentList = () => {
   useEffect(() => {
     const componentList = [
       {
-        component: DndContainer,
-        name: 'DndContainer',
+        component: EnterTopicContainer,
+        name: 'EnterTopicContainer',
+        category: 'weather',
+        pageView: 'seoPage',
+      },
+      {
+        component: NewsTopicContainer,
+        name: 'NewsTopicContainer',
+        category: 'weather',
+        pageView: 'seoPage',
+      },
+      {
+        component: RealtimeTermsContainer,
+        name: 'RealtimeTermsContainer',
         category: 'weather',
         pageView: 'seoPage',
       },

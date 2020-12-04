@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { clientConfig } from '../../configuration/clientConfig';
-//import { realTiemSearchTermsConcatRemove_Real } from '../../containers/DndContainer/data2';
 export interface Quote {
   font_color: string;
   thumbnail_user_image: string;

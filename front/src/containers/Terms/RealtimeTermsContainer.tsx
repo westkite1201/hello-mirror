@@ -16,9 +16,9 @@ import {
   DragDropContext,
 } from 'react-beautiful-dnd';
 //import { getTerms, getTerm } from './data2';
-import TermsList from './terms-list';
-import reorder from './reorder2';
-import { grid, borderRadius } from './constants';
+import TermsList from '../../components/keyword/terms-list';
+import reorder from '../../components/keyword/reorder';
+import { grid } from '../../components/keyword/constants';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRealtimeTermsRequest } from '../../store/weather/reducer';
 import { Terms } from '../../lib/api/weather';
@@ -253,7 +253,7 @@ type Props = {
   initial: Terms[];
 };
 
-export default function DndContainer(props: Props) {
+export default function RealtimeTermsContainer(props: Props) {
   //const [terms, setTerms] = useState(props.initial);
   const [isReady, setIsReady] = useState(false);
   const [leftTerms, setLeftTerms] = useState<Terms[]>([]);
