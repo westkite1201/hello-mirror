@@ -260,7 +260,7 @@ const countSlice = createSlice({
         console.log('[seo] reducer isSetting ');
         state.realtimeTerms = state.realtimeTermsNext;
         //test 용
-        payload.data = shuffleArray(payload.data);
+        //payload.data = shuffleArray(payload.data);
         state.realtimeTermsNext = payload;
       }
 
@@ -332,7 +332,7 @@ const countSlice = createSlice({
         //payload.data = shuffleArray(payload.data);
         state.enterTopicTermsNext.sm = payload.sm;
         state.enterTopicTermsNext.ts = payload.ts;
-        state.enterTopicTermsNext.data = shuffleArray(payload.enterTopic);
+        state.enterTopicTermsNext.data = payload.enterTopic;
         state.enterTopicTermsNext.message = payload.message;
       }
       state.newsEnterTopicLoading = false;

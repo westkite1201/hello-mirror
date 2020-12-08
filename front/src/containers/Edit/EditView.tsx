@@ -14,6 +14,7 @@ import {
   removeItem,
   onLayoutChange,
   getLoadPage,
+  changeStatic,
 } from '../../store/edit/reducer';
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
 const ResponsiveReactGridLayout = WidthProvider(ReactGridLayout);
@@ -35,7 +36,7 @@ const EditView = () => {
   };
   const createElement = (el, key) => {
     const removeStyle: CSS.Properties = {
-      color: 'black',
+      color: 'white',
       position: 'absolute',
       right: '2px',
       top: 0,
@@ -51,6 +52,11 @@ const EditView = () => {
       <div className={classnames({ dragHandle: isEdit })} key={el.i}>
         <div className="componentContainer" id={el.i}>
           <Tag data={el.i} wrapperid={el.i} isEdit={isEdit} />
+          {isEdit && (
+            <button onClick={() => dispatch(changeStatic(el.i))}>
+              static 전환
+            </button>
+          )}
         </div>
         {isEdit === true ? (
           <span
@@ -79,9 +85,6 @@ const EditView = () => {
   //   // }
   // };
 
-  function a() {
-    return layout;
-  }
   return (
     <div className="dropLayout" style={{ width: '100%' }}>
       <ResponsiveReactGridLayout

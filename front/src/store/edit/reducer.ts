@@ -1,8 +1,5 @@
-import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit';
-import {
-  searchComponentByName,
-  handleDispatchEventResize,
-} from '../../lib/helpers';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { searchComponentByName } from '../../lib/helpers';
 import _ from 'lodash';
 export type RGLItem = {
   i: string;
@@ -12,6 +9,7 @@ export type RGLItem = {
   h: number;
   item: any;
   name: any;
+  static: boolean;
 };
 
 export type ComponentItem = {
@@ -46,8 +44,18 @@ const editSlice = createSlice({
   name: 'edit',
   initialState,
   reducers: {
+    changeStatic(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      const layoutTemp = state.layout.map(item => {
+        if (item.i === id) {
+          item.static = !item.static;
+        }
+        return item;
+      });
+      state.layout = layoutTemp;
+    },
     initLayout(state) {
-      state.layout = [0, 1, 2, 3, 4].map((i, key, list) => {
+      state.layout = [0, 1, 2, 3, 4].map(i => {
         return {
           i: i.toString(),
           x: i * 2,
@@ -56,6 +64,7 @@ const editSlice = createSlice({
           h: 2,
           item: null,
           name: null,
+          static: false,
         };
       });
     },
@@ -70,6 +79,7 @@ const editSlice = createSlice({
         h: 4,
         item: tag,
         name: payload,
+        static: false,
       };
 
       const layoutTemp = state.layout.slice();
@@ -150,6 +160,7 @@ export const {
   onLayoutChange,
   saveLayout,
   getLoadPage,
+  changeStatic,
 } = editSlice.actions;
 
 export default editSlice.reducer;
