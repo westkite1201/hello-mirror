@@ -3,10 +3,14 @@ import requests
 import sys
 import json
 from datetime import datetime
+from pytz import timezone, utc
 def getNaverRealtimeSearchWord(urlParam):
+    
+    now_utc = datetime.now(timezone('UTC'))
+    now_kst = now_utc.astimezone(timezone('Asia/Seoul'))
     urlParam = {
         'age': 'all',
-        'datetime': datetime.now().strftime('%Y-%m-%dT%H:%M:00'),
+        'datetime': now_kst.strftime('%Y-%m-%dT%H:%M:00'),
         'entertainment':4,
         'groupingLevel': 4,
         'marketing': 0,
