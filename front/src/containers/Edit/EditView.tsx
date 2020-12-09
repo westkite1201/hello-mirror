@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import CSS from 'csstype';
 import { RootState } from '../../store/rootReducer';
+import { Switch } from 'antd';
 import {
   searchComponentByName,
   handleDispatchEventResize,
@@ -34,6 +35,10 @@ const EditView = () => {
   const onRemoveItem = (i: string) => {
     dispatch(removeItem(i));
   };
+  const handleStatic = (checked: boolean, id: string) => {
+    console.log('[seo] checked', checked, id);
+    dispatch(changeStatic({ checked, id }));
+  };
   const createElement = (el, key) => {
     const removeStyle: CSS.Properties = {
       color: 'white',
@@ -53,9 +58,9 @@ const EditView = () => {
         <div className="componentContainer" id={el.i}>
           <Tag data={el.i} wrapperid={el.i} isEdit={isEdit} />
           {isEdit && (
-            <button onClick={() => dispatch(changeStatic(el.i))}>
-              static 전환
-            </button>
+            <React.Fragment>
+              <Switch onChange={checked => handleStatic(checked, el.i)} />
+            </React.Fragment>
           )}
         </div>
         {isEdit === true ? (

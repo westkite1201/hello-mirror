@@ -19,6 +19,10 @@ export type ComponentItem = {
   pageView: string; // puts it at the bottom
 };
 
+type ChangeStaticPayloadType = {
+  checked: boolean;
+  id: string;
+};
 type CurrentDisplayState = {
   layout: RGLItem[];
   layoutTemp: string;
@@ -44,11 +48,12 @@ const editSlice = createSlice({
   name: 'edit',
   initialState,
   reducers: {
-    changeStatic(state, action: PayloadAction<string>) {
-      const id = action.payload;
+    changeStatic(state, { payload }: PayloadAction<ChangeStaticPayloadType>) {
+      const id = payload.id;
+      const checked = payload.checked;
       const layoutTemp = state.layout.map(item => {
         if (item.i === id) {
-          item.static = !item.static;
+          item.static = checked;
         }
         return item;
       });
