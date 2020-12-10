@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import configureStore from './store/store';
-
+import { GlobalStyle } from './styles/global-style';
 // Saga Middleware 생성
 //const sagaMiddleware = createSagaMiddleware();
 
@@ -33,6 +33,7 @@ const store = configureStore(initialState);
 
 ReactDOM.render(
   <Provider store={store}>
+    <GlobalStyle />
     <App />
   </Provider>,
   document.getElementById('root'),

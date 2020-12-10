@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { searchComponentByName } from '../../lib/helpers';
 import _ from 'lodash';
+import { toast } from 'react-toastify';
 export type RGLItem = {
   i: string;
   x: number;
@@ -106,6 +107,12 @@ const editSlice = createSlice({
       });
     },
     editHandle(state) {
+      const childs = document.getElementsByClassName('react-resizable-handle');
+      if (childs && childs.length !== 0) {
+        Array.from(childs).forEach((element: any) => {
+          element.style.display = !state.isEdit ? 'initial' : 'none';
+        });
+      }
       state.isEdit = !state.isEdit;
     },
     onLayoutChange(state, action: PayloadAction<RGLItem[]>) {
@@ -140,6 +147,7 @@ const editSlice = createSlice({
       console.log('[seo]saveLayout layout ', state.layout);
       console.log('[seo]saveLayout layoutTemp', state.layoutTemp);
       localStorage.setItem('layout', state.layoutTemp);
+      toast.success('😋 현재 layout을 저장했어요! ✔');
       //localStorageMode
     },
 
@@ -149,6 +157,7 @@ const editSlice = createSlice({
       if (layout) {
         console.log('[seo]-----------------');
         state.layout = JSON.parse(layout).layout;
+        toast.success('✨불러오기 성공✨');
       } else {
         state.layout = [];
       }

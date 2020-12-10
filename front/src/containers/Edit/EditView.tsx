@@ -11,6 +11,7 @@ import {
   searchComponentByName,
   handleDispatchEventResize,
 } from '../../lib/helpers';
+import './EditView.scss';
 import {
   removeItem,
   onLayoutChange,
@@ -59,7 +60,12 @@ const EditView = () => {
           <Tag data={el.i} wrapperid={el.i} isEdit={isEdit} />
           {isEdit && (
             <React.Fragment>
-              <Switch onChange={checked => handleStatic(checked, el.i)} />
+              <Switch
+                checked={el.static}
+                onChange={checked => handleStatic(checked, el.i)}
+                checkedChildren={'고정'}
+                unCheckedChildren={'이동'}
+              />
             </React.Fragment>
           )}
         </div>
@@ -78,6 +84,7 @@ const EditView = () => {
     );
   };
   const handleLayoutChange = layout => {
+    console.log('handle');
     dispatch(onLayoutChange(layout));
   };
   // const handleResizeChildComponent = (allChild, target) => {
