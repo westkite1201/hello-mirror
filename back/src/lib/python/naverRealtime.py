@@ -12,7 +12,7 @@ def getNaverRealtimeSearchWord(urlParam):
         'age': 'all',
         'datetime': now_kst.strftime('%Y-%m-%dT%H:%M:00'),
         'entertainment':4,
-        'groupingLevel': 4,
+        'groupingLevel': 0,
         'marketing': 0,
         'news': 4,
         'sports': 0,

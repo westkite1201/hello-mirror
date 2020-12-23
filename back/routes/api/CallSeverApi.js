@@ -37,7 +37,7 @@ module.exports = function (callee) {
       method: 'GET',
       timeout: 10000,
       followRedirect: true,
-      maxRedirects: 10
+      maxRedirects: 10,
     };
     const PORT = '3500';
 
@@ -90,7 +90,7 @@ module.exports = function (callee) {
 
         let propertiesObject = querystring.stringify({
           q: query,
-          image_type: imageType
+          image_type: imageType,
         });
 
         OPTIONS.url += 'key=' + serviceKey;
@@ -109,7 +109,7 @@ module.exports = function (callee) {
         shortTermYn,
         shortTermLiveYn,
         midYn,
-        numOfRows = 100
+        numOfRows = 100,
       ) => {
         //console.log("shortTermYn " , (shortTermYn) )
         if (shortTermYn === 'true' || shortTermYn) {
@@ -135,7 +135,7 @@ module.exports = function (callee) {
           nx: nx,
           ny: ny,
           numOfRows: numOfRows,
-          dataType: type
+          dataType: type,
         });
 
         OPTIONS.url += 'ServiceKey=' + serviceKey;
@@ -153,7 +153,7 @@ module.exports = function (callee) {
         let propertiesObject = querystring.stringify({
           tmX: tmX,
           tmY: tmY,
-          _returnType: 'json'
+          _returnType: 'json',
         });
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
@@ -177,7 +177,7 @@ module.exports = function (callee) {
           pageNo: 1,
           numOfRows: 1,
           ver: 1.3,
-          _returnType: 'json'
+          _returnType: 'json',
         });
 
         propertiesObject = querystring.unescape(propertiesObject);
@@ -203,7 +203,7 @@ module.exports = function (callee) {
         let propertiesObject = querystring.stringify({
           location: location,
           locdate: locDate,
-          _type: 'json'
+          _type: 'json',
         });
 
         propertiesObject = querystring.unescape(propertiesObject);
@@ -214,12 +214,13 @@ module.exports = function (callee) {
 
         let res = await doRequest(OPTIONS);
         return res;
-      }
+      },
     };
   }
 
   statusCodeErrorHandlerAsync = (statusCode, data) => {
     try {
+      console.log('data', data);
       switch (statusCode) {
         case 200:
           return { message: 'success', data: JSON.parse(data) };

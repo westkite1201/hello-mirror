@@ -295,7 +295,16 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
   shortTermLiveYn = true;
   nx = req.body.nx;
   ny = req.body.ny;
-  console.log(nx, ny);
+  console.log(
+    'hello',
+    base_date,
+    base_time,
+    nx,
+    ny,
+    type,
+    shortTermYn,
+    shortTermLiveYn,
+  );
   try {
     let result = await CallSeverApi.weatherAsync(
       base_date,
@@ -308,12 +317,15 @@ router.post('/getWeatherDataShortTermLivePrivateMode', async (req, res) => {
     );
     if (result.message !== 'error') {
       //온경우
+      console.log(result);
+      //return res.json({ test: 'dssd' });
       return res.json(result.data.response.body.items.item);
     } else {
       console.log('error');
+      return res.json({ status: 404, message: 'error' });
     }
   } catch (e) {
-    console.log('error ', e);
+    return res.json({ status: 404, message: e });
   }
 });
 
