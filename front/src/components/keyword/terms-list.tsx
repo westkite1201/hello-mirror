@@ -8,6 +8,7 @@ import { grid } from './constants';
 import Title from './title';
 //import type { Terms } from './types';
 import ReactDOM from 'react-dom';
+import moment from 'moment';
 import { Terms } from '../../lib/api/weather';
 import {
   Droppable,
@@ -28,7 +29,7 @@ export const getBackgroundColor = (
   if (isDraggingFrom) {
     return colors.T50;
   }
-  return colors.DN40A;
+  return '#000000';
 };
 
 interface WrapperSProps {
@@ -225,8 +226,12 @@ function InnerList(props: InnerListProps) {
 
   return (
     <Container>
-      {title}
-      <h4 style={{ color: 'white' }}>{sm}</h4>
+      <span style={{ color: 'white', fontSize: '1.2rem', fontWeight: 600 }}>
+        {title}
+      </span>
+      <div style={{ color: 'white', fontSize: '0.8rem', margin: '3px' }}>
+        {moment(sm).format('YYYY년 MM월 DD일 HH시 mm분')}
+      </div>
       <DropZone ref={dropProvided.innerRef}>
         <InnerQuoteList terms={terms} />
         {dropProvided.placeholder}

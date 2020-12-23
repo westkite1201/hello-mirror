@@ -3,14 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/rootReducer';
 import {
   getWeatherRequest,
-  WeatherShortInfoData,
   WeatherInfoData,
 } from '../../store/weather/reducer';
 import styled from 'styled-components';
 import _ from 'lodash';
 import WeatherItem from '../../components/weather/WeatherItem';
 import 'weather-icons/css/weather-icons.css';
-import './WeatherContainer.scss';
+
 const START = 0;
 const END = 5;
 const WeatherInfoOverview = () => {
@@ -43,7 +42,7 @@ const WeatherInfoOverview = () => {
   );
 };
 
-export default WeatherInfoOverview;
+export default React.memo(WeatherInfoOverview);
 // 스타일드-컴포넌트 정의
 const S_weatherItensWrapper = styled.div`
   width: 100%;

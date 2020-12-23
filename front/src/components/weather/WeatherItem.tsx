@@ -54,7 +54,7 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
   );
 };
 
-export default WeatherItem;
+export default React.memo(WeatherItem);
 const S_weatherInfoWrapper = styled.div`
   text-align: center;
   border-radius: 4px;

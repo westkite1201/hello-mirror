@@ -199,10 +199,10 @@ function Controls(props: ControlProps) {
 const Layout = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: ${grid * 4}px;
-  > * {
-    margin: ${grid}px;
-  }
+  // margin-top: ${grid * 4}px;
+  // > * {
+  //   margin: ${grid}px;
+  // }
 `;
 
 type Props = {

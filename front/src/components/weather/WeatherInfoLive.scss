@@ -2,6 +2,7 @@
   width: 100%;
   padding: 1rem;
   color: #e9ecef;
+
   .location_info {
     font-size: 1.5rem;
   }
@@ -31,13 +32,13 @@
     top: 50px;
     left: 2rem;
     color: azure;
-    font-size: 5rem;
+    font-size: 4rem;
     /* display: flex; */
   }
   .weather_info {
     padding: 1rem;
     width: 100%;
-    font-size: 3rem;
+    font-size: 2rem;
     .rain_icon {
       color: #1864ab;
     }

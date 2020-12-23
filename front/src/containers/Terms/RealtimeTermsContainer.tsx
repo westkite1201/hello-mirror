@@ -213,17 +213,6 @@ function Controls(props: ControlProps) {
   }
 
   useEffect(() => {
-    console.log(
-      '[seo] isRemoved',
-      isRemoved,
-      ' isAdded ',
-      isAdded,
-      'terms ',
-      terms,
-      ' termsNext ',
-      'termsNext ',
-      termsNext,
-    );
     if (!isRemoved && !isAdded && removeTerms && removeTerms.length !== 0) {
       //removeItemsMoveToBottom();
     } else if (isRemoved && isAdded) {
@@ -243,10 +232,10 @@ function Controls(props: ControlProps) {
 const Layout = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: ${grid * 4}px;
-  > * {
-    margin: ${grid}px;
-  }
+  // margin-top: ${grid * 1}px;
+  // > * {
+  //   margin: ${grid}px;
+  // }
 `;
 
 type Props = {
@@ -291,9 +280,9 @@ export default function RealtimeTermsContainer(props: Props) {
   }
   function setInit() {
     setRankTerms();
-    console.log(
-      '[seo] --------$$$$$$$-------------------------------setInit!!',
-    );
+    // console.log(
+    //   '[seo] --------$$$$$$$-------------------------------setInit!!',
+    // );
     setIsRemoved(false);
     setIsAdded(false);
     setLeftTerms([]);
@@ -334,20 +323,6 @@ export default function RealtimeTermsContainer(props: Props) {
   }, [realtimeTerms, realtimeTermsNext]);
 
   useEffect(() => {
-    console.log('[seo]--------------useEffect delete item');
-    console.log(
-      '[seo]--------------',
-      terms,
-      termsNext,
-      'isRemoved= ',
-      isRemoved,
-      'isAdded= ',
-      isAdded,
-      'isEnd.current= ',
-      isEnd.current,
-      'isReady= ',
-      isReady,
-    );
     if (!isRemoved && !isAdded && !isEnd.current && isReady) {
       //deleteItem();
       manageDelete();
@@ -458,14 +433,14 @@ export default function RealtimeTermsContainer(props: Props) {
       }
       return true;
     });
-    console.log('[seo]--------------concatTerms', concatTerms);
+    //onsole.log('[seo]--------------concatTerms', concatTerms);
     setConcatTerms(concatTerms);
     if (concatTerms.length === 0) {
       setIsAdded(true);
     }
   }
   useEffect(() => {
-    console.log('[seo] useEffect terms!!!', terms, ' termsnext ', termsNext);
+    //console.log('[seo] useEffect terms!!!', terms, ' termsnext ', termsNext);
     // remove 종료시 concat 추가
     // add terms
     if (concatTerms && concatTerms.length !== 0 && isRemoved && !isAdded) {
@@ -494,7 +469,7 @@ export default function RealtimeTermsContainer(props: Props) {
   }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
   function addTerms(item) {
-    console.log('[seo] addQuotes! ', item);
+    //console.log('[seo] addQuotes! ', item);
     const newTerms = terms.map((item, index) => {
       return {
         ...item,
@@ -592,20 +567,20 @@ export default function RealtimeTermsContainer(props: Props) {
     // setLeftTerms([]);
   }
 
-  function testUseTemp() {
-    console.log('[seo] realtimeLoading ', realtimeLoading);
-    if (!realtimeLoading) {
-      const isUsingTemp = true;
-      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
-    }
-  }
-  function testGeneral() {
-    console.log('[seo] realtimeLoading ', realtimeLoading);
-    if (!realtimeLoading) {
-      const isUsingTemp = false;
-      dispatch(getRealtimeTermsRequest({ isUsingTemp }));
-    }
-  }
+  // function testUseTemp() {
+  //   console.log('[seo] realtimeLoading ', realtimeLoading);
+  //   if (!realtimeLoading) {
+  //     const isUsingTemp = true;
+  //     dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+  //   }
+  // }
+  // function testGeneral() {
+  //   console.log('[seo] realtimeLoading ', realtimeLoading);
+  //   if (!realtimeLoading) {
+  //     const isUsingTemp = false;
+  //     dispatch(getRealtimeTermsRequest({ isUsingTemp }));
+  //   }
+  // }
   return (
     <React.Fragment>
       {/*

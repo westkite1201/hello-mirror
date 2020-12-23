@@ -10,6 +10,10 @@
   font-family: 'alarm_clock';
   src: url('./styles/fonts/alarm_clock.ttf');
 }
+@font-face {
+  font-family: 'GmarketSans-medium';
+  src: url('./styles/fonts/GmarketSansTTFMedium.ttf');
+}
 
 body {
   margin: 0;
@@ -53,15 +57,15 @@ code {
 }
 
 #info {
-  font-size: calc(20px + 8vh);
-  line-height: calc(20px + 10vh);
+  font-size: calc(20px + 5vh);
+  line-height: calc(20px + 8vh);
   /*   text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
     0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092;
   color: #fccaff; */
   text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
     0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
   color: #fff6a9;
-  font-family: 'Sacramento', cursive;
+  /*font-family: 'Sacramento', cursive;*/
   text-align: center;
   animation: blink 12s infinite;
   -webkit-animation: blink 12s infinite;

@@ -5,7 +5,7 @@ import { getWeatherDataShortTermLive } from '../../store/weather/reducer';
 import WeatherInfoLive from '../../components/weather/WeatherInfoLive';
 import styled from 'styled-components';
 import 'weather-icons/css/weather-icons.css';
-import './WeatherContainer.scss';
+
 const WeatherInfoContainer = () => {
   const dispatch = useDispatch();
   const { shortWeatherInfo, isFetchingShort } = useSelector(
@@ -30,7 +30,7 @@ const WeatherInfoContainer = () => {
   );
 };
 
-export default WeatherInfoContainer;
+export default React.memo(WeatherInfoContainer);
 // 스타일드-컴포넌트 정의
 const S_weatherInfoWrapper = styled.div`
   width: 100%;

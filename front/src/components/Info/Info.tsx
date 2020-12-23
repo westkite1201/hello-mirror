@@ -1,12 +1,19 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const St = {
+  InfoDisplay: styled.h3`
+    font-family: GmarketSans-medium;
+  `,
+};
 type InfoProps = {
   infoString: string;
 };
 const Info: React.FC<InfoProps> = ({ infoString }) => {
   return (
-    <h1 id="info" style={{ padding: '2rem' }}>
+    <St.InfoDisplay id="info" style={{ padding: '2rem' }}>
       {infoString}
-    </h1>
+    </St.InfoDisplay>
   );
 };
 export default Info;

@@ -33,7 +33,6 @@ export default function Progress({
 
   return (
     <div className={classes.root}>
-      {value}
       <BorderLinearProgress
         className={classes.margin}
         variant="determinate"

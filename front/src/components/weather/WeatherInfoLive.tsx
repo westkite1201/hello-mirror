@@ -22,12 +22,10 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
 `;
   console.log('shortWeatherInfo');
   return (
-    <div className="weather_wrapper" style={{ color: 'black' }}>
+    <div className="weather_wrapper" style={{ color: 'white' }}>
       {isFetchingShort ? (
         <ScaleLoader
           css={override}
-          //sizeUnit={'%'}
-          //size={20}
           color={'#b197fc'}
           loading={isFetchingShort}
         />
@@ -48,7 +46,7 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
               </div>
             </div>
 
-            <div className="temperture" style={{ color: 'black' }}>
+            <div className="temperture" style={{ color: 'white' }}>
               {shortWeatherInfo.temperatureNow}
               <i className="wi wi-celsius"></i>
             </div>
@@ -68,7 +66,7 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
               </div>
               <div className="humidity">
                 <span style={{ marginRight: '15px' }}>
-                  <OpacityIcon style={{ fontSize: '50px' }} />
+                  <OpacityIcon style={{ fontSize: '2rem', color: '#748ffc' }} />
                   {/*<i className = "wi wi-humidity humidity_icon"></i>*/}
                 </span>
                 {shortWeatherInfo.humidityNow} %

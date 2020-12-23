@@ -22,4 +22,4 @@ function ClockContainer() {
   );
 }
 
-export default ClockContainer;
+export default React.memo(ClockContainer);

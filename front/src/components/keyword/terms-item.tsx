@@ -39,7 +39,7 @@ const getBackgroundColor = (
     return colors.N30;
   }
 
-  return colors.DN10;
+  return '#000000';
 };
 
 // const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
