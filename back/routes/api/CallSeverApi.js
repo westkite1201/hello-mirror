@@ -84,22 +84,6 @@ module.exports = function (callee) {
       }
     })(callee);
     return {
-      pixabay: async (query, imageType) => {
-        OPTIONS.url = HOST + BASE_PATH_PIXABAY;
-        let serviceKey = process.env.pixabayApiKey + '&';
-
-        let propertiesObject = querystring.stringify({
-          q: query,
-          image_type: imageType,
-        });
-
-        OPTIONS.url += 'key=' + serviceKey;
-        OPTIONS.url += propertiesObject;
-        console.log('[seo] option,url', OPTIONS.url);
-        let res = await doRequest(OPTIONS);
-        //console.log("response " , res)
-        return res;
-      },
       weatherAsync: async (
         base_date,
         base_time,

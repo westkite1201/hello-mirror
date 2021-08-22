@@ -141,6 +141,8 @@ export async function getWeatherDataPrivateMode(
   );
   return res.data;
 }
+
+/* 지금 시간 */
 export async function getWeatherDataShortTermLivePrivateMode(
   payload: WeatherRequestPayloadType,
 ) {

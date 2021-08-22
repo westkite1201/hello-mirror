@@ -20,26 +20,6 @@ const Sidebar = () => {
     padding: '0px',
   };
 
-  {
-    /*
-     const activeStyle: CSS.Properties = {
-    color: 'black',
-    fontSize: '1rem',
-    };
-    const link = routes.map((prop, key) => {
-      if (prop.sideView) {
-        return (
-          <div className={style.styleNavigation} key={key}>
-            <NavLink to={prop.path} activeStyle={activeStyle} key={key}>
-              {prop.sidebarName}
-            </NavLink>
-          </div>
-        );
-      }
-    });
-  */
-  }
-
   const addSelectedComponent = (componentName: string) => {
     console.log('[seo] componentName ', componentName);
     dispatch(addComponent(componentName));
