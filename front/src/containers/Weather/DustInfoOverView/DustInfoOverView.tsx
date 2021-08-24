@@ -33,12 +33,15 @@ const makeProgress = (dustMessageInfo: ProgressProps) => {
     <Progress
       backgroundColor={color}
       fcstValue={level * 12.5}
-      value={value}
+      value={parseInt(value)}
       height={15}
     />
   );
 };
-export default function DustInfoOverView({ weather }) {
+type DustInfoOverViewProps = {
+  weather: any;
+};
+const DustInfoOverView: React.FC<DustInfoOverViewProps> = ({ weather }) => {
   console.log('[SEO][dustInfoObject] ');
   const {
     dustMessageInfoPm10,
@@ -103,4 +106,6 @@ export default function DustInfoOverView({ weather }) {
   }
 
   return <List className={classes.root}>{makeDustInfoBar()}</List>;
-}
+};
+
+export default DustInfoOverView;

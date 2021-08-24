@@ -14,16 +14,24 @@ import _ from 'lodash';
 export type WeatherShortInfoData = {
   baseDate: string;
   baseTime: string;
-  temperatureNow: string;
-  rainNow: string;
-  humidityNow: string;
-  weatherClassName: string;
-  weatherInfoName: string;
+  temperatureNow: any;
+  rainNow: any;
+  humidityNow: any;
+  weatherClassName: any;
+  weatherInfoName: any;
 };
 
 export type WeatherInfoData = {
   dateTime: string;
-  value: WeatherShortInfoData;
+  value: {
+    baseDate: any;
+    baseTime: any;
+    weatherClassName: string;
+    weatherInfoName: string;
+    temperatureNow: any;
+    rainNow: any;
+    humidityNow: any;
+  };
 };
 
 type CurrentDisplayState = {
@@ -112,8 +120,8 @@ const countSlice = createSlice({
           fcstDate_fcstTime: item.fcstDate + '_' + item.fcstTime,
         };
       });
-      function processingItem(weatherDateTime, weatherInfos) {
-        let sky; //날씨
+      function processingItem(weatherDateTime: any, weatherInfos: any) {
+        let sky; //날씨x
         let pty; //강수형태
         let temperatureNow;
         let humidityNow;
@@ -133,8 +141,8 @@ const countSlice = createSlice({
         // VEC	풍향	m/s
         // WSD	풍속	m/s
 
-        let dayTimeYn;
-        weatherInfos.map(item => {
+        const dayTimeYn = false;
+        weatherInfos.map((item: any) => {
           console.log('[seo] item ', item);
           if (item.category === 'SKY') {
             sky = parseInt(item.fcstValue);
@@ -193,14 +201,14 @@ const countSlice = createSlice({
       state,
       { payload }: PayloadAction<WeatherShortItem[]>,
     ) {
-      let sky; //날씨
-      let pty; //강수형태
-      let temperatureNow;
-      let humidityNow;
-      let rainNow;
-      let baseDate;
-      let baseTime;
-      let dayTimeYn;
+      let sky = 0; //날씨
+      let pty = 0; //강수형태
+      let temperatureNow = 0;
+      let humidityNow = 0;
+      let rainNow = '';
+      let baseDate = '';
+      let baseTime = '';
+      const dayTimeYn = false;
       const weatherInfo = payload;
       console.log('weatjerImfo', weatherInfo);
 

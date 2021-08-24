@@ -114,7 +114,7 @@ function Controls(props: ControlProps) {
     return false;
   }
   //정렬 함수
-  async function moveToOrder(selectTerms, gap) {
+  async function moveToOrder(selectTerms: any, gap: number) {
     console.log('[seo] moveToOrder');
     if (selectTerms) {
       const presentTermsKeyword = selectTerms.keyword;
@@ -468,7 +468,7 @@ export default function RealtimeTermsContainer(props: Props) {
     }
   }, [concatTerms, isRemoved, isAdded, terms, termsNext]);
 
-  function addTerms(item) {
+  function addTerms(item: any) {
     //console.log('[seo] addQuotes! ', item);
     const newTerms = terms.map((item, index) => {
       return {

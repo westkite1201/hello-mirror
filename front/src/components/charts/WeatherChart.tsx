@@ -26,10 +26,8 @@ import {
 //월별 확진자
 //누적 합
 //swr사용시 args가 많은 경우 무한루프에 봉착하는 경우로 redux 로 전환
-type CoronaChartProps = {
-  tabButtonKey: string;
-};
-const WeatherComposeChart: React.FC<CoronaChartProps> = ({ tabButtonKey }) => {
+
+const WeatherComposeChart = () => {
   const dispatch = useDispatch();
   const { weatherInfo, loading } = useSelector(
     (state: RootState) => state.weather,
@@ -56,20 +54,17 @@ const WeatherComposeChart: React.FC<CoronaChartProps> = ({ tabButtonKey }) => {
   const formatYAxis = (tickItem: any) => tickItem.toLocaleString();
   const formatTooltip = (tickItem: any) => tickItem.toLocaleString();
 
+  console.log('weatherInfo = ', weatherInfo);
   return (
     <ResponsiveContainer>
       <ComposedChart
-        data={usageStatus}
+        data={weatherInfo}
         margin={{ top: 80, right: 40, bottom: 30, left: 40 }}
       >
         <CartesianGrid stroke="#f5f5f5" />
         <XAxis
           dataKey="stateDt"
-          padding={
-            tabButtonKey === 'weekStatus'
-              ? { left: 50, right: 10 }
-              : { left: 20, right: 10 }
-          }
+          padding={{ left: 20, right: 10 }}
           tickFormatter={formatXAxis}
         />
         <YAxis

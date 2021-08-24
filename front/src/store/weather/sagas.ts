@@ -20,6 +20,7 @@ import {
 import {
   getWeatherDataPrivateMode,
   getWeatherDataShortTermLivePrivateMode,
+  WeatherRequestPayloadType,
   WeatherRes,
   WeatherShortItem,
   WeatherItem,
@@ -38,7 +39,7 @@ export function* incrementAsync() {
   yield put(addCount(1));
 }
 
-function* getWeather(action) {
+function* getWeather(action: { payload: WeatherRequestPayloadType }) {
   try {
     const weatherRes: WeatherItem[] = yield call(
       getWeatherDataPrivateMode,
@@ -54,7 +55,7 @@ function* getWeather(action) {
     // });
   }
 }
-function* getWeatherShortTerm(action) {
+function* getWeatherShortTerm(action: { payload: WeatherRequestPayloadType }) {
   try {
     const weatherRes: WeatherShortItem[] = yield call(
       getWeatherDataShortTermLivePrivateMode,
@@ -70,7 +71,9 @@ function* getWeatherShortTerm(action) {
     // });
   }
 }
-function* getRealtimeTermsToApi(action) {
+function* getRealtimeTermsToApi(action: {
+  payload: import('../../../../../../../../../../Users/seoyeonkim/seo/react/myGitRepos/hello-mirror/front/src/lib/api/weather').RealtimeTermsPayload;
+}) {
   try {
     const termsRes: RealtimeTermsRes = yield call(
       getRealtimeTerms,
@@ -84,7 +87,7 @@ function* getRealtimeTermsToApi(action) {
   }
 }
 
-function* getNewsEnterTermsToApi(action) {
+function* getNewsEnterTermsToApi(action: any) {
   try {
     const termsRes: NewsEnterTermsRes = yield call(getNewsEnterTerms);
     console.log('termsRes', termsRes);

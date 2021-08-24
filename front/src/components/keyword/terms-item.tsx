@@ -198,15 +198,8 @@ function getStyle(provided: DraggableProvided, style: any) {
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
 function TermsItem(props: Props) {
-  const {
-    terms,
-    isDragging,
-    isGroupedOver,
-    provided,
-    style,
-    isClone,
-    index,
-  } = props;
+  const { terms, isDragging, isGroupedOver, provided, style, isClone, index } =
+    props;
 
   function displayGap(gap: number) {
     function returnIcon(gap: number) {

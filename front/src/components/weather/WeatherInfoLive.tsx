@@ -59,8 +59,8 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
                 {shortWeatherInfo.rainNow}mm
                 <Progress
                   backgroundColor="#1864ab"
-                  fcstValue={shortWeatherInfo.rainNow}
-                  value={shortWeatherInfo.rainNow}
+                  fcstValue={parseInt(shortWeatherInfo.rainNow)}
+                  value={parseInt(shortWeatherInfo.rainNow)}
                   height={10}
                 />
               </div>
@@ -72,8 +72,8 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
                 {shortWeatherInfo.humidityNow} %
                 <Progress
                   backgroundColor="#748ffc"
-                  fcstValue={shortWeatherInfo.humidityNow}
-                  value={shortWeatherInfo.humidityNow}
+                  fcstValue={parseInt(shortWeatherInfo.humidityNow)}
+                  value={parseInt(shortWeatherInfo.humidityNow)}
                   height={10}
                 />
               </div>

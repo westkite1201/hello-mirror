@@ -11,13 +11,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+type ProgressProps = {
+  backgroundColor: string;
+  fcstValue: number;
+  value: number;
+  height: number;
+};
 /* param 정의할 것  */
-export default function Progress({
+const Progress: React.FC<ProgressProps> = ({
   backgroundColor,
   fcstValue,
   value,
   height = 10,
-}) {
+}) => {
   const classes = useStyles();
   const BorderLinearProgress = withStyles({
     root: {
@@ -41,4 +47,6 @@ export default function Progress({
       />
     </div>
   );
-}
+};
+
+export default Progress;

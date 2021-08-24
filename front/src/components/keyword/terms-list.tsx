@@ -166,7 +166,7 @@ class PortalAwareItem extends Component<ItemProps> {
     }
     let portal;
     if (document) {
-      portal = document.getElementById('portal');
+      portal = document.getElementById('portal') as any;
     }
     // if dragging - put the item in a portal
     return ReactDOM.createPortal(child, portal);

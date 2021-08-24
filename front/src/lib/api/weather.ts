@@ -186,7 +186,7 @@ export const getAreaRiseSetInfo = () => {
   );
 };
 
-export const getNearbyMsrstnList = (tmX, tmY) => {
+export const getNearbyMsrstnList = (tmX: any, tmY: any) => {
   console.log('getNearbyMsrstnList');
   const data = {
     tmX: tmX,
@@ -198,7 +198,11 @@ export const getNearbyMsrstnList = (tmX, tmY) => {
   );
 };
 
-export const getLocation = (locationA, locationB, locationC) => {
+export const getLocation = (
+  locationA: string,
+  locationB: string,
+  locationC: string,
+) => {
   const data = {
     LOCATION_A: locationA,
     LOCATION_B: locationB,
@@ -212,7 +216,7 @@ export const getLocation = (locationA, locationB, locationC) => {
 };
 
 /* db 조회용 */
-export const getWeatherData = (nx, ny, category) => {
+export const getWeatherData = (nx: any, ny: any, category: string) => {
   const data = {
     nx: nx,
     ny: ny,
@@ -225,7 +229,7 @@ export const getWeatherData = (nx, ny, category) => {
   //return (axios.post("http://localhost:3031/api/member/test",data));
 };
 
-export const getWeatherDataShortTerm = (nx, ny) => {
+export const getWeatherDataShortTerm = (nx: any, ny: any) => {
   const data = {
     nx: nx,
     ny: ny,

@@ -33,7 +33,7 @@ export const theme: DefaultTheme = {
   //response: {},
 };
 
-const calcRem = size => `${size / 16}rem`;
+const calcRem = (size: number) => `${size / 16}rem`;
 
 const fontSizes = {
   small: calcRem(14),

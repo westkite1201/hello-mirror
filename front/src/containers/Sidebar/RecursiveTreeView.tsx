@@ -46,7 +46,14 @@ type ObjectItem = {
   };
 };
 
-const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
+type RecursiveTreeViewProps = {
+  pureComponents: any[];
+  addSelectedComponent: any;
+};
+const RecursiveTreeView: React.FC<RecursiveTreeViewProps> = ({
+  pureComponents,
+  addSelectedComponent,
+}) => {
   console.log('addSelectedComponent', addSelectedComponent);
   const [objectArr, setObjectArr] = useState([data]);
 
@@ -83,7 +90,7 @@ const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
     setObjectArr(objectArr);
   }, [pureComponents]);
 
-  const renderTree = nodes => (
+  const renderTree = (nodes: any) => (
     <TreeItem
       key={nodes.id}
       nodeId={nodes.name}
@@ -93,7 +100,7 @@ const RecursiveTreeView = ({ pureComponents, addSelectedComponent }) => {
       }
     >
       {Array.isArray(nodes.children)
-        ? nodes.children.map(node => renderTree(node))
+        ? nodes.children.map((node: any) => renderTree(node))
         : null}
     </TreeItem>
   );

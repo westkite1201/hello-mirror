@@ -40,7 +40,7 @@ const EditView = () => {
     console.log('[seo] checked', checked, id);
     dispatch(changeStatic({ checked, id }));
   };
-  const createElement = (el, key) => {
+  const createElement = (el: any, key: number) => {
     const removeStyle: CSS.Properties = {
       color: 'white',
       position: 'absolute',
@@ -83,7 +83,7 @@ const EditView = () => {
       </div>
     );
   };
-  const handleLayoutChange = layout => {
+  const handleLayoutChange = (layout: any) => {
     console.log('handle');
     dispatch(onLayoutChange(layout));
   };

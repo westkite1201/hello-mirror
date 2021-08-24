@@ -44,7 +44,7 @@ const TopRowContainer: React.FC<ITopRowContainerProps> = ({
     opacity: isGrow ? 1 : 0,
     background: isEdit ? 'white' : 'black',
   });
-  function onChange(checked) {
+  function onChange(checked: any) {
     handleEdit();
     console.log(`switch to ${checked}`);
   }
