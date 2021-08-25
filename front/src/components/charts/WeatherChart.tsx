@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getWeatherDataShortTermLive } from '../../store/weather/reducer';
 import {
   Legend,
+  Area,
   Bar,
   LabelList,
   Line,
@@ -41,11 +42,11 @@ const WeatherComposeChart = () => {
     dispatch(getWeatherRequest({ nx, ny, isShortTeamYn }));
   }, []);
 
-  useEffect(() => {
-    if (weatherInfo) {
-      setWeatheInfoItmes(weatherInfo);
-    }
-  }, [weatherInfo]);
+  // useEffect(() => {
+  //   if (weatherInfo) {
+  //     setWeatheInfoItmes(weatherInfo);
+  //   }
+  // }, [weatherInfo]);
 
   const formatXAxis = (tickItem: any) => {
     return tickItem;
@@ -58,34 +59,56 @@ const WeatherComposeChart = () => {
   return (
     <ResponsiveContainer>
       <ComposedChart
+        width={500}
+        height={400}
         data={weatherInfo}
-        margin={{ top: 80, right: 40, bottom: 30, left: 40 }}
+        margin={{ top: 80, right: 40, bottom: 30 }}
       >
-        <CartesianGrid stroke="#f5f5f5" />
         <XAxis
-          dataKey="stateDt"
+          dataKey="baseDateTime"
           padding={{ left: 20, right: 10 }}
           tickFormatter={formatXAxis}
         />
-        <YAxis
-          type="number"
-          yAxisId="left"
-          label={{ value: '확진자 수', offset: 30, angle: 0, position: 'top' }}
-          tickFormatter={formatYAxis}
-        />
-        <Tooltip
-          cursor={{ strokeDasharray: '3 3' }}
-          formatter={formatTooltip}
-          labelFormatter={formatXAxis}
-        />
+        <YAxis yAxisId="left" />
+        <Tooltip />
         <Legend />
+        <Area
+          yAxisId="left"
+          name="습도"
+          type="monotone"
+          dataKey="humidityNow"
+          fill="#8884d8"
+          stroke="#8884d8"
+          isAnimationActive={true}
+          animationDuration={400}
+        />
         <Line
           yAxisId="left"
           type="monotone"
-          dataKey="decideCnt"
-          stroke="#fcac8d"
+          dataKey="temperatureNow"
+          stroke="#f59f00"
           strokeWidth="2"
-          name="누적 확진자"
+          name="온도"
+          isAnimationActive={true}
+          animationDuration={400}
+        />
+        <Bar
+          yAxisId="left"
+          name="강수량"
+          dataKey="rainNow"
+          barSize={20}
+          fill="#413ea0"
+          isAnimationActive={true}
+          animationDuration={400}
+        />
+
+        <Area
+          yAxisId="left"
+          name="강수확률"
+          type="monotone"
+          dataKey="precipitation"
+          fill="#748ffc"
+          stroke="#748ffc"
           isAnimationActive={true}
           animationDuration={400}
         />

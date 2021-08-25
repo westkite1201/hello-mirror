@@ -10,6 +10,7 @@ import {
 } from '../../lib/api/weather';
 import { getWeatherClassName } from '../../lib/helpers';
 import _ from 'lodash';
+import moment from 'moment';
 
 export type WeatherShortInfoData = {
   baseDate: string;
@@ -22,16 +23,14 @@ export type WeatherShortInfoData = {
 };
 
 export type WeatherInfoData = {
-  dateTime: string;
-  value: {
-    baseDate: any;
-    baseTime: any;
-    weatherClassName: string;
-    weatherInfoName: string;
-    temperatureNow: any;
-    rainNow: any;
-    humidityNow: any;
-  };
+  baseDateTime: string;
+  baseDate: string;
+  baseTime: string;
+  weatherClassName: string;
+  weatherInfoName: string;
+  temperatureNow: number;
+  rainNow: number;
+  humidityNow: number;
 };
 
 type CurrentDisplayState = {
@@ -114,18 +113,21 @@ const countSlice = createSlice({
       state.loading = true;
     },
     getWeatherSuccess(state, { payload }: PayloadAction<WeatherItem[]>) {
+      console.log('payload ', payload);
       const temp = payload.map(item => {
         return {
           ...item,
           fcstDate_fcstTime: item.fcstDate + '_' + item.fcstTime,
         };
       });
+      console.log('temp ', temp);
       function processingItem(weatherDateTime: any, weatherInfos: any) {
-        let sky; //날씨x
-        let pty; //강수형태
-        let temperatureNow;
-        let humidityNow;
-        let rainNow;
+        let sky = 0; //날씨x
+        let pty = 0; //강수형태
+        let temperatureNow = 0;
+        let humidityNow = 0;
+        let rainNow = 0;
+        let precipitation = 0;
         // POP	강수확률	%
         // PTY	강수형태	코드값
         // R06	6시간 강수량	범주 (1 mm)
@@ -143,7 +145,7 @@ const countSlice = createSlice({
 
         const dayTimeYn = false;
         weatherInfos.map((item: any) => {
-          console.log('[seo] item ', item);
+          //console.log('[seo] item ', item);
           if (item.category === 'SKY') {
             sky = parseInt(item.fcstValue);
           }
@@ -154,34 +156,43 @@ const countSlice = createSlice({
             temperatureNow = parseInt(item.fcstValue);
           }
           if (item.category === 'R06') {
-            rainNow = item.fcstValue;
+            rainNow = parseInt(item.fcstValue);
           }
           if (item.category === 'REH') {
             humidityNow = parseInt(item.fcstValue);
           }
+          if (item.category === 'POP') {
+            precipitation = parseInt(item.fcstValue);
+          }
         });
 
+        //"2015-06-17 14:24:36"
         const dateTime = weatherDateTime.split('_');
         const baseDate = dateTime[0];
         const baseTime = dateTime[1];
+
         const skyInfoStr = String(sky) + String(pty);
         const weatherInfoData = getWeatherClassName(skyInfoStr, dayTimeYn);
-        const shortWeatherInfoTemp = {
-          baseDate: baseDate,
-          baseTime: baseTime,
+        //202108260300
+        const WeatherInfoTemp = {
+          baseDateTime: `${moment('20210825').format(
+            'YYYY-MM-DD',
+          )} ${baseTime.substring(0, 2)}:00:00`,
+          baseDate,
+          baseTime,
           weatherClassName: weatherInfoData.weatherClassName,
           weatherInfoName: weatherInfoData.weatherInfoName,
-          temperatureNow: temperatureNow,
-          rainNow: rainNow,
-          humidityNow: humidityNow,
+          temperatureNow,
+          rainNow,
+          humidityNow,
+          precipitation,
         };
-        return shortWeatherInfoTemp;
+        return WeatherInfoTemp;
       }
       const weatherInfo = _.chain(temp)
         .groupBy('fcstDate_fcstTime')
         .map((item, key) => ({
-          dateTime: key,
-          value: processingItem(key, item),
+          ...processingItem(key, item),
         }))
         .value();
       console.log('[seo][weatherInfo] ', weatherInfo);
@@ -205,7 +216,7 @@ const countSlice = createSlice({
       let pty = 0; //강수형태
       let temperatureNow = 0;
       let humidityNow = 0;
-      let rainNow = '';
+      let rainNow = 0;
       let baseDate = '';
       let baseTime = '';
       const dayTimeYn = false;
@@ -224,7 +235,7 @@ const countSlice = createSlice({
           temperatureNow = parseInt(item.obsrValue);
         }
         if (item.category === 'RN1') {
-          rainNow = item.obsrValue;
+          rainNow = parseInt(item.obsrValue);
         }
         if (item.category === 'REH') {
           humidityNow = parseInt(item.obsrValue);
@@ -235,13 +246,13 @@ const countSlice = createSlice({
       const skyInfoStr = String(sky) + String(pty);
       const weatherInfoData = getWeatherClassName(skyInfoStr, dayTimeYn);
       const shortWeatherInfoTemp = {
-        baseDate: baseDate,
-        baseTime: baseTime,
+        baseDate,
+        baseTime,
         weatherClassName: weatherInfoData.weatherClassName,
         weatherInfoName: weatherInfoData.weatherInfoName,
-        temperatureNow: temperatureNow,
-        rainNow: rainNow,
-        humidityNow: humidityNow,
+        temperatureNow,
+        rainNow,
+        humidityNow,
       };
       state.shortWeatherInfo = shortWeatherInfoTemp;
       state.isFetchingShort = false;

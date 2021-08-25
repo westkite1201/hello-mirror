@@ -23,28 +23,26 @@ const WeatherItem: React.FC<WeatherItemProps> = ({ weatherItem }) => {
       {weatherItem && (
         <S_weatherInfoWrapper>
           <div className="location-info-time">
-            {moment(weatherItem.value.baseDate).format('YYYY월 MM월 DD일 ')}
-            {weatherItem.value.baseTime}
+            {moment(weatherItem.baseDate).format('YYYY월 MM월 DD일 ')}
+            {weatherItem.baseTime}
           </div>
           <S_weatherInfoContainer>
             <S_weatherInfoWeatherRight>
-              <i className={weatherItem.value.weatherClassName}></i>
-              <div>{weatherItem.value.weatherInfoName}</div>
+              <i className={weatherItem.weatherClassName}></i>
+              <div>{weatherItem.weatherInfoName}</div>
             </S_weatherInfoWeatherRight>
             <S_weatherInfoWeatherLeft>
               <div>
                 <span>온도 : </span>
-                <span>{weatherItem.value.temperatureNow} °C </span>
+                <span>{weatherItem.temperatureNow} °C </span>
               </div>
               <div>
                 <span>강수량 : </span>
-                <span>
-                  {weatherItem.value.rainNow ? weatherItem.value.rainNow : 0} mm
-                </span>
+                <span>{weatherItem.rainNow ? weatherItem.rainNow : 0} mm</span>
               </div>
               <div>
                 <span>습도 : </span>
-                <span> {weatherItem.value.humidityNow}% </span>
+                <span> {weatherItem.humidityNow}% </span>
               </div>
             </S_weatherInfoWeatherLeft>
           </S_weatherInfoContainer>
