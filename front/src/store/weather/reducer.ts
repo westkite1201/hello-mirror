@@ -175,7 +175,7 @@ const countSlice = createSlice({
         const weatherInfoData = getWeatherClassName(skyInfoStr, dayTimeYn);
         //202108260300
         const WeatherInfoTemp = {
-          baseDateTime: `${moment('20210825').format(
+          baseDateTime: `${moment(baseDate).format(
             'YYYY-MM-DD',
           )} ${baseTime.substring(0, 2)}:00:00`,
           baseDate,
