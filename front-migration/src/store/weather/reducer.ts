@@ -101,13 +101,6 @@ const countSlice = createSlice({
   name: 'count',
   initialState,
   reducers: {
-    addCount(state, action: PayloadAction<number>) {
-      state.clicks += action.payload;
-    },
-    minusCount(state, action: PayloadAction<number>) {
-      state.clicks -= action.payload;
-    },
-
     getWeatherRequest(
       state,
       { payload }: PayloadAction<WeatherRequestPayloadType>,
@@ -224,25 +217,25 @@ const countSlice = createSlice({
       let baseTime = '';
       const dayTimeYn = false;
       const weatherInfo = payload;
-      console.log('weatjerImfo', weatherInfo);
+      console.log('getWeatherShortTermLiveSuccess =', weatherInfo);
 
       // eslint-disable-next-line array-callback-return
       weatherInfo.map(item => {
         console.log('item', item.category);
         if (item.category === 'SKY') {
-          sky = parseInt(item.fcstValue, 10);
+          sky = parseInt(item.obsrValue, 10);
         }
         if (item.category === 'PTY') {
-          pty = parseInt(item.fcstValue, 10);
+          pty = parseInt(item.obsrValue, 10);
         }
         if (item.category === 'T1H') {
-          temperatureNow = parseInt(item.fcstValue, 10);
+          temperatureNow = parseInt(item.obsrValue, 10);
         }
         if (item.category === 'RN1') {
-          rainNow = parseInt(item.fcstValue, 10);
+          rainNow = parseInt(item.obsrValue, 10);
         }
         if (item.category === 'REH') {
-          humidityNow = parseInt(item.fcstValue, 10);
+          humidityNow = parseInt(item.obsrValue, 10);
         }
         baseDate = item.baseDate;
         baseTime = item.baseTime;
@@ -364,8 +357,6 @@ const countSlice = createSlice({
 });
 
 export const {
-  addCount,
-  minusCount,
   getWeatherRequest,
   getWeatherSuccess,
   getWeatherShortTerm,

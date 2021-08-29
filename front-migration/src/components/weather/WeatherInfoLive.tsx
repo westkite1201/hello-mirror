@@ -20,7 +20,7 @@ const WeatherInfoLive: React.FC<WeatherInfoLiveProps> = ({
   margin: 0 auto;
   border-color: red;
 `;
-  console.log('shortWeatherInfo');
+  console.log('shortWeatherInfo ', shortWeatherInfo);
   return (
     <div className="weather_wrapper" style={{ color: 'white' }}>
       {isFetchingShort ? (

@@ -7,7 +7,6 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import {
-  addCount,
   getWeatherRequest,
   getWeatherSuccess,
   getWeatherShortTermLiveSuccess,
@@ -37,7 +36,6 @@ type payloadA = {
 
 export function* incrementAsync() {
   yield delay(1000);
-  yield put(addCount(1));
 }
 
 function* getWeather(action: { payload: WeatherRequestPayloadType }) {
@@ -100,7 +98,6 @@ function* getNewsEnterTermsToApi(action: any) {
 }
 
 export function* weatherSaga() {
-  yield takeEvery('INCREMENT_ASYNC', incrementAsync);
   yield takeLatest(getWeatherDataShortTermLive, getWeatherShortTerm);
   yield takeLatest(getWeatherRequest, getWeather);
   yield takeLatest(getRealtimeTermsRequest, getRealtimeTermsToApi);

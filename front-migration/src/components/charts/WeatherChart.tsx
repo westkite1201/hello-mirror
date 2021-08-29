@@ -131,7 +131,7 @@ const WeatherComposeChart = () => {
         width={500}
         height={400}
         data={weatherInfo}
-        margin={{ top: 80, right: 40, bottom: 30 }}
+        // margin={{ top: 80, right: 40, bottom: 30 }}
       >
         <defs>
           <linearGradient id="humidityNow" x1="0" y1="0" x2="0" y2="1">
@@ -164,10 +164,21 @@ const WeatherComposeChart = () => {
           isAnimationActive={false}
           animationDuration={400}
         />
+
+        <Line
+          yAxisId="left"
+          name="강수확률"
+          type="monotone"
+          dataKey="precipitation"
+          stroke="#748ffc"
+          strokeWidth="2"
+          isAnimationActive
+          animationDuration={400}
+        />
         <Line
           yAxisId="left"
           type="monotone"
-          dataKey="humidityNow"
+          dataKey="temperatureNow"
           stroke="#f59f00"
           strokeWidth="2"
           name="온도"
@@ -185,16 +196,7 @@ const WeatherComposeChart = () => {
           isAnimationActive
           animationDuration={400}
         />
-        <Line
-          yAxisId="left"
-          name="강수확률"
-          type="monotone"
-          dataKey="precipitation"
-          stroke="#748ffc"
-          strokeWidth="2"
-          isAnimationActive
-          animationDuration={400}
-        />
+
         {/* <ReferenceLine
           x={'2021-08-29 03:00:00'}
           yAxisId="left"
