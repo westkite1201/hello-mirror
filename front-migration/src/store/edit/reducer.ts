@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import _ from 'lodash';
+
 import { toast } from 'react-toastify';
 import { searchComponentByName } from '../../lib/helpers';
 

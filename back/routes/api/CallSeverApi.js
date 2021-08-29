@@ -1,21 +1,25 @@
 const _ = require('lodash');
 const request = require('request');
 const querystring = require('querystring');
-function doRequest(option) {
+
+const { CacheService } = require('../../lib/cache.service');
+const ttl = 60 * 60 * 1; // cache for 1 Hour
+const cache = new CacheService(ttl); // Create a new cache service instance
+
+let OPTIONS = {
+  url: null,
+  qs: null,
+  method: 'GET',
+  timeout: 10000,
+  followRedirect: true,
+  maxRedirects: 10,
+};
+function doRequest() {
   return new Promise(function (resolve, reject) {
-    request(option, (err, res, result) => {
+    request(OPTIONS, (err, res, result) => {
       try {
-        if (_.isNil(res)) {
-          reject(err);
-        }
-        if (!res) {
-          reject(err);
-        }
-        if (_.isNil(res.statusCode)) {
-          reject(err);
-        }
-        let statusCode = res.statusCode ? res.statusCode : 400;
-        response = statusCodeErrorHandlerAsync(statusCode, result);
+        console.log(err, result);
+        response = statusCodeErrorHandlerAsync(res.statusCode, result, false);
         if (response.message !== 'error') {
           resolve(response);
         } else {
@@ -31,14 +35,6 @@ function doRequest(option) {
 module.exports = function (callee) {
   function CallSeverApi(callee) {
     //console.log(callee)
-    var OPTIONS = {
-      url: null,
-      qs: null,
-      method: 'GET',
-      timeout: 10000,
-      followRedirect: true,
-      maxRedirects: 10,
-    };
     const PORT = '3500';
 
     //const BASE_PATH = '/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?';
@@ -124,7 +120,9 @@ module.exports = function (callee) {
 
         OPTIONS.url += 'ServiceKey=' + serviceKey;
         OPTIONS.url += propertiesObject;
-        let res = await doRequest(OPTIONS);
+        //let res = await doRequest(OPTIONS);
+
+        let res = await cache.get(OPTIONS.url, false, null, doRequest);
         console.log('response ', res);
         return res;
       },

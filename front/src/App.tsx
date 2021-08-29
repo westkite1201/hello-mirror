@@ -23,7 +23,7 @@ function App() {
 // 스타일드-컴포넌트 정의
 const Container = styled.div`
   background-color: ${props => props.theme.dark.mainBackground};
-  color: ${props => props.theme.dark.primaryText};
+  // color: ${props => props.theme.dark.primaryText};
   overflow: hidden;
 `;
 

@@ -3,8 +3,10 @@ import { all } from 'redux-saga/effects';
 import weatherReducer from './weather/reducer';
 import editReducer from './edit/reducer';
 import { weatherSaga } from './weather'; //test
+
 const reducers = { weather: weatherReducer, edit: editReducer };
 
+// eslint-disable-next-line import/no-mutable-exports
 export let rootReducer = combineReducers({
   ...reducers,
 });

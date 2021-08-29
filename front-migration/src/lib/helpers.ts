@@ -1,3 +1,4 @@
+import camelcase from 'camelcase';
 import { ComponentItem } from '../store/edit/reducer';
 
 export const handleDispatchEventResize = () => {
@@ -18,6 +19,11 @@ export const searchComponentByName = (
   // console.log(item);
   // console.log(tag);
   return tag;
+};
+
+export const camelizedString = (nonCamelized: string) => {
+  const camelized = camelcase(nonCamelized);
+  return camelized;
 };
 
 export const getWeatherClassName = (skyInfoStr: string, dayTimeYn: boolean) => {

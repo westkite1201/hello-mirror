@@ -146,6 +146,7 @@ const countSlice = createSlice({
         // WSD	풍속	m/s
 
         const dayTimeYn = false;
+        // eslint-disable-next-line array-callback-return
         weatherInfos.map((item: any) => {
           //console.log('[seo] item ', item);
           if (item.category === 'SKY') {
@@ -225,6 +226,7 @@ const countSlice = createSlice({
       const weatherInfo = payload;
       console.log('weatjerImfo', weatherInfo);
 
+      // eslint-disable-next-line array-callback-return
       weatherInfo.map(item => {
         console.log('item', item.category);
         if (item.category === 'SKY') {

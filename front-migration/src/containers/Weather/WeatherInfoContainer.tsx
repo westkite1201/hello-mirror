@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import { RootState } from '../../store/rootReducer';
 import { getWeatherDataShortTermLive } from '../../store/weather/reducer';
 import WeatherInfoLive from '../../components/weather/WeatherInfoLive';
-import styled from 'styled-components';
 import 'weather-icons/css/weather-icons.css';
 
+const St = {
+  WeatherInfoWrapper: styled.div`
+    width: 100%;
+    padding: 1rem;
+    color: #e9ecef;
+  `,
+};
 const WeatherInfoContainer = () => {
   const dispatch = useDispatch();
   const { shortWeatherInfo, isFetchingShort } = useSelector(
@@ -17,23 +24,17 @@ const WeatherInfoContainer = () => {
     const ny = '127';
     const isShort = true;
     dispatch(getWeatherDataShortTermLive({ nx, ny, isShort }));
-  }, []);
+  }, [dispatch]);
 
   console.log('shortWeatherInfo');
   return (
-    <S_weatherInfoWrapper>
+    <St.WeatherInfoWrapper>
       <WeatherInfoLive
         shortWeatherInfo={shortWeatherInfo}
         isFetchingShort={isFetchingShort}
       />
-    </S_weatherInfoWrapper>
+    </St.WeatherInfoWrapper>
   );
 };
 
 export default React.memo(WeatherInfoContainer);
-// 스타일드-컴포넌트 정의
-const S_weatherInfoWrapper = styled.div`
-  width: 100%;
-  padding: 1rem;
-  color: #e9ecef;
-`;

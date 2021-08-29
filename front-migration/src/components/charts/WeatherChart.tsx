@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Component } from 'react';
 import {
   AreaChart,
   Legend,
@@ -15,16 +15,14 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
+  ReferenceDot,
 } from 'recharts';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { RootState } from '../../store/rootReducer';
-import {
-  getWeatherDataShortTermLive,
-  getWeatherRequest,
-  WeatherInfoData,
-} from '../../store/weather/reducer';
+import { getWeatherRequest } from '../../store/weather/reducer';
+import { ReturnIconMap } from '../../lib/iconMap';
 
 const St = {
   WeatherIconWrapper: styled.div`
@@ -41,32 +39,65 @@ const St = {
   `,
 };
 
-//swr사용시 args가 많은 경우 무한루프에 봉착하는 경우로 redux 로 전환
+// const weatherInfoTest = [
+//   {
+//     baseDate: '2012',
+//     baseDateTime: '2021-08-28 21:00:00',
+//     baseTime: 21,
+//     humidityNow: 85,
+//     precipitation: 0,
+//     rainNow: 0,
+//     temperatureNow: 23,
+//     weatherClassName: 'wi wi-night-clear',
+//   },
+//   {
+//     baseDate: '2013',
+//     baseDateTime: '2021-08-28 24:00:00',
+//     baseTime: 3,
+//     humidityNow: 85,
+//     precipitation: 0,
+//     rainNow: 0,
+//     temperatureNow: 23,
+//     weatherClassName: 'wi wi-night-clear',
+//   },
 
-// type CustomTooltipProps = {
-//   active?: any;
-//   payload?: any;
-//   label?: any;
+//   {
+//     baseDate: '2014',
+//     baseDateTime: '2021-08-29 03:00:00',
+//     baseTime: 6,
+//     humidityNow: 85,
+//     precipitation: 0,
+//     rainNow: 0,
+//     temperatureNow: 23,
+//     weatherClassName: 'wi wi-night-clear',
+//   },
+//   {
+//     baseDate: '2015',
+//     baseDateTime: '2021-08-29 06:00:00',
+//     baseTime: 9,
+//     humidityNow: 85,
+//     precipitation: 0,
+//     rainNow: 0,
+//     temperatureNow: 23,
+//     weatherClassName: 'wi wi-night-clear',
+//   },
+// ];
+
+// const CustomizedLabel = props => {
+//   const { x, y, stroke, value } = props;
+
+//   return (
+//     <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">
+//       {value}
+//     </text>
+//   );
 // };
-// const CustomTooltip: React.FC<CustomTooltipProps> = ({
-//   active,
-//   payload,
-//   label,
-// }) => {
-//   if (active && payload && payload.length) {
-//     console.log('payload ', payload);
-//     return (
-//       <St.CustomTooltip className="custom-tooltip">
-//         <p className="label">{`${label} : ${payload[0].value}`}</p>
-//         <p className="intro">{label}</p>
-//         <p className="desc">Anything you want can be displayed here.</p>
-//       </St.CustomTooltip>
-//     );
-//   }
-
-//   return null;
-// };
-
+const CustomizedDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  return (
+    <>{ReturnIconMap({ iconClassname: payload.weatherClassName, cx, cy })}</>
+  );
+};
 const WeatherComposeChart = () => {
   const dispatch = useDispatch();
   const { weatherInfo, loading } = useSelector(
@@ -85,11 +116,14 @@ const WeatherComposeChart = () => {
   };
 
   const formatYAxis = (tickItem: any) => tickItem.toLocaleString();
-  const formatTooltip = (tickItem: any) => {
-    console.log('tickItem', tickItem);
-    return tickItem.toLocaleString();
-  };
+  // const formatTooltip = (tickItem: any) => {
+  //   console.log('tickItem', tickItem);
+  //   return tickItem.toLocaleString();
+  // };
   console.log('weatherInfo = ', weatherInfo);
+  function CustomReferenceDot() {
+    return <ReferenceDot x={24} y={2000} />;
+  }
 
   return (
     <ResponsiveContainer>
@@ -105,13 +139,12 @@ const WeatherComposeChart = () => {
             <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
           </linearGradient>
         </defs>
-
-        <XAxis
-          // xAxisId="date"
-          // type="category"
-          dataKey="baseDateTime"
-          tickFormatter={formatXAxis}
+        <Tooltip
+          cursor={{ strokeDasharray: '3 4' }}
+          //formatter={formatTooltip}
+          // content={<CustomTooltip />}
         />
+        <XAxis dataKey="baseDateTime" tickFormatter={formatXAxis} />
         <YAxis yAxisId="left" type="number" />
         <YAxis
           yAxisId="right"
@@ -120,13 +153,7 @@ const WeatherComposeChart = () => {
           orientation="right"
           stroke="#413ea0"
         />
-        <Tooltip
-          cursor={{ strokeDasharray: '3 4' }}
-          formatter={formatTooltip}
-          // content={<CustomTooltip />}
-        />
         <Legend />
-
         <Area
           yAxisId="left"
           name="습도"
@@ -134,30 +161,30 @@ const WeatherComposeChart = () => {
           dataKey="humidityNow"
           fill="url(#humidityNow)"
           fillOpacity={1}
-          isAnimationActive
+          isAnimationActive={false}
           animationDuration={400}
         />
-
         <Line
           yAxisId="left"
           type="monotone"
-          dataKey="temperatureNow"
+          dataKey="humidityNow"
           stroke="#f59f00"
           strokeWidth="2"
           name="온도"
           isAnimationActive
           animationDuration={400}
+          dot={<CustomizedDot />}
         />
+
         <Bar
           yAxisId="right"
           name="강수량"
           dataKey="rainNow"
-          barSize={20}
+          barSize={10}
           fill="#413ea0"
           isAnimationActive
           animationDuration={400}
         />
-
         <Line
           yAxisId="left"
           name="강수확률"
@@ -168,6 +195,17 @@ const WeatherComposeChart = () => {
           isAnimationActive
           animationDuration={400}
         />
+        {/* <ReferenceLine
+          x={'2021-08-29 03:00:00'}
+          yAxisId="left"
+          label={CustomLabel}
+        />
+
+        {/* <foreignObject x="230" y="10" width="600" height="160">
+          <h1>Hello from HTML</h1>
+        </foreignObject> */}
+
+        <CustomReferenceDot />
       </ComposedChart>
     </ResponsiveContainer>
   );

@@ -46,10 +46,9 @@ export interface WeatherShortItem {
   baseDate: string;
   baseTime: string;
   category: string;
-
   obsrValue: string;
-  nx?: number;
-  ny?: number;
+  nx: any;
+  ny: any;
 }
 
 export interface WeatherItem {
